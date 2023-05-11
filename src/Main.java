@@ -4,6 +4,7 @@ import Reward.Reward;
 import Teams.InsuranceDevelopmentTeam;
 import Teams.RewardTeam;
 import exception.CustomException;
+import util.Constants;
 import util.TuiReader;
 
 public class Main {
@@ -100,24 +101,45 @@ public class Main {
         System.out.println(" 0. 종료 ");
     }
     
-    private static void processReward() {
+    @SuppressWarnings("deprecation")
+	private static void processReward() {
     	RewardTeam rewardTeam = new RewardTeam();
     	Vector<Reward> rewardList = rewardTeam.getAllReward();
-    	System.out.println( "------------------------------" );
-    	for( int i=0; i < rewardList.size(); i++ ) {
-    		System.out.println( rewardList.get(i).getCustomerName() + ": " + 
-    				rewardList.get(i).getAppliResult().getString() + 
-    				" " + rewardList.get(i).getContent() +
-    				" " + Integer.toString( rewardList.get(i).getAppliDate().getMonth() ) + "월 " + 
-    				Integer.toString( rewardList.get(i).getAppliDate().getDay() ) + "일 " );
+    	if( rewardList.size() == 0 ) { System.out.println( "접수된 보상 요청이 없습니다" );}
+    	else {
+    		System.out.println( "------------------------------" );
+	    	for( int i=0; i < rewardList.size(); i++ ) {
+	    		System.out.println( rewardList.get(i).getCustomerName() + ": " + 
+	    				rewardList.get(i).getAppliResult().getString() + 
+	    				" " + rewardList.get(i).getContent() +
+	    				" " + Integer.toString( rewardList.get(i).getAppliDate().getMonth() ) + "월 " + 
+	    				Integer.toString( rewardList.get(i).getAppliDate().getDay() ) + "일 " );
+	    	}
+	    	System.out.println( "------------------------------" );
+	    	int select = TuiReader.choice();
+	    	Reward selectedReward = rewardList.get( select );
+	    	System.out.println( selectedReward.getCustomerName() + " - " + selectedReward.getContent() );
+	    	System.out.println( "해당 보험에 대해 승인하시겠습니까?" );
+	    	System.out.println( "1. 보상 지급   2. 요청 거절" );
+	    	int resultSelect = TuiReader.choice();
+	    	if( resultSelect == 1 ) {
+	    		// 승인
+	    		System.out.println( selectedReward.getCustomerName() );
+	    		System.out.println( "지급 금액: " + Integer.toString( selectedReward.getReward() ) + "원" );
+	    		System.out.println( "책임자 이름: 사용자" );
+	    		System.out.println( "내용: " + selectedReward.getContent() );
+	    		System.out.println( "--------- 해당 요청에 대한 보상을 지급합니다. -----------");
+	    		
+	    		rewardTeam.rewardResult( selectedReward.getRewardID(), Constants.Result.ACCEPT );
+	    	} else if( resultSelect == 2 ) {
+	    		// Alter2
+	    		System.out.print( "보상 거절 사유를 입력하세요: ");
+	    		String reason = TuiReader.readInput( "정확한 사유를 입력하세요" );
+	    		
+	    	} else {
+	    		
+	    	}
     	}
-    	System.out.println( "------------------------------" );
-    	int select = TuiReader.choice();
-    	Reward selectedReward = rewardList.get( select );
-    	System.out.println( selectedReward.getCustomerName() + " - " + selectedReward.getContent() );
-    	System.out.println( "해당 보험에 대해 승인하시겠습니까?" );
-    	System.out.println( "1. 보상 지급   2. 요청 거절" );
-    	int resultSelect = TuiReader.choice();
     }
 
 }

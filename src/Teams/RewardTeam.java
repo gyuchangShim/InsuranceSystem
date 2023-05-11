@@ -3,18 +3,28 @@ package Teams;
 import java.util.Vector;
 
 import Reward.Reward;
+import Reward.RewardListImpl;
+import util.Constants;
 
 public class RewardTeam extends Team {
 	private Reward reward;
 	private Vector<Reward> rewardList;
+	
+	private RewardListImpl rewardListImpl;
 
 	public RewardTeam(){
 		this.rewardList = new Vector<Reward>();
+		this.rewardListImpl = new RewardListImpl();
 	}
 
 	public void finalize() throws Throwable {super.finalize();}
 	public Vector<Reward> getAllReward(){
 		return this.rewardList;
+	}
+	public void rewardResult( int id, Constants.Result result ) {
+		// Reward getReward = this.rewardListImpl.getReward( id );
+		// getReward.setAppliResult( result );
+		// this.rewardListImpl.update( getReward );
 	}
 	@Override
 	public void establishPolicy(int diff1, int diff2) {

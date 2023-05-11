@@ -25,7 +25,7 @@ public class Constants {
 	public enum Result{ 
 		PROCESS( "PROCESS" ), 
 		DENY( "DENY" ), 
-		ACCESS( "ACCESS" );
+		ACCEPT( "ACCEPT" );
 		private String result;
 		
 		Result( String result ){ this.result = result; }
