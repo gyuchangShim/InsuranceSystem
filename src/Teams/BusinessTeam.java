@@ -1,6 +1,5 @@
 package Teams;
 import Business.OperationPolicy;
-import Teams.Team;
 
 public class BusinessTeam extends Team {
 

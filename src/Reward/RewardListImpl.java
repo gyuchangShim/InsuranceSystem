@@ -21,7 +21,7 @@ public class RewardListImpl implements RewardList {
 	}
 
 	public void retrieve(){
-
+		
 	}
 
 	public void update(){

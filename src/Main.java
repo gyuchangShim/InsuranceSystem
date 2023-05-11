@@ -1,5 +1,8 @@
-import Teams.InsuranceDevelopmentTeam;
+import java.util.Vector;
 
+import Reward.Reward;
+import Teams.InsuranceDevelopmentTeam;
+import Teams.RewardTeam;
 import exception.CustomException;
 import util.TuiReader;
 
@@ -21,8 +24,8 @@ public class Main {
                     case 1:
                         createInsurance();
                         break;
-                    case 2:
-
+                    case 8:
+                    	processReward();
                         break;
                     case 0:
                         System.out.close();
@@ -93,7 +96,28 @@ public class Main {
     private static void printMenu() {
         System.out.println("********************* MENU *********************");
         System.out.println(" 1. 상품개발");
+        System.out.println(" 8. 보상 처리");
         System.out.println(" 0. 종료 ");
+    }
+    
+    private static void processReward() {
+    	RewardTeam rewardTeam = new RewardTeam();
+    	Vector<Reward> rewardList = rewardTeam.getAllReward();
+    	System.out.println( "------------------------------" );
+    	for( int i=0; i < rewardList.size(); i++ ) {
+    		System.out.println( rewardList.get(i).getCustomerName() + ": " + 
+    				rewardList.get(i).getAppliResult().getString() + 
+    				" " + rewardList.get(i).getContent() +
+    				" " + Integer.toString( rewardList.get(i).getAppliDate().getMonth() ) + "월 " + 
+    				Integer.toString( rewardList.get(i).getAppliDate().getDay() ) + "일 " );
+    	}
+    	System.out.println( "------------------------------" );
+    	int select = TuiReader.choice();
+    	Reward selectedReward = rewardList.get( select );
+    	System.out.println( selectedReward.getCustomerName() + " - " + selectedReward.getContent() );
+    	System.out.println( "해당 보험에 대해 승인하시겠습니까?" );
+    	System.out.println( "1. 보상 지급   2. 요청 거절" );
+    	int resultSelect = TuiReader.choice();
     }
 
 }
