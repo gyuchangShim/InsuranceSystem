@@ -19,6 +19,7 @@ public class RewardTeam extends Team {
 
 	public void finalize() throws Throwable {super.finalize();}
 	public Vector<Reward> getAllReward(){
+		// RewardListImpl에서 모든 엔티티를 가져온 다음 리턴 
 		return this.rewardList;
 	}
 	public void rewardResult( int id, Constants.Result result ) {

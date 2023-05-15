@@ -135,11 +135,12 @@ public class Main {
 	    		// Alter2
 	    		System.out.print( "보상 거절 사유를 입력하세요: ");
 	    		String reason = TuiReader.readInput( "정확한 사유를 입력하세요" );
-	    		
+	    		selectedReward.setContent( reason );   		// DENY된 보험 신청의 경우, Content에 거절 사유를 남긴다.
+	    		rewardTeam.rewardResult( selectedReward.getRewardID(), Constants.Result.DENY );
 	    	} else {
-	    		
+	    		// 
 	    	}
-    	}
+    	}  
     }
 
 }
