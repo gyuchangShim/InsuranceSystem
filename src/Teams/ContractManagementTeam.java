@@ -1,41 +1,20 @@
 package Teams;
 import ContractManagement.ContractManagementPolicy;
 import Teams.Team;
+import util.Constants.Target;
 
 public class ContractManagementTeam extends Team {
-
 	public ContractManagementPolicy m_ContractManagementPolicy;
 
-	public ContractManagementTeam(){
-
-	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
+	public ContractManagementTeam(){}
+	public void finalize() throws Throwable { super.finalize(); }
 
 	@Override
-	public void establishPolicy(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void establishPolicy(Target target, int crud) {}
 	@Override
-	public void manage(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void manage(Target target, int crud) {}
 	@Override
-	public void plan(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void plan(Target target, int crud) {}
 	@Override
-	public void process(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void process(Target target, int crud) {}
 }

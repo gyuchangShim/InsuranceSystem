@@ -8,13 +8,11 @@ import util.Constants;
 import util.TuiReader;
 
 public class Main {
-
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
 
     public static void initialize() {
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam();
     }
-
     public static void main(String[] args) {
         initialize();
         try {
@@ -40,7 +38,6 @@ public class Main {
             System.out.println(e.getMessage());
         }
     }
-
     private static void createInsurance() {
         printCreateInsuranceMenu();
         int choice = TuiReader.choice();
@@ -53,12 +50,10 @@ public class Main {
                 break;
         }
     }
-
     private static void createInsurancePlan() {
         System.out.println("********************* 상품 기획 *********************");
         System.out.println(" 1. 새상품 기획 버튼");
         System.out.println(" 2. 기존 상품 관리 버튼");
-
         int choice = TuiReader.choice();
         switch (choice) {
             case 1:
@@ -73,7 +68,6 @@ public class Main {
                 break;
         }
     }
-
     private static void managePlan() {
         System.out.println("수정: 1, 삭제: 2");
         int choice2 = TuiReader.choice();
@@ -81,26 +75,20 @@ public class Main {
             System.out.println("정확히 선택해주세요.");
             choice2 = TuiReader.choice();
         }
-        if (choice2 == 1) {
-            insuranceDevelopmentTeam.plan(1, 3);
-        } else if (choice2 == 2) {
-            insuranceDevelopmentTeam.plan(1, 4);
-        }
+        if (choice2 == 1) {insuranceDevelopmentTeam.plan(1, 3);} 
+        else if (choice2 == 2) {insuranceDevelopmentTeam.plan(1, 4);} 
     }
-
     private static void printCreateInsuranceMenu() {
         System.out.println("********************* 상품 개발 *********************");
         System.out.println(" 1. 상품 기획 버튼");
         System.out.println(" 2. 상품 개발 버튼");
     }
-
     private static void printMenu() {
         System.out.println("********************* MENU *********************");
         System.out.println(" 1. 상품개발");
         System.out.println(" 8. 보상 처리");
         System.out.println(" 0. 종료 ");
     }
-    
     @SuppressWarnings("deprecation")
 	private static void processReward() {
     	RewardTeam rewardTeam = new RewardTeam();
@@ -142,5 +130,4 @@ public class Main {
 	    	}
     	}  
     }
-
 }

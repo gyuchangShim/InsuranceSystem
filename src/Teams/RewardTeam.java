@@ -5,18 +5,17 @@ import java.util.Vector;
 import Reward.Reward;
 import Reward.RewardListImpl;
 import util.Constants;
+import util.Constants.Target;
 
 public class RewardTeam extends Team {
 	private Reward reward;
-	private Vector<Reward> rewardList;
-	
 	private RewardListImpl rewardListImpl;
-
+	private Vector<Reward> rewardList;	
+	
 	public RewardTeam(){
 		this.rewardList = new Vector<Reward>();
 		this.rewardListImpl = new RewardListImpl();
 	}
-
 	public void finalize() throws Throwable {super.finalize();}
 	public Vector<Reward> getAllReward(){
 		// RewardListImpl에서 모든 엔티티를 가져온 다음 리턴 
@@ -28,27 +27,11 @@ public class RewardTeam extends Team {
 		// this.rewardListImpl.update( getReward );
 	}
 	@Override
-	public void establishPolicy(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void establishPolicy(Target target, int crud) {}
 	@Override
-	public void manage(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void manage(Target target, int crud) {}
 	@Override
-	public void plan(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void plan(Target target, int crud) {}
 	@Override
-	public void process(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public void process(Target target, int crud) {}
 }
