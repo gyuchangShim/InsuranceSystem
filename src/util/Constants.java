@@ -1,6 +1,6 @@
 package util;
 
-public class Constants {	
+public class Constants {	 
 	public enum Crud{ CREATE, READ, UPDATE, DELETE; }
 	public enum Target{
 		INSURANCE,						// 상품
@@ -30,13 +30,5 @@ public class Constants {
 		
 		Result( String result ){ this.result = result; }
 		public String getString() { return this.result; }
-	}
-	public enum Gender{
-		MALE( "Male" ),
-		FEMALE( "Female" );	
-		private String gender;
-
-		Gender( String gender ){this.gender = gender;}
-		public String getString() {return this.gender;}
 	}
 }

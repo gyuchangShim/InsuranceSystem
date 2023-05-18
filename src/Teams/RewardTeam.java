@@ -5,6 +5,7 @@ import java.util.Vector;
 import Reward.Reward;
 import Reward.RewardListImpl;
 import util.Constants;
+import util.Constants.Crud;
 import util.Constants.Target;
 
 public class RewardTeam extends Team {
@@ -27,11 +28,11 @@ public class RewardTeam extends Team {
 		// this.rewardListImpl.update( getReward );
 	}
 	@Override
-	public void establishPolicy(Target target, int crud) {}
+	public void establishPolicy(Target target, Crud crud) {}
 	@Override
-	public void manage(Target target, int crud) {}
+	public void manage(Target target, Crud crud) {}
 	@Override
-	public void plan(Target target, int crud) {}
+	public void plan(Target target, Crud crud) {}
 	@Override
-	public void process(Target target, int crud) {}
+	public void process(Target target, Crud crud) {}
 }
