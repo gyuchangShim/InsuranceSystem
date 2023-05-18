@@ -96,10 +96,6 @@ public class Customer {
 
 	}
 
-	/**
-	 * 
-	 * @param diff
-	 */
 	public void apply(int diff){
 
 	}
