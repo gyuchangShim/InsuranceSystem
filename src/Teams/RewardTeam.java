@@ -5,6 +5,7 @@ import java.util.Vector;
 import Reward.Reward;
 import Reward.RewardListImpl;
 import util.Constants;
+import util.Constants.Crud;
 import util.Constants.Target;
 
 public class RewardTeam extends Team {
@@ -16,6 +17,27 @@ public class RewardTeam extends Team {
 		this.rewardList = new Vector<Reward>();
 		this.rewardListImpl = new RewardListImpl();
 	}
+
+	@Override
+	public void establishPolicy(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void manage(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void plan(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void process(Target target, Crud crud) {
+
+	}
+
 	public void finalize() throws Throwable {super.finalize();}
 	public Vector<Reward> getAllReward(){
 		// RewardListImpl에서 모든 엔티티를 가져온 다음 리턴 
@@ -26,12 +48,5 @@ public class RewardTeam extends Team {
 		// getReward.setAppliResult( result );
 		// this.rewardListImpl.update( getReward );
 	}
-	@Override
-	public void establishPolicy(Target target, int crud) {}
-	@Override
-	public void manage(Target target, int crud) {}
-	@Override
-	public void plan(Target target, int crud) {}
-	@Override
-	public void process(Target target, int crud) {}
+
 }

@@ -1,12 +1,34 @@
 package Teams;
 import Business.SellGroup;
 import Teams.Team;
+import util.Constants.Crud;
+import util.Constants.Target;
 
 public class SellGroupTeam extends Team {
 
 	public SellGroup m_SellGroup;
 
 	public SellGroupTeam(){
+
+	}
+
+	@Override
+	public void establishPolicy(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void manage(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void plan(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void process(Target target, Crud crud) {
 
 	}
 
@@ -20,26 +42,6 @@ public class SellGroupTeam extends Team {
 
 	public void reportConsultingResult(){
 
-	}
-
-	@Override
-	public void establishPolicy(int diff1, int diff2) {
-		
-	}
-
-	@Override
-	public void manage(int diff1, int diff2) {
-		
-	}
-
-	@Override
-	public void plan(int diff1, int diff2) {
-		
-	}
-
-	@Override
-	public void process(int diff1, int diff2) {
-		
 	}
 
 }

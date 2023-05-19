@@ -2,6 +2,8 @@ package Teams;
 import BusinessEducation.Education;
 import BusinessEducation.EducationStudent;
 import Teams.Team;
+import util.Constants.Crud;
+import util.Constants.Target;
 
 public class BusinessEducationTeam extends Team {
 
@@ -12,37 +14,32 @@ public class BusinessEducationTeam extends Team {
 
 	}
 
+	@Override
+	public void establishPolicy(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void manage(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void plan(Target target, Crud crud) {
+
+	}
+
+	@Override
+	public void process(Target target, Crud crud) {
+
+	}
+
 	public void finalize() throws Throwable {
 		super.finalize();
 	}
 
-	public void calculatingExamination(){
+	public void calculatingExamination() {
 
 	}
-
-	@Override
-	public void establishPolicy(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void manage(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void plan(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void process(int diff1, int diff2) {
-		// TODO Auto-generated method stub
-		
-	}
-
 
 }

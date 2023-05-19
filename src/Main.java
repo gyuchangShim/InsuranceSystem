@@ -1,3 +1,5 @@
+import insurance.InsuranceList;
+import insurance.InsuranceListImpl;
 import java.util.Vector;
 
 import Reward.Reward;
@@ -5,13 +7,18 @@ import Teams.InsuranceDevelopmentTeam;
 import Teams.RewardTeam;
 import exception.CustomException;
 import util.Constants;
+import util.Constants.Crud;
+import util.Constants.Target;
 import util.TuiReader;
 
 public class Main {
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
+    private static InsuranceList insuranceList;
 
     public static void initialize() {
-        insuranceDevelopmentTeam = new InsuranceDevelopmentTeam();
+        insuranceList = new InsuranceListImpl();
+        insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
+
     }
     public static void main(String[] args) {
         initialize();
@@ -45,11 +52,14 @@ public class Main {
             case 1:
                 createInsurancePlan();
                 break;
+            case 2:
+                createInsuranceAsPlan();
             default:
                 System.out.println("잘못된 입력입니다.");
                 break;
         }
     }
+
     private static void createInsurancePlan() {
         System.out.println("********************* 상품 기획 *********************");
         System.out.println(" 1. 새상품 기획 버튼");
@@ -58,25 +68,24 @@ public class Main {
         switch (choice) {
             case 1:
                 System.out.println("고객니즈 및 경쟁사의 동향 분석 보고서를 작성하세요: ");
-                insuranceDevelopmentTeam.plan(1, 1);
+                insuranceDevelopmentTeam.plan(Target.INSURANCE, Crud.CREATE);
                 break;
             case 2:
-                managePlan();
+                System.out.println("수정: 1, 삭제: 2");
+                int choice2 = TuiReader.choice();
+                while (choice2 != 1 && choice2 != 2) {
+                    System.out.println("정확히 선택해주세요.");
+                    choice2 = TuiReader.choice();
+                }
+                if (choice2 == 1) {insuranceDevelopmentTeam.plan(Target.INSURANCE, Crud.UPDATE);}
+                else if (choice2 == 2) {insuranceDevelopmentTeam.plan(Target.INSURANCE, Crud.DELETE);}
                 break;
             default:
                 System.out.println("잘못된 입력입니다.");
                 break;
         }
     }
-    private static void managePlan() {
-        System.out.println("수정: 1, 삭제: 2");
-        int choice2 = TuiReader.choice();
-        while (choice2 != 1 && choice2 != 2) {
-            System.out.println("정확히 선택해주세요.");
-            choice2 = TuiReader.choice();
-        }
-        if (choice2 == 1) {insuranceDevelopmentTeam.plan(1, 3);} 
-        else if (choice2 == 2) {insuranceDevelopmentTeam.plan(1, 4);} 
+    private static void createInsuranceAsPlan() {
     }
     private static void printCreateInsuranceMenu() {
         System.out.println("********************* 상품 개발 *********************");
@@ -89,7 +98,7 @@ public class Main {
         System.out.println(" 8. 보상 처리");
         System.out.println(" 0. 종료 ");
     }
-    @SuppressWarnings("deprecation")
+
 	private static void processReward() {
     	RewardTeam rewardTeam = new RewardTeam();
     	Vector<Reward> rewardList = rewardTeam.getAllReward();
