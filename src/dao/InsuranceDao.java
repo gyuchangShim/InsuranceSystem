@@ -2,6 +2,7 @@ package dao;
 
 import insurance.Insurance;
 import insurance.InsuranceList;
+import insurance.InsuranceState;
 import java.util.List;
 
 public class InsuranceDao implements InsuranceList {
@@ -26,7 +27,7 @@ public class InsuranceDao implements InsuranceList {
     }
 
     @Override
-    public void delete(Insurance insurance) {
+    public void delete(int insuranceId) {
 
     }
 
@@ -41,7 +42,24 @@ public class InsuranceDao implements InsuranceList {
     }
 
     @Override
-    public void update() {
+    public void updateReport(int insuranceId, String report) {
 
     }
+
+    @Override
+    public void createDesign(Insurance insurance) {
+
+    }
+
+    @Override
+    public void updateRate(float rate) {
+
+    }
+
+    @Override
+    public void updateState(InsuranceState insuranceState) {
+
+    }
+
+
 }

@@ -17,8 +17,8 @@ public class InsuranceListImpl implements InsuranceList {
 	}
 
 	@Override
-	public void delete(Insurance insurance){
-		insuranceList.remove(insurance);
+	public void delete(int insuranceId){
+		insuranceList.remove(insuranceId);
 	}
 
 	@Override
@@ -32,8 +32,24 @@ public class InsuranceListImpl implements InsuranceList {
 	}
 
 	@Override
-	public void update(){
+	public void updateReport(int insuranceId, String report) {
+		insuranceList.get(insuranceId).setPlanReport(report);
+	}
+
+	@Override
+	public void createDesign(Insurance insurance) {
 
 	}
+
+	@Override
+	public void updateRate(float rate) {
+
+	}
+
+	@Override
+	public void updateState(InsuranceState insuranceState) {
+
+	}
+
 
 }
