@@ -9,7 +9,7 @@ public class Reward {
 	private Date appliDate;
 	private String content;
 	private int contractID;
-	private int customerName;
+	private String customerName;
 	private String identifyProfile;			// File 형식이 TUI에서는 지원되지 않으므로 String으로 대신함
 	private int reward;						// 보상금
 	private int rewardID;
@@ -25,8 +25,8 @@ public class Reward {
 	public void setContent(String content) {this.content = content;}
 	public int getContractID() {return contractID;}
 	public void setContractID(int contractID) {this.contractID = contractID;}
-	public int getCustomerName() {return customerName;}
-	public void setCustomerName(int customerName) {this.customerName = customerName;}
+	public String getCustomerName() {return customerName;}
+	public void setCustomerName(String customerName) {this.customerName = customerName;}
 	public String getIdentifyProfile() {return identifyProfile;}
 	public void setIdentifyProfile(String identifyProfile) {this.identifyProfile = identifyProfile;}
 	public int getReward() {return reward;}
