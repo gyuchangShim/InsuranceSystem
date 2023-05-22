@@ -1,9 +1,8 @@
-package Teams;
+package teams;
 
 import java.util.Vector;
-
-import Reward.Reward;
-import Reward.RewardListImpl;
+import reward.Reward;
+import reward.RewardListImpl;
 import util.Constants;
 import util.Constants.Crud;
 import util.Constants.Target;
@@ -11,7 +10,7 @@ import util.Constants.Target;
 public class RewardTeam extends Team {
 	private Reward reward;
 	private RewardListImpl rewardListImpl;
-	private Vector<Reward> rewardList;	
+	private Vector<Reward> rewardList;
 	
 	public RewardTeam(){
 		this.rewardList = new Vector<Reward>();

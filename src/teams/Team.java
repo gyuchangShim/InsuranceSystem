@@ -1,4 +1,4 @@
-package Teams;
+package teams;
 import insurance.Insurance;
 import util.Constants;
 import util.Constants.Crud;

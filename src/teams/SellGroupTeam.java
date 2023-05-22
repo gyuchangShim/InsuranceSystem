@@ -1,6 +1,5 @@
-package Teams;
-import Business.SellGroup;
-import Teams.Team;
+package teams;
+import business.SellGroup;
 import util.Constants.Crud;
 import util.Constants.Target;
 

@@ -1,5 +1,4 @@
-package Customer;
-import Contract.Contract;
+package customer;
 
 public class Customer {
 	

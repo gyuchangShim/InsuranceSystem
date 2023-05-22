@@ -1,7 +1,6 @@
-package Teams;
-import BusinessEducation.Education;
-import BusinessEducation.EducationStudent;
-import Teams.Team;
+package teams;
+import businessEducation.Education;
+import businessEducation.EducationStudent;
 import util.Constants.Crud;
 import util.Constants.Target;
 

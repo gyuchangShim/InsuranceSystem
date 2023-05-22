@@ -1,6 +1,8 @@
-package Reward;
+package reward;
 
 import java.util.Vector;
+import reward.Reward;
+import reward.RewardList;
 
 public class RewardListImpl implements RewardList {
 	public Reward m_Reward;

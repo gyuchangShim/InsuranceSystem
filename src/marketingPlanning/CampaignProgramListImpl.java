@@ -1,4 +1,4 @@
-package MarketingPlanning;
+package marketingPlanning;
 
 import insurance.Insurance;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class CampaignProgramListImpl implements CampaignProgramList {
 	}
 
 	@Override
-	public List<Insurance> retrieveAll() {
+	public List<CampaignProgram> retrieveAll() {
 		return null;
 	}
 

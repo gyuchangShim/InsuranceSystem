@@ -1,4 +1,4 @@
-package Reward;
+package reward;
 import java.util.Date;
 
 import util.Constants;

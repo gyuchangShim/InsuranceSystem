@@ -1,13 +1,14 @@
-package MarketingPlanning;
+package marketingPlanning;
 
 import insurance.Insurance;
 import java.util.List;
+import marketingPlanning.CampaignProgram;
 
 public interface CampaignProgramList {
     void add(CampaignProgram campaignProgram);
     void delete(int campaignProgramId);
     CampaignProgram retrieve(int campaignProgramId);
-    List<Insurance> retrieveAll();
+    List<CampaignProgram> retrieveAll();
     void update(CampaignProgram campaignProgram);
 
 }

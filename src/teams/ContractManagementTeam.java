@@ -1,6 +1,5 @@
-package Teams;
-import ContractManagement.ContractManagementPolicy;
-import Teams.Team;
+package teams;
+import contractManagement.ContractManagementPolicy;
 import util.Constants.Target;
 import util.Constants.Crud;
 

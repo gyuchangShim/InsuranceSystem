@@ -1,15 +1,9 @@
-package Teams;
-import MarketingPlanning.CampaignProgram;
-import MarketingPlanning.CampaignProgramList;
-import MarketingPlanning.CampaignProgramListImpl;
-import Teams.Team;
-import Undewriting.AssumePolicy;
+package teams;
+
+import marketingPlanning.CampaignProgram;
+import marketingPlanning.CampaignProgramListImpl;
 import util.Constants.Target;
 import util.Constants.Crud;
-
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MarketingPlanningTeam extends Team {
 

@@ -1,4 +1,4 @@
-package ContractManagement;
+package contractManagement;
 
 public class ContractManagementPolicyListImpl implements ContractManagementPolicyList {
 

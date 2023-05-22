@@ -1,9 +1,8 @@
-package Dao;
+package dao;
 
-import MarketingPlanning.CampaignProgram;
-import MarketingPlanning.CampaignProgramList;
 import insurance.Insurance;
-import insurance.InsuranceList;
+import marketingPlanning.CampaignProgram;
+import marketingPlanning.CampaignProgramList;
 
 public class CampaignProgramDao extends Dao{
 
@@ -24,7 +23,7 @@ public class CampaignProgramDao extends Dao{
 
     public CampaignProgram retrieveAll() {
         String query = "";
-        CampaignProgramList campaignProgramList = new CampaignProgramList();
+//        CampaignProgramList campaignProgramList = new CampaignProgramList();
         return null;
     }
 

@@ -1,4 +1,4 @@
-package BusinessEducation;
+package businessEducation;
 
 public class EducationStudentListImpl implements EducationStudentList {
 

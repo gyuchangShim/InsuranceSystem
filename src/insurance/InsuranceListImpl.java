@@ -23,7 +23,7 @@ public class InsuranceListImpl implements InsuranceList {
 
 	@Override
 	public Insurance retrieve(int insuranceId){
-
+		return null;
 	}
 
 	@Override

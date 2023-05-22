@@ -1,7 +1,6 @@
-package Contract;
-import java.io.File;
+package contract;
+
 import java.time.LocalDateTime;
-import java.util.Date;
 
 public class Contract {
 

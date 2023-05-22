@@ -1,4 +1,4 @@
-package MarketingPlanning;
+package marketingPlanning;
 
 public class CampaignProgram {
 
@@ -14,7 +14,6 @@ public class CampaignProgram {
 	private campaignState campaignState;
 
 	public CampaignProgram(){
-		CampaignProgram campaignProgram = new CampaignProgram();
 		campaignState = null;
 	}
 

@@ -1,4 +1,4 @@
-package Reward;
+package reward;
 
 public interface RewardList {
 

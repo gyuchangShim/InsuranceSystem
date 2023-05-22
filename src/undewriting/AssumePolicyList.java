@@ -1,6 +1,7 @@
-package Undewriting;
+package undewriting;
 
 import java.util.List;
+import undewriting.AssumePolicy;
 
 public interface AssumePolicyList {
 

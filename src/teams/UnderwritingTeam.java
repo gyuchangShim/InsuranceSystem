@@ -1,7 +1,6 @@
-package Teams;
-import Undewriting.AssumePolicy;
-import Undewriting.AssumePolicyList;
-import Undewriting.AssumePolicyListImpl;
+package teams;
+import undewriting.AssumePolicy;
+import undewriting.AssumePolicyList;
 import util.Constants.Target;
 import util.Constants.Crud;
 
@@ -71,11 +70,7 @@ public class UnderwritingTeam extends Team {
 		for (int i = 0; i < policyList.size(); i++) {
 			System.out.println(i + ". " + policyList.get(i).getPolicyID() + " " + policyList.get(i).getName());
 		}
-		int choice = util.TuiReader.choice();
-		while (choice < 0 || choice >= policyList.size()) {
-			System.out.println("정확히 선택해주세요.");
-			choice = util.TuiReader.choice();
-		}
+		int choice = util.TuiReader.choice(0, policyList.size() - 1);
 		return policyList.get(choice);
 	}
 }
