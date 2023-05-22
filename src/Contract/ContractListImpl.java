@@ -1,19 +1,22 @@
 package Contract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ContractListImpl implements ContractList {
 
-	public Contract m_Contract;
+	public static ArrayList<Contract> contractList;
 
 	public ContractListImpl(){
-
+		this.contractList = new ArrayList<>();
 	}
 
 	public void finalize() throws Throwable {
 
 	}
 
-	public void add(){
-
+	public void add(Contract contract){
+		contractList.add(contract);
 	}
 
 	public void delete(){
@@ -27,5 +30,7 @@ public class ContractListImpl implements ContractList {
 	public void update(){
 
 	}
+
+	public List<Contract> getAllregist() {return contractList;}
 
 }

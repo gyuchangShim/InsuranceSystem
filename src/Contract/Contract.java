@@ -1,11 +1,12 @@
 package Contract;
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Contract {
 
-	private Date contractDate;
-	private File contractFile;
+	private LocalDateTime contractDate;
+	private String contractFile;
 	private int contractID;
 	private int customerID;
 	private int insuranceID;
@@ -14,19 +15,19 @@ public class Contract {
 
 	}
 	
-	public Date getContractDate() {
+	public LocalDateTime getContractDate() {
 		return contractDate;
 	}
 
-	public void setContractDate(Date contractDate) {
+	public void setContractDate(LocalDateTime contractDate) {
 		this.contractDate = contractDate;
 	}
 
-	public File getContractFile() {
+	public String getContractFile() {
 		return contractFile;
 	}
 
-	public void setContractFile(File contractFile) {
+	public void setContractFile(String contractFile) {
 		this.contractFile = contractFile;
 	}
 

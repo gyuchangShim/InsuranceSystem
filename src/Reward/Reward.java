@@ -4,8 +4,6 @@ import java.util.Date;
 import util.Constants;
 
 public class Reward {
-
-	@SuppressWarnings("unused")
 	private Constants.Result appliResult;
 	private String accidentProfile;			// File 형식이 TUI에서는 지원되지 않으므로 String으로 대신함
 	private Date appliDate;
@@ -35,6 +33,4 @@ public class Reward {
 	public void setReward(int reward) {this.reward = reward;}
 	public int getRewardID() {return rewardID;}
 	public void setRewardID(int rewardID) {this.rewardID = rewardID;}
-	public void finalize() throws Throwable {}
-
 }
