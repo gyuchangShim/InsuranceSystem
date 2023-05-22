@@ -18,5 +18,5 @@ public interface InsuranceList {
 
     void updateRate(float rate);
 
-    void updateState(InsuranceState insuranceState);
+    void updateState(int insuranceID, InsuranceState insuranceState);
 }

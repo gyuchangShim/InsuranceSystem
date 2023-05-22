@@ -245,8 +245,8 @@ public class Main {
         }
         Insurance insurance = insurances.get(choice);
         LocalDateTime authorizedDate = OuterActor.authorizedInsurance(insurance);
-        insuranceList.updateState(insurance.getInsuranceState());
         if (insurance.getInsuranceState() == InsuranceState.AUTHORIZED) {
+            insuranceList.updateState(insurance.getInsuranceID(), InsuranceState.AUTHORIZED);
             System.out.println(
                 authorizedDate.getMonth() + "월 " + authorizedDate.getDayOfMonth() + "일에 합격 되었습니다");
         } else {

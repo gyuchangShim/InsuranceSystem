@@ -47,7 +47,7 @@ public class InsuranceListImpl implements InsuranceList {
 	}
 
 	@Override
-	public void updateState(InsuranceState insuranceState) {
+	public void updateState(int insuranceID, InsuranceState insuranceState) {
 
 	}
 
