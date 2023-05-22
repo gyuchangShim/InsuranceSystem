@@ -75,10 +75,10 @@ public class Main {
                 Insurance insurance = designInsurance();
                 estimateProfit(insurance);
                 insurance.setInsuranceState(InsuranceState.DESIGNED);
-                insuranceList.createDesign(insurance);
+                insuranceList.update(insurance);
                 System.out.println("저장 완료되었습니다. 요율 분석 버튼을 눌러 자동으로 이동합니다.");
                 analyzeInsuranceRate(insurance);
-                insuranceList.updateRate(insurance.getRate());
+                insuranceList.update(insurance);
                 System.out.println("해당 상품 설계를 완료했습니다.");
                 break;
             case 3:
@@ -92,8 +92,8 @@ public class Main {
 
     private static void createInsurancePlan() {
         System.out.println("********************* 상품 기획 *********************");
-        System.out.println(" 1. 새상품 기획 버튼");
-        System.out.println(" 2. 기존 상품 관리 버튼");
+        System.out.println(" 1. 새상품 기획");
+        System.out.println(" 2. 기존 상품 관리");
         int choice = TuiReader.choice();
         switch (choice) {
             case 1:
@@ -125,14 +125,16 @@ public class Main {
                     System.out.println("정확히 선택해주세요.");
                     choice3 = TuiReader.choice();
                 }
+                Insurance findInsurance = insurances.get(choice2);
                 if (choice3 == 1) {
                     System.out.println("기존 기획안: " + insurances.get(choice2).getPlanReport());
                     System.out.println("수정할 기획안을 입력해주세요.");
                     String report = TuiReader.readInput("보고서가 올바른 형식이 아닙니다.");
-                    insuranceList.updateReport(insurances.get(choice2).getInsuranceID(), report);
+                    findInsurance.setPlanReport(report);
+                    insuranceList.update(findInsurance);
                     System.out.println("상품 기획안을 수정하였습니다.");
                 } else if (choice3 == 2) {
-                    insuranceList.delete(insurances.get(choice2).getInsuranceID());
+                    insuranceList.delete(findInsurance.getInsuranceID());
                     System.out.println("해당 상품 기획안을 삭제하였습니다.");
                 }
                 break;
@@ -143,7 +145,8 @@ public class Main {
     }
     private static Insurance designInsurance() {
         List<Insurance> insurances = insuranceList.getAllInsurance()
-            .stream().filter(insurance -> insurance.getInsuranceState() == InsuranceState.PLANED)
+            .stream()
+            .filter(insurance -> insurance.getInsuranceState() == InsuranceState.PLANED)
             .collect(Collectors.toList());
         if (insurances.size() == 0) {
             throw new CInsuranceNotFoundException("설계할 보험 기획안이 없습니다.");
@@ -162,14 +165,13 @@ public class Main {
         System.out.println(
             "설계할 보험의 이름, 상품 종류, 판매 대상, 가입 조건, 보험료, 보장 내용, 개발 예상 비용을 / 로 구분하여 입력해주세요.");
         boolean isSuccessInput = false;
-        Insurance insurance = null;
+        Insurance insurance = insurances.get(choiceId);
         while (!isSuccessInput) {
             try {
                 String[] input = TuiReader.readInput("다시 입력하세요.").split("/");
                 if (input.length != 7) {
                     throw new CIllegalArgumentException("다시 입력하세요");
                 }
-                insurance = insurances.get(choiceId);
                 insurance.setInsuranceName(input[0]);
                 insurance.setInsuranceType(InsuranceType.valueOf(input[1]));
                 insurance.setSalesTarget(input[2]);
@@ -246,9 +248,9 @@ public class Main {
         Insurance insurance = insurances.get(choice);
         LocalDateTime authorizedDate = OuterActor.authorizedInsurance(insurance);
         if (insurance.getInsuranceState() == InsuranceState.AUTHORIZED) {
-            insuranceList.updateState(insurance.getInsuranceID(), InsuranceState.AUTHORIZED);
+            insuranceList.update(insurance);
             System.out.println(
-                authorizedDate.getMonth() + "월 " + authorizedDate.getDayOfMonth() + "일에 합격 되었습니다");
+                authorizedDate.getMonth().getValue() + "월 " + authorizedDate.getDayOfMonth() + "일에 합격 되었습니다");
         } else {
             System.out.println("불합격 되었습니다.");
         }

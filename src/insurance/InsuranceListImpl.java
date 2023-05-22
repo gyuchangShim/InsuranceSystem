@@ -32,22 +32,7 @@ public class InsuranceListImpl implements InsuranceList {
 	}
 
 	@Override
-	public void updateReport(int insuranceId, String report) {
-		insuranceList.get(insuranceId).setPlanReport(report);
-	}
-
-	@Override
-	public void createDesign(Insurance insurance) {
-
-	}
-
-	@Override
-	public void updateRate(float rate) {
-
-	}
-
-	@Override
-	public void updateState(int insuranceID, InsuranceState insuranceState) {
+	public void update(Insurance insurance) {
 
 	}
 
