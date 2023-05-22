@@ -12,7 +12,7 @@ public class CampaignProgramListImpl implements CampaignProgramList {
 
 	}
 
-	public void add(){
+	public void add(CampaignProgram campaignProgram){
 
 	}
 

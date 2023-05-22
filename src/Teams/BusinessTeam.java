@@ -1,5 +1,8 @@
 package Teams;
 import Business.OperationPolicy;
+import util.Constants;
+import util.Constants.Target;
+import util.Constants.Crud;
 
 public class BusinessTeam extends Team {
 
@@ -18,25 +21,25 @@ public class BusinessTeam extends Team {
 	}
 
 	@Override
-	public void establishPolicy(int diff1, int diff2) {
+	public void establishPolicy(Target target, Crud crud) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void manage(int diff1, int diff2) {
+	public void manage(Target target, Crud crud) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void plan(int diff1, int diff2) {
+	public void plan(Target target, Crud crud) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void process(int diff1, int diff2) {
+	public void process(Target target, Crud crud) {
 		// TODO Auto-generated method stub
 		
 	}

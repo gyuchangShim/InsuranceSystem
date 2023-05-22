@@ -1,23 +1,23 @@
 package Undewriting;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AssumePolicyListImpl implements AssumePolicyList {
 
-	public AssumePolicy m_AssumePolicy;
+	public static ArrayList<AssumePolicy> assumePolicyList;
 	public AssumePolicyListImpl(){
-
+		this.assumePolicyList = new ArrayList<>();
 	}
 
 	public void finalize() throws Throwable {
 
 	}
 
-	public void add(){
-
+	public void add(AssumePolicy assumePolicy){
+		assumePolicyList.add(assumePolicy);
 	}
-
-	public void delete(){
-
-	}
+	public void delete(AssumePolicy assumePolicy){assumePolicyList.remove(assumePolicy);}
 
 	public void retrieve(){
 
@@ -27,4 +27,5 @@ public class AssumePolicyListImpl implements AssumePolicyList {
 
 	}
 
+	public List<AssumePolicy> getAllPolicy() {return assumePolicyList;}
 }

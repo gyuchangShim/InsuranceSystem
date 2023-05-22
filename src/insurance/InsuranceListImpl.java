@@ -5,7 +5,7 @@ import java.util.List;
 
 public class InsuranceListImpl implements InsuranceList {
 
-	private ArrayList<Insurance> insuranceList;
+	private static ArrayList<Insurance> insuranceList;
 
 	public InsuranceListImpl(){
 		insuranceList = new ArrayList<>();
@@ -23,6 +23,7 @@ public class InsuranceListImpl implements InsuranceList {
 
 	}
 
+	@Override
 	public List<Insurance> getAllInsurance() {
 		return insuranceList;
 	}

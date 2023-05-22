@@ -31,4 +31,5 @@ public class Constants {
 		Result( String result ){ this.result = result; }
 		public String getString() { return this.result; }
 	}
+
 }
