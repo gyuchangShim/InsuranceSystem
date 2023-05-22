@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class Main {
         contractList = new ContractListImpl();
 
         // 날짜 불러오기
-        // LocalDate today = LocalDate.now(ZoneId.of("Asia/Korea"));
+        LocalDate today = LocalDate.now();
     }
 
 
@@ -168,8 +169,9 @@ public class Main {
             registChoice = util.TuiReader.choice();
         }
         contract.setInsuranceID(registList.get(registChoice).getInsuranceID());
-        contract.setContractDate(now);
-        contract.setContractFile(registList.get(registChoice));
+        contract.setContractDate(LocalDateTime.now());
+        // TODO: 바꿔줘야함
+        contract.setContractFile("최혁");
         // 보험 가입 유스케이스 6번 시나리오 - 사용자의 동의 부분 X
         System.out.println(contract);
         System.out.println("1. 신청");
@@ -294,9 +296,9 @@ public class Main {
         System.out.println("********************* 캠페인 프로그램 열람 *********************");
         // 캠페인 프로그램 attribute가 진행 전/중/후 구분 + 중, 후 캠페인 리스트 출력
         System.out.println("◈ 현재 진행중인 캠페인");
-        ArrayList<CampaignProgram> runcampaignPrograms = campaignProgramDao.retrieveRun();
-        for(campaignProgram : runcampaignPrograms) {
-            System.out.println(runcampaignProgram.getCampaignID() + runcampaignProgram.getCampaignName());
+        List<CampaignProgram> runcampaignPrograms = campaignProgramList.retrieveRun();
+        for(CampaignProgram campaignProgram : runcampaignPrograms) {
+            System.out.println(campaignProgram.getCampaignID() + campaignProgram.getCampaignName());
         }
         System.out.println(" 1. 새로운 캠페인 프로그램 실행");
         System.out.println(" 2. 캠페인 기획안 수정");
@@ -321,14 +323,14 @@ public class Main {
         // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제
         System.out.println("********************* 캠페인 프로그램 실행 *********************");
         // 통과된 기획 리스트 보여주기 - DB
-        ArrayList<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll();
-        for(campaignProgram : campaignPrograms) {
+        List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll();
+        for(CampaignProgram campaignProgram : campaignPrograms) {
             System.out.println(campaignProgram.getCampaignID() + campaignProgram.getCampaignName());
         }
         // 실행할 campaignProgram 선택
         int campaignChoice = TuiReader.choice();
         System.out.println("실행할 캠페인 프로그램을 선택하세요.");
-        CampaignProgram runcampaignProgram = campaignProgramList;
+
         // 선택된 campaign 실행 or 취소
         System.out.println("선택한 기획안 출력");
         System.out.println(" 1. 프로그램 실행");
@@ -354,7 +356,7 @@ public class Main {
         // 지난 캠페인
         System.out.println("********************* 지난 캠페인 페이지 *********************");
         ArrayList<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAllEnd();
-        for(campaignProgram : campaignPrograms) {
+        for(CampaignProgram campaignProgram : campaignPrograms) {
             System.out.println(campaignProgram.getCampaignID() + campaignProgram.getCampaignName());
         }
         int endCampaignChoice = TuiReader.choice();

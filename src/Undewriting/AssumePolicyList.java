@@ -7,4 +7,6 @@ public interface AssumePolicyList {
     void add(AssumePolicy assumePolicy);
 
     void delete(AssumePolicy assumePolicy);
+
+    List<AssumePolicy> getAllPolicy();
 }
