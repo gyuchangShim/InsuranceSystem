@@ -8,6 +8,7 @@ public class SellGroup {
 	private String representative;
 	private String representativePhoneNumber;
 
+
 	public SellGroup(){
 
 	}

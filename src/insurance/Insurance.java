@@ -1,5 +1,8 @@
 package insurance;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class Insurance {
 
 	private int insuranceID;
@@ -14,6 +17,10 @@ public class Insurance {
 	private int estimatedDevelopment; // 개발 예상 비용
 	private float estimatedProfitRate; // 예상 손익률
 	private int riskDegree; // 위험도
+	private LocalDate SalesStartDate; // 판매 시작일
+	private LocalDate SalesEndDate; // 판매 종료일
+	private int goalPeopleNumber; // 예상 목표 인원
+	private String salesMethod; // 판매 방식
 
 	private float rate; // 보험요율
 	private int duration;
@@ -127,5 +134,29 @@ public class Insurance {
 	}
 	public void setRiskDegree(int riskDegree) {
 		this.riskDegree = riskDegree;
+	}
+	public LocalDate getSalesStartDate() {
+		return SalesStartDate;
+	}
+	public void setSalesStartDate(LocalDate salesStartDate) {
+		SalesStartDate = salesStartDate;
+	}
+	public LocalDate getSalesEndDate() {
+		return SalesEndDate;
+	}
+	public void setSalesEndDate(LocalDate salesEndDate) {
+		SalesEndDate = salesEndDate;
+	}
+	public int getGoalPeopleNumber() {
+		return goalPeopleNumber;
+	}
+	public void setGoalPeopleNumber(int goalPeopleNumber) {
+		this.goalPeopleNumber = goalPeopleNumber;
+	}
+	public String getSalesMethod() {
+		return salesMethod;
+	}
+	public void setSalesMethod(String salesMethod) {
+		this.salesMethod = salesMethod;
 	}
 }

@@ -1,3 +1,6 @@
+import MarketingPlanning.CampaignProgram;
+import MarketingPlanning.CampaignProgramList;
+import MarketingPlanning.CampaignProgramListImpl;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
 import insurance.Insurance;
@@ -5,6 +8,7 @@ import insurance.InsuranceList;
 import insurance.InsuranceListImpl;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Vector;
@@ -15,8 +19,12 @@ import Teams.RewardTeam;
 import exception.CustomException;
 import java.util.stream.Collectors;
 import outerActor.OuterActor;
+import userPersona.UserPersona;
+import userPersona.UserPersonaList;
+import userPersona.UserPersonaListImpl;
 import util.Constants;
 import util.Constants.Crud;
+import util.Constants.Gender;
 import util.Constants.Target;
 import util.TuiReader;
 
@@ -24,21 +32,27 @@ public class Main {
 
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
     private static InsuranceList insuranceList;
+    private static CampaignProgramList campaignProgramList;
+    private static UserPersonaList userPersonaList;
 
     public static void initialize() {
         insuranceList = new InsuranceListImpl();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
-
+        campaignProgramList = new CampaignProgramListImpl();
+        userPersonaList = new UserPersonaListImpl();
     }
     public static void main(String[] args) {
         initialize();
         while (true) {
             try {
                 printMenu();
-                int choice = TuiReader.choice();
+                int choice = TuiReader.choice(0, 8);
                 switch (choice) {
                     case 1:
                         createInsurance();
+                        break;
+                    case 7:
+                        processSales();
                         break;
                     case 8:
                         processReward();
@@ -58,6 +72,7 @@ public class Main {
     private static void printMenu() {
         System.out.println("********************* MENU *********************");
         System.out.println(" 1. 상품개발");
+        System.out.println(" 7. 영업 활동");
         System.out.println(" 8. 보상 처리");
         System.out.println(" 0. 종료 ");
     }
@@ -66,7 +81,7 @@ public class Main {
         System.out.println(" 1. 상품 기획 버튼");
         System.out.println(" 2. 상품 개발 버튼");
         System.out.println(" 3. 상품 인가 버튼");
-        int choice = TuiReader.choice();
+        int choice = TuiReader.choice(1, 3);
         switch (choice) {
             case 1:
                 createInsurancePlan();
@@ -90,11 +105,32 @@ public class Main {
         }
     }
 
+    private static void processSales() {
+        System.out.println("********************* 영업 활동 *********************");
+        System.out.println(" 1. 영업 활동 계획");
+        System.out.println(" 2. 상담 일정 수립");
+        System.out.println(" 3. 대면 상담");
+        int choice = TuiReader.choice(1, 3);
+        switch (choice) {
+            case 1:
+                salesPlan();
+                break;
+            case 2:
+                setConsultationSchedule();
+                break;
+            case 3:
+                faceToFaceConsultation();
+                break;
+            default:
+                System.out.println("잘못된 입력입니다.");
+                break;
+        }
+    }
     private static void createInsurancePlan() {
         System.out.println("********************* 상품 기획 *********************");
         System.out.println(" 1. 새상품 기획");
         System.out.println(" 2. 기존 상품 관리");
-        int choice = TuiReader.choice();
+        int choice = TuiReader.choice(1, 2);
         switch (choice) {
             case 1:
                 System.out.println("고객니즈 및 경쟁사의 동향 분석 보고서를 작성하세요: ");
@@ -103,7 +139,7 @@ public class Main {
                 break;
             case 2:
                 System.out.println("********************* 보험 기획안 *********************");
-                List<Insurance> insurances = insuranceList.getAllInsurance()
+                List<Insurance> insurances = insuranceList.retrieveAll()
                     .stream()
                     .filter(insurance -> insurance.getInsuranceState() == InsuranceState.PLANED)
                     .collect(Collectors.toList());
@@ -114,17 +150,9 @@ public class Main {
                 for (int i = 0; i < insurances.size(); i++) {
                     System.out.println(i + ". " + insurances.get(i).getPlanReport());
                 }
-                int choice2 = TuiReader.choice();
-                while (choice2 < 0 || choice2 >= insurances.size()) {
-                    System.out.println("정확히 선택해주세요.");
-                    choice2 = TuiReader.choice();
-                }
+                int choice2 = TuiReader.choice(0, insurances.size()-1);
                 System.out.println("수정: 1, 삭제: 2");
-                int choice3 = TuiReader.choice();
-                while (choice3 != 1 && choice3 != 2) {
-                    System.out.println("정확히 선택해주세요.");
-                    choice3 = TuiReader.choice();
-                }
+                int choice3 = TuiReader.choice(1, 2);
                 Insurance findInsurance = insurances.get(choice2);
                 if (choice3 == 1) {
                     System.out.println("기존 기획안: " + insurances.get(choice2).getPlanReport());
@@ -144,7 +172,7 @@ public class Main {
         }
     }
     private static Insurance designInsurance() {
-        List<Insurance> insurances = insuranceList.getAllInsurance()
+        List<Insurance> insurances = insuranceList.retrieveAll()
             .stream()
             .filter(insurance -> insurance.getInsuranceState() == InsuranceState.PLANED)
             .collect(Collectors.toList());
@@ -156,11 +184,7 @@ public class Main {
         for (int i = 0; i < insurances.size(); i++) {
             System.out.println(i + ". " + insurances.get(i).getPlanReport());
         }
-        int choiceId = TuiReader.choice();
-        while (choiceId < 0 || choiceId >= insurances.size()) {
-            System.out.println("정확히 선택해주세요.");
-            choiceId = TuiReader.choice();
-        }
+        int choiceId = TuiReader.choice(0, insurances.size()-1);
         System.out.println("설계할 보험 기획안: " + insurances.get(choiceId).getPlanReport());
         System.out.println(
             "설계할 보험의 이름, 상품 종류, 판매 대상, 가입 조건, 보험료, 보장 내용, 개발 예상 비용을 / 로 구분하여 입력해주세요.");
@@ -190,11 +214,7 @@ public class Main {
     private static void estimateProfit(Insurance insurance) {
         System.out.println("********************* 예상 손익 분석 *********************");
         System.out.println(" 예상 손익 분석을 원하시면 1, 아니면 2를 입력하세요.");
-        int choice = TuiReader.choice();
-        while (choice != 1 && choice != 2) {
-            System.out.println("정확히 선택해주세요.");
-            choice = TuiReader.choice();
-        }
+        int choice = TuiReader.choice(1, 2);
         if (choice == 1) {
             System.out.println("예상 손익률 분석값을 입력해주세요.");
             boolean isSuccessInput = false;
@@ -231,7 +251,7 @@ public class Main {
     private static void authorizeInsurance() {
         System.out.println("********************* 상품 인가 *********************");
         System.out.println("인가할 보험의 번호를 입력해주세요.");
-        List<Insurance> insurances = insuranceList.getAllInsurance()
+        List<Insurance> insurances = insuranceList.retrieveAll()
             .stream().filter(insurance -> insurance.getInsuranceState() == InsuranceState.DESIGNED)
             .collect(Collectors.toList());
         if (insurances.size() == 0) {
@@ -240,11 +260,7 @@ public class Main {
         for (int i = 0; i < insurances.size(); i++) {
             System.out.println(i + ". " + insurances.get(i).getInsuranceName());
         }
-        int choice = TuiReader.choice();
-        while (choice < 0 || choice >= insurances.size()) {
-            System.out.println("정확히 선택해주세요.");
-            choice = TuiReader.choice();
-        }
+        int choice = TuiReader.choice(0, insurances.size()-1);
         Insurance insurance = insurances.get(choice);
         LocalDateTime authorizedDate = OuterActor.authorizedInsurance(insurance);
         if (insurance.getInsuranceState() == InsuranceState.AUTHORIZED) {
@@ -270,13 +286,13 @@ public class Main {
                     Integer.toString(rewardList.get(i).getAppliDate().getDay()) + "일 ");
             }
             System.out.println("------------------------------");
-            int select = TuiReader.choice();
+            int select = TuiReader.choice(0, rewardList.size()-1);
             Reward selectedReward = rewardList.get(select);
             System.out.println(
                 selectedReward.getCustomerName() + " - " + selectedReward.getContent());
             System.out.println("해당 보험에 대해 승인하시겠습니까?");
             System.out.println("1. 보상 지급   2. 요청 거절");
-            int resultSelect = TuiReader.choice();
+            int resultSelect = TuiReader.choice(1, 2);
             if (resultSelect == 1) {
                 // 승인
                 System.out.println(selectedReward.getCustomerName());
@@ -296,5 +312,92 @@ public class Main {
                 //
             }
         }
+    }
+    private static void salesPlan() {
+        System.out.println("인가 합격된 보험 상품 리스트");
+        List<Insurance> insurances = insuranceList.retrieveAll()
+            .stream().filter(insurance -> insurance.getInsuranceState() == InsuranceState.AUTHORIZED)
+            .collect(Collectors.toList());
+        if (insurances.size() == 0) {
+            throw new CInsuranceNotFoundException("인가된 보험이 없습니다.");
+        }
+        for (int i = 0; i < insurances.size(); i++) {
+            System.out.println(i + ". " + insurances.get(i).getInsuranceName());
+        }
+        int choice1 = TuiReader.choice(0, insurances.size()-1);
+        Insurance insurance = insurances.get(choice1);
+        CampaignProgram campaignProgram = campaignProgramList.retrieve(insurance.getInsuranceID());
+        // TODO: db 추가되면 null 말고 다른 값으로 넘어오는지 확인해야 함
+        if (campaignProgram == null) {
+            throw new CInsuranceNotFoundException("해당 보험 상품이 진행한 캠페인이 없습니다.");
+        }
+        System.out.println("캠페인 이름: " + campaignProgram.getCampaignName());
+        int choice2;
+        boolean isSuccessInput = false;
+        do {
+            List<UserPersona> userPersonas = userPersonaList.retrieveAll()
+                .stream()
+                .filter(userPersona -> userPersona.getInsuranceId() == insurance.getInsuranceID())
+                .collect(Collectors.toList());
+            System.out.println("-----유저 퍼소나 리스트-----");
+            for (UserPersona userPersona : userPersonas) {
+                System.out.print("성별: " + userPersona.getSex() + " / ");
+                System.out.print("나이: " + userPersona.getAge() + " / ");
+                System.out.print("직업: " + userPersona.getJob() + " / ");
+                System.out.println("소득수준: " + userPersona.getIncomeLevel());
+            }
+            System.out.println("--------------------------");
+            System.out.println("1. 유저 퍼소나 추가");
+            System.out.println("2. 영업 인력 계획 수립");
+            choice2 = TuiReader.choice(1, 2);
+            while (choice2 == 1 && !isSuccessInput) {
+                try {
+                    System.out.println("유저 퍼소나 성별, 나이, 직업, 소득수준을 /로 구분하여 입력하세요.");
+                    String[] userPersonaInfo = TuiReader.readInput("유저 퍼소나 입력란에 정확히 입력하세요.")
+                        .split("/");
+                    if (userPersonaInfo.length != 4) {
+                        throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                    }
+                    UserPersona userPersona = new UserPersona();
+                    userPersona.setInsuranceId(insurance.getInsuranceID());
+                    userPersona.setSex(Gender.valueOf(userPersonaInfo[0]));
+                    userPersona.setAge(Integer.parseInt(userPersonaInfo[1]));
+                    userPersona.setJob(userPersonaInfo[2]);
+                    userPersona.setIncomeLevel(Integer.parseInt(userPersonaInfo[3]));
+                    userPersonaList.add(userPersona);
+                    System.out.println("유저 퍼소나가 저장되었습니다.");
+                    isSuccessInput = true;
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
+            }
+            isSuccessInput = false;
+        } while (choice2 == 1);
+        isSuccessInput = false;
+        while (!isSuccessInput) {
+            try {
+                // TODO: 영업 활동 시작일이 종료일보다 빨라야 한다.
+                System.out.println("영업 활동 시작일, 종료일, 예상 목표 인원, 판매 방식을 /로 구분하여 입력하세요.");
+                String[] salesPlanInfo = TuiReader.readInput("영업 활동 계획란에 정확히 입력하세요.")
+                    .split("/");
+                if (salesPlanInfo.length != 4) {
+                    throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                }
+                insurance.setSalesStartDate(LocalDate.parse(salesPlanInfo[0]));
+                insurance.setSalesEndDate(LocalDate.parse(salesPlanInfo[1]));
+                insurance.setGoalPeopleNumber(Integer.parseInt(salesPlanInfo[2]));
+                insurance.setSalesMethod(salesPlanInfo[3]);
+                insuranceList.update(insurance);
+                System.out.println("영업 활동 계획을 수립하였습니다.");
+                isSuccessInput = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+    private static void setConsultationSchedule() {
+
+    }
+    private static void faceToFaceConsultation() {
     }
 }

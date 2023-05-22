@@ -5,7 +5,7 @@ import java.util.List;
 public interface InsuranceList {
     void add(Insurance insurance);
     void delete(int insuranceId);
-    void retrieve();
-    List<Insurance> getAllInsurance();
+    Insurance retrieve(int insuranceId);
+    List<Insurance> retrieveAll();
     void update(Insurance insurance);
 }

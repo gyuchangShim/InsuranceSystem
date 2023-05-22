@@ -13,9 +13,6 @@ public class Customer {
 	private int salaryPercentage;
 	private String accountNumber;
 	
-	public CustomerListImpl m_customerListImple;
-	public Contract m_Contract;
-	
 	public Customer(){
 
 	}

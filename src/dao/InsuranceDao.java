@@ -2,7 +2,6 @@ package dao;
 
 import insurance.Insurance;
 import insurance.InsuranceList;
-import insurance.InsuranceState;
 import java.util.List;
 
 public class InsuranceDao implements InsuranceList {
@@ -32,12 +31,12 @@ public class InsuranceDao implements InsuranceList {
     }
 
     @Override
-    public void retrieve() {
+    public Insurance retrieve(int insuranceId) {
 
     }
 
     @Override
-    public List<Insurance> getAllInsurance() {
+    public List<Insurance> retrieveAll() {
         return null;
     }
 

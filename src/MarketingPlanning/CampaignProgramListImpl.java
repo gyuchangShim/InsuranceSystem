@@ -1,31 +1,40 @@
 package MarketingPlanning;
 
+import insurance.Insurance;
+import java.util.ArrayList;
+import java.util.List;
+
 public class CampaignProgramListImpl implements CampaignProgramList {
 
-	public CampaignProgram m_CampaignProgram;
+	private List<CampaignProgram> campaignProgramList;
 
 	public CampaignProgramListImpl(){
+		campaignProgramList = new ArrayList<>();
+	}
+
+	@Override
+	public void add(CampaignProgram campaignProgram) {
 
 	}
 
-	public void finalize() throws Throwable {
+	@Override
+	public void delete(int campaignProgramId) {
 
 	}
 
-	public void add(){
-
+	@Override
+	public CampaignProgram retrieve(int campaignProgramId) {
+		// 임시로 만듦
+		return new CampaignProgram();
 	}
 
-	public void delete(){
-
+	@Override
+	public List<Insurance> retrieveAll() {
+		return null;
 	}
 
-	public void retrieve(){
+	@Override
+	public void update(CampaignProgram campaignProgram) {
 
 	}
-
-	public void update(){
-
-	}
-
 }

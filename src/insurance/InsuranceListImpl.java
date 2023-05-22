@@ -22,12 +22,12 @@ public class InsuranceListImpl implements InsuranceList {
 	}
 
 	@Override
-	public void retrieve(){
+	public Insurance retrieve(int insuranceId){
 
 	}
 
 	@Override
-	public List<Insurance> getAllInsurance() {
+	public List<Insurance> retrieveAll() {
 		return insuranceList;
 	}
 
