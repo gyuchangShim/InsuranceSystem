@@ -51,8 +51,6 @@ public class Main {
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
-    private static CampaignProgram campaignProgram;
-    private static Contract contract;
     private static int customerID;
 
     public static void initialize() {
@@ -65,8 +63,6 @@ public class Main {
         marketingPlanningTeam = new teams.MarketingPlanningTeam();
         underwritingTeam = new teams.UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new teams.CustomerManagementTeam();
-        campaignProgram = new CampaignProgram(); // 이거 만든 이유가..?
-        contract = new Contract(); // 이거 만든 이유가..?
     }
     public static void main(String[] args) {
         initialize();
@@ -367,6 +363,7 @@ public class Main {
         }
         // 고객이 가입할 보험 클릭
         int registChoice = TuiReader.choice(0, registList.size() - 1);
+        Contract contract = new Contract();
         contract.setInsuranceID(registList.get(registChoice).getInsuranceID());
         contract.setContractDate(LocalDateTime.now());
         // TODO: 바꿔줘야함
@@ -558,6 +555,7 @@ public class Main {
             case 1:
                 System.out.println("해당 프로그램이 실행됩니다.");
                 // 선택된 프로그램 상태를 진행 중으로 변환
+                CampaignProgram campaignProgram = campaignPrograms.get(campaignChoice);
                 campaignProgram.setProgramState(CampaignProgram.campaignState.Run);
                 break;
             case 2:
