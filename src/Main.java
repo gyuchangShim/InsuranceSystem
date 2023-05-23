@@ -6,6 +6,9 @@ import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
 import marketingPlanning.CampaignProgramListImpl;
 import reward.Reward;
+import teams.CustomerManagementTeam;
+import teams.MarketingPlanningTeam;
+import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
@@ -20,7 +23,6 @@ import teams.InsuranceDevelopmentTeam;
 import contract.Contract;
 import contract.ContractList;
 import contract.ContractListImpl;
-import teams.*;
 import undewriting.AssumePolicyList;
 import undewriting.AssumePolicyListImpl;
 import exception.CustomException;
@@ -60,9 +62,9 @@ public class Main {
         contractList = new ContractListImpl();
         userPersonaList = new UserPersonaListImpl();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
-        marketingPlanningTeam = new MarketingPlanningTeam();
-        underwritingTeam = new UnderwritingTeam(assumePolicyList);
-        customerManagementTeam = new CustomerManagementTeam();
+        marketingPlanningTeam = new teams.MarketingPlanningTeam();
+        underwritingTeam = new teams.UnderwritingTeam(assumePolicyList);
+        customerManagementTeam = new teams.CustomerManagementTeam();
         campaignProgram = new CampaignProgram(); // 이거 만든 이유가..?
         contract = new Contract(); // 이거 만든 이유가..?
     }
@@ -487,7 +489,7 @@ public class Main {
     private static void applyReward() {
     	// 고객 ID를 어떻게 가져오는가...
     	int customerID = 0;
-    	RewardTeam rewardTeam = new RewardTeam();
+    	teams.RewardTeam rewardTeam = new teams.RewardTeam();
     	// 이 고객 ID로 가입된 계약 목록
     	Vector<Contract> assignedContract = rewardTeam.getCustomerContract( customerID );
     	Vector<Insurance> assignedInsurances = rewardTeam.getCustomerInsurance( customerID );
@@ -582,7 +584,7 @@ public class Main {
     }
 
     private static void processReward() {
-        RewardTeam rewardTeam = new RewardTeam();
+        teams.RewardTeam rewardTeam = new teams.RewardTeam();
         Vector<Reward> rewardList = rewardTeam.getAllReward();
         // Alternate 1
         if( rewardList.size() == 0 ) { System.out.println( "접수된 보상 요청이 없습니다" );}
