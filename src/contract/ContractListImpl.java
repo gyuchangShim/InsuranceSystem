@@ -5,7 +5,7 @@ import java.util.List;
 
 public class ContractListImpl implements ContractList {
 
-	public static ArrayList<Contract> contractList;
+	public static List<Contract> contractList;
 
 	public ContractListImpl(){
 		this.contractList = new ArrayList<>();

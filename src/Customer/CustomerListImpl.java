@@ -1,4 +1,4 @@
-package customer;
+package Customer;
 
 import dao.Dao;
 
@@ -14,8 +14,8 @@ public class CustomerListImpl implements CustomerList {
 	public CustomerListImpl(Customer customer) {
 		this.customer = customer;
 		try {
-//			dao = new Dao();
-//			dao.connect();
+			dao = new Dao();
+			dao.connect();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

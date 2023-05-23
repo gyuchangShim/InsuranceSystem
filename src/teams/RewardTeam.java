@@ -9,7 +9,6 @@ import java.util.Vector;
 import insurance.Insurance;
 import reward.Reward;
 import reward.RewardListImpl;
-import teams.Team;
 import util.Constants.Crud;
 import util.Constants.Result;
 import util.Constants.Target;
@@ -25,7 +24,6 @@ public class RewardTeam extends Team {
 		this.rewardList = new Vector<Reward>();
 		this.rewardListImpl = new RewardListImpl();
 		this.contractListImpl = new ContractListImpl();
-		this.customerListImpl = new CustomerListImpl();
 	}
 	public void finalize() throws Throwable {}
 	public Vector<Reward> getAllReward(){

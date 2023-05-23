@@ -1,6 +1,5 @@
-package customer;
+package Customer;
 
-import customer.Customer;
 import java.sql.ResultSet;
 
 public interface CustomerList {

@@ -1,4 +1,4 @@
-package business;
+package Business;
 
 public class OperationPolicy {
 	private String content;

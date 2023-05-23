@@ -1,4 +1,4 @@
-package contractManagement;
+package ContractManagement;
 
 public class ContractManagementPolicy {
 	private String content;

@@ -1,4 +1,6 @@
 import customer.Customer;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
@@ -46,8 +48,10 @@ public class Main {
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
+    private static CustomerManagementTeam customerManagementTeam;
     private static CampaignProgram campaignProgram;
     private static Contract contract;
+    private static int customerID;
 
     public static void initialize() {
         insuranceList = new InsuranceListImpl();
@@ -58,11 +62,48 @@ public class Main {
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
         marketingPlanningTeam = new MarketingPlanningTeam();
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
+        customerManagementTeam = new CustomerManagementTeam();
         campaignProgram = new CampaignProgram(); // 이거 만든 이유가..?
         contract = new Contract(); // 이거 만든 이유가..?
     }
     public static void main(String[] args) {
         initialize();
+        loginPage();
+        mainPage();
+    }
+
+    private static void loginPage(){
+        System.out.println("*********************  로그인  *********************");
+        System.out.println(" 1. 고객 로그인");
+        System.out.println(" 3. 회원가입");
+
+        int choice = TuiReader.choice(1, 3);
+        switch (choice) {
+            case 1 :
+                System.out.println("ID:");
+                String userId = TuiReader.readInput("정확히 입력해주세요.");
+                System.out.println("PassWord:");
+                String password = TuiReader.readInput("정확히 입력해주세요.");
+                ResultSet resultSet = customerManagementTeam.login(userId,password);
+                try { while (resultSet.next()){customerID = resultSet.getInt("customerID");}
+                } catch (SQLException e) {throw new RuntimeException(e);}
+                break;
+            case 3 :
+                System.out.println("ID:");
+                userId = TuiReader.readInput("정확히 입력해주세요.");
+                System.out.println("PassWord:");
+                password = TuiReader.readInput("정확히 입력해주세요.");
+                System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
+                    "address/age/job/name/phoneNumber/registrationNumber/salaryPercentage");
+                String customerInf = TuiReader.readInput("정확히 입력해주세요.");
+                customerManagementTeam.join(userId,password,customerInf);
+            default :
+                customerID=0;
+
+        }
+    }
+
+    private static void mainPage() {
         while (true) {
             try {
                 printMenu();
@@ -92,8 +133,8 @@ public class Main {
                         processReward();
                         break;
                     case 9:
-                    	applyReward();
-                    	break;
+                        applyReward();
+                        break;
                     case 0:
                         System.out.close();
                         break;
