@@ -1,14 +1,15 @@
-package Teams;
+package teams;
 
+import contract.Contract;
+import contract.ContractListImpl;
+import customer.Customer;
+import customer.CustomerListImpl;
 import java.util.Vector;
 
-import Contract.Contract;
-import Contract.ContractListImpl;
-import Customer.Customer;
-import Customer.CustomerListImpl;
-import Reward.Reward;
-import Reward.RewardListImpl;
 import insurance.Insurance;
+import reward.Reward;
+import reward.RewardListImpl;
+import teams.Team;
 import util.Constants.Crud;
 import util.Constants.Result;
 import util.Constants.Target;
