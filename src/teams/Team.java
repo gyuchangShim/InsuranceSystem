@@ -19,5 +19,4 @@ public abstract class Team {
 	public void setTeamID(int teamID) {this.teamID = teamID;}
 	public String getTeamName() {return teamName;}
 	public void setTeamName(String teamName) {this.teamName = teamName;}
-	public void finalize() throws Throwable {}
 }
