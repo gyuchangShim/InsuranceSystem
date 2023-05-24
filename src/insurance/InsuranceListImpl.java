@@ -11,24 +11,30 @@ public class InsuranceListImpl implements InsuranceList {
 		insuranceList = new ArrayList<>();
 	}
 
+	@Override
 	public void add(Insurance insurance){
 		insuranceList.add(insurance);
 	}
 
-	public void delete(Insurance insurance){
-		insuranceList.remove(insurance);
+	@Override
+	public void delete(int insuranceId){
+		insuranceList.remove(insuranceId);
 	}
 
-	public void retrieve(){
-
+	@Override
+	public Insurance retrieve(int insuranceId){
+		return null;
 	}
 
-	public List<Insurance> getAllInsurance() {
+	@Override
+	public List<Insurance> retrieveAll() {
 		return insuranceList;
 	}
 
-	public void update(){
+	@Override
+	public void update(Insurance insurance) {
 
 	}
+
 
 }
