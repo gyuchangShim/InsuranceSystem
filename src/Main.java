@@ -1,36 +1,39 @@
-import customer.Customer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
-import marketingPlanning.CampaignProgram;
-import marketingPlanning.CampaignProgramList;
-import marketingPlanning.CampaignProgramListImpl;
-import reward.Reward;
-import teams.CustomerManagementTeam;
-import teams.MarketingPlanningTeam;
-import teams.UnderwritingTeam;
-import undewriting.AssumePolicy;
+import java.util.List;
+import java.util.Vector;
+import java.util.stream.Collectors;
+
+import businessEducation.Education;
+import businessEducation.EducationStudent;
+import contract.Contract;
+import contract.ContractList;
+import contract.ContractListImpl;
+import customer.Customer;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
+import exception.CustomException;
 import insurance.Insurance;
 import insurance.InsuranceList;
 import insurance.InsuranceListImpl;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
-import java.time.LocalDate;
+import marketingPlanning.CampaignProgram;
+import marketingPlanning.CampaignProgramList;
+import marketingPlanning.CampaignProgramListImpl;
+import outerActor.OuterActor;
+import reward.Reward;
+import teams.BusinessEducationTeam;
+import teams.CustomerManagementTeam;
 import teams.InsuranceDevelopmentTeam;
-
-import contract.Contract;
-import contract.ContractList;
-import contract.ContractListImpl;
+import teams.MarketingPlanningTeam;
+import teams.UnderwritingTeam;
+import undewriting.AssumePolicy;
 import undewriting.AssumePolicyList;
 import undewriting.AssumePolicyListImpl;
-import exception.CustomException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Vector;
-import java.util.stream.Collectors;
-import outerActor.OuterActor;
 import userPersona.UserPersona;
 import userPersona.UserPersonaList;
 import userPersona.UserPersonaListImpl;
@@ -51,6 +54,7 @@ public class Main {
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
+    private static BusinessEducationTeam businessEducationTeam;
     private static int customerID;
 
     public static void initialize() {
@@ -63,6 +67,7 @@ public class Main {
         marketingPlanningTeam = new teams.MarketingPlanningTeam();
         underwritingTeam = new teams.UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new teams.CustomerManagementTeam();
+        businessEducationTeam = new teams.BusinessEducationTeam();
     }
     public static void main(String[] args) {
         initialize();
@@ -134,6 +139,12 @@ public class Main {
                     case 13:
                     	manageStudent();
                     	break;
+                    case 14:
+                    	manageEducation();
+                    	break;
+                    case 15:
+                    	manageEducationExamination();
+                    	break;
                     case 0:
                         System.out.close();
                         break;
@@ -157,6 +168,8 @@ public class Main {
         System.out.println(" 8. 보상 처리");
         System.out.println(" 9. 보험금 신청");
         System.out.println(" 13. 교육 수료자 관리");
+        System.out.println(" 14. 교육 추가");
+        System.out.println(" 15. 교육 평가 관리");
         System.out.println(" 0. 종료 ");
     }
     private static void createInsurance() {
@@ -700,6 +713,119 @@ public class Main {
     private static void faceToFaceConsultation() {
     }
     private static void manageStudent() {
-    	
+    	Vector<Education> educationList = businessEducationTeam.getAllEducation();
+    	if( educationList.size()==0 )System.out.println("아직 수행된 교육이 없습니다.");
+    	else {
+	    	System.out.println("--------------------교육 수료자를 관리할 교육을 선택하세요 -----------------------");
+	    	for( int i=0; i < educationList.size(); i++ ) {
+	    		System.out.println( i + ": " + educationList.get(i).getName() + "( " + educationList.get(i).getTeacherName()  + ") " );
+	    	}
+	    	System.out.println("----------------------------------------------------------------------");
+	    	int select = TuiReader.choice(0, educationList.size() - 1);
+	    	int selectedEducationID = educationList.get(select).getEducationID();
+	    	
+	    	System.out.println("수행할 작업을 선택하세요");
+	    	System.out.println("1. 학생 추가 2. 학생 정보 수정 3. 학생 조회");
+	    	select = TuiReader.choice( 1,  3 );
+	    	switch( select ) {
+	    	case 1:
+	    		System.out.println("수료자의 이름, 나이, 전화번호, 평가, 점수를 입력하세요");
+	    		String studentString = TuiReader.readInput("정확한 정보를 입력하세요");
+	    		String[] studentSplit = studentString.split("/");
+	    		EducationStudent student = new EducationStudent();
+	    		student.setName( studentSplit[0] );
+	    		student.setAge( Integer.parseInt( studentSplit[1] ) );
+	    		student.setPhone( studentSplit[2] );
+	    		student.setExamination( studentSplit[3] );
+	    		student.setStudentScore( Integer.parseInt( studentSplit[4] ) );
+	    		student.setEducationID( selectedEducationID );
+	    		Vector<EducationStudent> studentList = businessEducationTeam.getAllStudent();
+	    		student.setStudentID( studentList.get(-1).getStudentID() + 1 );
+	    		businessEducationTeam.setStudent( student );
+	    		businessEducationTeam.manage( Target.EDUCATION_STUDENT, Crud.CREATE );
+	    		System.out.println("저장이 완료되었습니다");
+	    		break;
+	    	}
+    	}
+    	/*
+    	Vector<EducationStudent> studentList = businessEducationTeam.getStduentByEducation( selectedEducationID );
+    	System.out.println( "--------------- 학생 번호를 선택하세요 -------------------");
+    	for( EducationStudent student : studentList ) {
+    		System.out.println( student.getStudentID() + ": " + student.getName() );
+    	}
+    	System.out.println( "----------------------------------------------------");
+    	select = TuiReader.choice( studentList.get(0).getStudentID(), studentList.get(0).getStudentID() + studentList.size() );
+    	*/
+    }
+    private static void manageEducation() {
+    	System.out.println("추가할 교육 이름, 교육 기간, 교육 장소, 강사 이름, 강사 전화번호, 교육 예산, 교육 내용을 입력하세요.");		// 예산, 강사 전화번호 추가 & 교육 날짜, 교육 대상자 삭제
+    	String educationString = TuiReader.readInput("정확한 정보를 입력하세요");
+    	String[] educationSplit = educationString.split("/");
+    	Education education = new Education();
+    	education.setName( educationSplit[0] );
+    	education.setDuration( Integer.parseInt( educationSplit[1] ) );
+    	education.setPlace( educationSplit[2] );
+    	education.setTeacherName( educationSplit[3] );
+    	education.setTeacherPhoneNumber( educationSplit[4] );
+    	education.setBudget( Integer.parseInt( educationSplit[5] ) );
+    	education.setContent( educationSplit[6] );
+    	int newEducationID = businessEducationTeam.getAllEducation().get(-1).getEducationID() + 1;
+    	education.setEducationID( newEducationID );
+    	System.out.println( "입력하신 정보가 올바르게 입력되었다면 확인을 눌러주세요.");
+    	System.out.println( education.getName() + ": " + education.getTeacherName() + " " + education.getContent() );
+    	System.out.println("1. 확인  2. 취소");
+    	int choice = TuiReader.choice( 1,  2 );
+    	if( choice==1 ) {
+    		businessEducationTeam.setEducation( education );
+        	businessEducationTeam.manage( Target.EDUCATION, Crud.CREATE );
+        	System.out.println("새로운 교육이 추가되었습니다.");
+    	}
+    }
+    private static void manageEducationExamination() {
+    	Vector<Education> educationList = businessEducationTeam.getAllEducation();
+    	if( educationList.size()==0 ) {
+    		System.out.println("아직 수행된 교육이 없습니다");
+    		System.out.println("1. 교육 추가  2. 확인");
+    		int select = TuiReader.choice( 1, 2 );
+    		if( select==1 ) manageEducation();
+    		return;
+    	}
+    	System.out.println("확인하고자 하는 교육을 클릭하세요");
+    	System.out.println("---------------------------------------------");
+    	for( int i=0; i<educationList.size(); i++ ) {
+    		Education tmp = educationList.get(i);
+    		System.out.println( i + ": " + tmp.getName() + " " + tmp.getTeacherName() );
+    	}
+    	System.out.println("---------------------------------------------");
+    	int selectedEducationNum = TuiReader.choice(0, educationList.size() - 1 );
+    	System.out.println("해당 교육 정보입니다.");
+    	int studentCount = businessEducationTeam.getStduentByEducation( educationList.get(selectedEducationNum).getEducationID() ).size();
+    	System.out.println(educationList.get(selectedEducationNum).getName() + " " + educationList.get(selectedEducationNum).getTeacherName() + " " + studentCount + "명 " + 
+    			educationList.get(selectedEducationNum).getPlace() );	// 교육 일자 삭제 & 교육 이름 추가
+    	System.out.println("1. 확인  2.설문조사 관리");
+    	int choice = TuiReader.choice( 1, 2 );
+    	if( choice==2 ) {
+    		String resultString = educationList.get(selectedEducationNum).getExResult();
+    		if( resultString.equals("") ) {
+    			System.out.println("설문조사 결과가 아직 입력되지 않았습니다.");
+    			System.out.println("1. 설문조사 입력하기  2. 확인");
+    			int choose = TuiReader.choice( 1, 2 );
+    			if( choose==1 ) {
+    				System.out.println("설문조사 결과를 입력하세요");
+    				String content = TuiReader.readInput("");
+    				Education temp = educationList.get(selectedEducationNum);
+    				temp.setExResult( content );
+    				businessEducationTeam.setEducation( temp );
+    				businessEducationTeam.manage( Target.EDUCATION, Crud.UPDATE );
+    				System.out.println( "저장이 완료되었습니다");
+    			}
+    		} else {
+    			System.out.println("평가 내용");
+        		String[] examineContent = resultString.split("/");
+        		for( String content: examineContent ) {
+        			System.out.println( "-" + content );
+        		}
+    		}
+    	}
     }
 }

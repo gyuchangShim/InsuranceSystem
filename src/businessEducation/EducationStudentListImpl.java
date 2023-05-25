@@ -1,5 +1,7 @@
 package businessEducation;
 
+import java.util.Vector;
+
 public class EducationStudentListImpl implements EducationStudentList {
 
 	public EducationStudent m_EducationStudent;
@@ -7,21 +9,17 @@ public class EducationStudentListImpl implements EducationStudentList {
 	public EducationStudentListImpl(){
 
 	}
-
-	public void finalize() throws Throwable {
-
-	}
-
-	public void add(){
-
+	public void add( EducationStudent student ){
+		//
 	}
 
 	public void delete(){
 
 	}
 
-	public void retrieve(){
-
+	public Vector<EducationStudent> retrieve( String query ){
+		// 
+		return null;
 	}
 
 	public void update(){
