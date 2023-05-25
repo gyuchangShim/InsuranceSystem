@@ -69,7 +69,6 @@ public class Main {
         loginPage();
         mainPage();
     }
-
     private static void loginPage(){
         System.out.println("*********************  로그인  *********************");
         System.out.println(" 1. 고객 로그인");
@@ -100,7 +99,6 @@ public class Main {
 
         }
     }
-
     private static void mainPage() {
         while (true) {
             try {
@@ -133,6 +131,9 @@ public class Main {
                     case 9:
                         applyReward();
                         break;
+                    case 13:
+                    	manageStudent();
+                    	break;
                     case 0:
                         System.out.close();
                         break;
@@ -155,6 +156,7 @@ public class Main {
         System.out.println(" 7. 영업 활동");
         System.out.println(" 8. 보상 처리");
         System.out.println(" 9. 보험금 신청");
+        System.out.println(" 13. 교육 수료자 관리");
         System.out.println(" 0. 종료 ");
     }
     private static void createInsurance() {
@@ -185,7 +187,6 @@ public class Main {
                 break;
         }
     }
-
     private static void processSales() {
         System.out.println("********************* 영업 활동 *********************");
         System.out.println(" 1. 영업 활동 계획");
@@ -383,7 +384,6 @@ public class Main {
                 break;
         }
     }
-
     private static void uwPolicy() {
         System.out.println("********************* 인수 정책 *********************");
         System.out.println(" 1. 인수 정책 열람");
@@ -410,7 +410,6 @@ public class Main {
         underwritingTeam.establishPolicy(Constants.Target.ASSUME_POLICY, Constants.Crud.CREATE);
         System.out.println("인수 정책이 저장되었습니다.");
     }
-
     private static void retrieveUWPolicy() {
         System.out.println("********************* 인수 정책 열람 *********************");
         //underwritingTeam.establishPolicy(0, 2);
@@ -425,14 +424,12 @@ public class Main {
             System.out.println("현재 인수 정책이 존재하지 않습니다.");
         }
     }
-
     private static void deleteUWPolicy() {
         System.out.println("********************* 인수 정책 열람 *********************");
         System.out.println("삭제할 인수 정책의 번호를 입력해주세요.");
         underwritingTeam.establishPolicy(Constants.Target.ASSUME_POLICY, Constants.Crud.DELETE);
         System.out.println("해당 인수 정책을 삭제하였습니다.");
     }
-
     private static void underWriting() {
         // 인수 심사하다 usecase 부분
         System.out.println("********************* 인수 심사 *********************");
@@ -454,11 +451,9 @@ public class Main {
             collaborateUW(registList.get(inChoice).getContractID());
         }
     }
-
     private static void collaborateUW(int colloborateContractId) {
         // 공동 인수 시작
     }
-
     private static void campaignProgramMenu() {
         System.out.println(" 1. 새로운 캠페인 프로그램 기획");
         System.out.println(" 2. 캠페인 프로그램 열람");
@@ -474,7 +469,6 @@ public class Main {
                 break;
         }
     }
-
     private static void campaignPlan() {
         // 기획안이 통과되지 않은 경우 구현 X
         System.out.println("********************* 새로운 캠페인 프로그램 기획 *********************");
@@ -533,7 +527,6 @@ public class Main {
     	rewardTeam.setReward( applyReward );
     	rewardTeam.manage( Target.REWARD, Crud.UPDATE );
     }
-
     private static void runCampaign() {
         // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제
         System.out.println("********************* 캠페인 프로그램 실행 *********************");
@@ -562,12 +555,10 @@ public class Main {
                 printMenu();
         }
     }
-
     private static void modifyCampaignProgramPlan() {
         System.out.println("********************* 캠페인 프로그램 기획안 수정 *********************");
         // 캠페인 프로그램 진행 전, 중 상태의 기획안만 수정 - 시나리오 X
     }
-
     private static void endCampaign() {
         // 지난 캠페인
         System.out.println("********************* 지난 캠페인 페이지 *********************");
@@ -580,7 +571,6 @@ public class Main {
 
 
     }
-
     private static void processReward() {
         teams.RewardTeam rewardTeam = new teams.RewardTeam();
         Vector<Reward> rewardList = rewardTeam.getAllReward();
@@ -708,5 +698,8 @@ public class Main {
 
     }
     private static void faceToFaceConsultation() {
+    }
+    private static void manageStudent() {
+    	
     }
 }
