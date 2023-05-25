@@ -33,10 +33,6 @@ public class BusinessEducationTeam extends Team {
 
 	}
 
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
 	public void calculatingExamination() {
 
 	}
