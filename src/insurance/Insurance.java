@@ -26,7 +26,7 @@ public class Insurance {
 	private int duration;	// 기간
 	private int resultAnalysis;	// 결과 분석
 	private int rewardAmount;	// 보상 금액
-	private int salesPerformance;	//
+	private int salesPerformance;	// 판매 실적
 	
 	public Insurance(){
 		this.insuranceState = InsuranceState.PLANED;

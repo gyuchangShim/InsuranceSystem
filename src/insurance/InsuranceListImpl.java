@@ -9,7 +9,7 @@ public class InsuranceListImpl implements InsuranceList {
 	private ArrayList<Insurance> insuranceList;
 
 	public InsuranceListImpl(){
-		insuranceList = new ArrayList<>();
+		insuranceList = new ArrayList<Insurance>();
 	}
 	
 	public Vector<Insurance> getInsuranceByCustomerID( int customerID ){

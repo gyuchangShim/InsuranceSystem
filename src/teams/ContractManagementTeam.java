@@ -67,6 +67,13 @@ public class ContractManagementTeam extends Team {
 	public Vector<ContractManagementPolicy> getAllPolicy(){
 		return this.policyListImpl.retrieve("");
 	}
+	public Vector<Insurance> getAllInsurance(){
+		return (Vector<Insurance>) this.insuranceListImpl.retrieveAll();
+	}
+	public Vector<Contract> getContractByInsuranceID( int insuranceID ){
+		// 해당 보험에 관련된 모든 계약을 가져온다.
+		return this.contractListImpl.retrieve("");
+	}
 
 	@Override
 	public void establishPolicy(Target target, Crud crud) {}

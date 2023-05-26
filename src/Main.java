@@ -162,6 +162,9 @@ public class Main {
                     case 19:
                     	addContractManagemetPolicy();
                     	break;
+                    case 20:
+                    	manageContractAnalysis();
+                    	break;
                     case 0:
                         System.out.close();
                         break;
@@ -191,6 +194,7 @@ public class Main {
         System.out.println("17. 배서 관리");
         System.out.println("18. 배서 신청");
         System.out.println("19. 계약 관리 지침");
+        System.out.println("20. 계약 통계 관리");
         System.out.println(" 0. 종료 ");
     }
     private static void createInsurance() {
@@ -963,6 +967,45 @@ public class Main {
         			break;
         		}
     		}
+    	}
+    }
+    private static void manageContractAnalysis() {
+    	Vector<Insurance> insuranceList = contractManagementTeam.getAllInsurance();
+    	if( insuranceList.size()==0 ) {
+    		System.out.println("보험 상품 내역을 불러올 수 없습니다");
+    	} else {
+    		System.out.println("------------------ 현재 생성되어있는 보험 목록 -------------------------");
+        	for( int i=0; i<insuranceList.size(); i++ ) {
+        		Insurance tempInsurance = insuranceList.get(i);
+        		Vector<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( tempInsurance.getInsuranceID() );
+        		int signedCustomerCount = contractListAboutInsurance.size();
+        		System.out.println( i + ": " + tempInsurance.getInsuranceName() + " " + tempInsurance.getPayment() + " " + tempInsurance.getGuarantee() + 
+        				" " + tempInsurance.getRewardAmount() + " " + signedCustomerCount + "명의 가입자" );
+        	}
+        	System.out.println("----------------------------------------------------------------");
+        	System.out.println("자세히 보고 싶은 보험을 선택하세요");
+        	int choice = TuiReader.choice( 0, insuranceList.size() - 1 );
+        	Insurance selectedInsurance = insuranceList.get( choice );
+        	int signedCustomerCount=0;
+        	int amountResult=0;
+        	if( selectedInsurance.getSalesPerformance() == 0 ) {
+        		System.out.println("아직 해당 상품에 대한 실적을 계산할 수 없습니다.");
+        		return;
+        	} else {
+        		Vector<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( selectedInsurance.getInsuranceID() );
+        		signedCustomerCount = contractListAboutInsurance.size();
+        		amountResult = signedCustomerCount * selectedInsurance.getPayment();
+        	}
+        	if( selectedInsurance.getResultAnalysis()==0 ) {
+        		System.out.println("아직 효율 데이터를 계산할 수 없습니다.");
+        		return;
+        	}
+        	System.out.println( "--------------" + selectedInsurance.getInsuranceName() + "에 대한 통계입니다. ---------------------" );
+        	System.out.println( "예상 손익률: " + selectedInsurance.getEstimatedProfitRate() );
+        	System.out.println( "목표 가입자수: " + selectedInsurance.getGoalPeopleNumber() );
+        	System.out.println( "판매 실적: " + amountResult );
+        	System.out.println( "분석 결과: " + selectedInsurance.getResultAnalysis() );
+        	System.out.println("-----------------------------------------------------------------------------------------------");
     	}
     }
 }
