@@ -12,6 +12,8 @@ import businessEducation.EducationStudent;
 import contract.Contract;
 import contract.ContractList;
 import contract.ContractListImpl;
+import contract.ContractModify;
+import contractManagement.ContractManagementPolicy;
 import customer.Customer;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
@@ -27,6 +29,7 @@ import marketingPlanning.CampaignProgramListImpl;
 import outerActor.OuterActor;
 import reward.Reward;
 import teams.BusinessEducationTeam;
+import teams.ContractManagementTeam;
 import teams.CustomerManagementTeam;
 import teams.InsuranceDevelopmentTeam;
 import teams.MarketingPlanningTeam;
@@ -55,6 +58,7 @@ public class Main {
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
     private static BusinessEducationTeam businessEducationTeam;
+    private static ContractManagementTeam contractManagementTeam;
     private static int customerID;
 
     public static void initialize() {
@@ -68,6 +72,7 @@ public class Main {
         underwritingTeam = new teams.UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new teams.CustomerManagementTeam();
         businessEducationTeam = new teams.BusinessEducationTeam();
+        contractManagementTeam = new teams.ContractManagementTeam();
     }
     public static void main(String[] args) {
         initialize();
@@ -145,6 +150,18 @@ public class Main {
                     case 15:
                     	manageEducationExamination();
                     	break;
+                    case 16:
+                    	reviveManagement();
+                    	break;
+                    case 17:
+                    	modifyContractProcess();
+                    	break;
+                    case 18:
+                    	applyContractModify();
+                    	break;
+                    case 19:
+                    	addContractManagemetPolicy();
+                    	break;
                     case 0:
                         System.out.close();
                         break;
@@ -170,6 +187,10 @@ public class Main {
         System.out.println(" 13. 교육 수료자 관리");
         System.out.println(" 14. 교육 추가");
         System.out.println(" 15. 교육 평가 관리");
+        System.out.println("16. 부활 관리");
+        System.out.println("17. 배서 관리");
+        System.out.println("18. 배서 신청");
+        System.out.println("19. 계약 관리 지침");
         System.out.println(" 0. 종료 ");
     }
     private static void createInsurance() {
@@ -824,6 +845,122 @@ public class Main {
         		String[] examineContent = resultString.split("/");
         		for( String content: examineContent ) {
         			System.out.println( "-" + content );
+        		}
+    		}
+    	}
+    }
+    private static void reviveManagement() {
+    	
+    }
+    private static void modifyContractProcess() {
+    	Vector<ContractModify> contractModifyList = contractManagementTeam.getProcessContractModifyList();
+    	if( contractModifyList.size()== 0 ) System.out.println( "계약 내용 변경 신청자가 없습니다. ");
+    	else {
+    		System.out.println( "-------------------배서 신청자를 선택해주세요.--------------------");
+        	for( int i=0; i<contractModifyList.size(); i++ ) {
+        		ContractModify temp = contractModifyList.get(i);
+        		int contractID = temp.getContractID();
+        		Contract tmpContract = contractManagementTeam.getContract( contractID );
+        		int customerID = tmpContract.getCustomerID();
+        		Customer tmpCustomer = contractManagementTeam.getCustomerInformation(customerID);
+        		System.out.println( i + ": " + tmpCustomer.getName() + " " + contractModifyList.get(i).getContent() );
+        	}
+        	int choice = TuiReader.choice( 0, contractModifyList.size() - 1 );
+        	ContractModify selectedContractModify = contractModifyList.get( choice );
+        	Contract selectedContract = contractManagementTeam.getContract( selectedContractModify.getContractID() );
+        	Customer selectedCustomer = contractManagementTeam.getCustomerInformation( selectedContract.getCustomerID() );
+        	Insurance selectedInsurance = contractManagementTeam.getInsurance( selectedContract.getInsuranceID() );
+        	System.out.println( selectedCustomer.getName() + " " + selectedInsurance.getInsuranceName() + " " + selectedContractModify.getContent() );
+        	// 인수를 심시한다 유즈 케이스를 포함한다.
+        	System.out.println( "1. 요청 수락   2. 배서 신청 거절");
+        	choice = TuiReader.choice( 1,  2 );
+        	if( choice==1 ) {
+        		selectedContractModify.setResult( Result.ACCEPT );
+        		selectedContract.setSpecialization( selectedContractModify.getContent() );
+        		contractManagementTeam.setContract( selectedContract );
+        		contractManagementTeam.manage( Target.CONTRACT, Crud.UPDATE );
+        	}
+        	else selectedContractModify.setResult( Result.DENY );
+        	contractManagementTeam.setContractModify( selectedContractModify );
+        	contractManagementTeam.manage( Target.CONTRACT_MODIFY, Crud.UPDATE );
+    	}
+    }
+    
+    private static void applyContractModify() {
+    	// 메인에 잇는 customerID가 로그인 한 고객의 ID라고 가정
+    	Vector<Insurance> customerInsuranceList = contractManagementTeam.getInsuranceByCustomerID(customerID);
+    	System.out.println("-------------가입되어 있는 보험 목록입니다.----------------------");
+    	for( int i=0; i<customerInsuranceList.size(); i++ ) {
+    		System.out.println( i + ": " + customerInsuranceList.get(i).getInsuranceName() );
+    	}
+    	System.out.println("---------------------------------------------------------");
+    	int choice = TuiReader.choice( 0, customerInsuranceList.size() );
+    	Insurance selectedInsurance = contractManagementTeam.getInsurance( customerInsuranceList.get(choice).getInsuranceID() );
+    	Contract selectedContract = contractManagementTeam.getContractByInsuranceAndCustomerID( selectedInsurance.getInsuranceID(), customerID ).get(0);
+    	System.out.println("수정하고자 하는 내용을 입력해주세요");
+    	String fixed = TuiReader.readInput("");
+    	System.out.println("1. 확인   2. 취소");
+    	choice = TuiReader.choice( 1, 2 );
+    	if( choice==1 ) {
+    		ContractModify contractModify = new ContractModify();
+        	contractModify.setApplyDate( null );	// null자리에 현재 시간
+        	contractModify.setNewSpecialization( fixed );
+        	contractModify.setContractID( selectedContract.getContractID() );
+        	contractModify.setContent( selectedContract.getSpecialization() );
+        	contractModify.setResult( Result.PROCESS );
+        	Vector<ContractModify> contractModifyList = contractManagementTeam.getAllContractModify();
+        	contractModify.setContractModifyID(contractModifyList.size());
+        	contractManagementTeam.setContractModify( contractModify );
+        	contractManagementTeam.manage( Target.CONTRACT_MODIFY, Crud.CREATE );
+    	}
+    }
+    private static void addContractManagemetPolicy() {
+    	Vector<ContractManagementPolicy> policyList = contractManagementTeam.getAllPolicy();
+    	if( policyList.size()== 0 ) {
+    		System.out.println("아직 수립된 정책이 없습니다.");
+    	} else {
+    		System.out.println("-----------현재 수립되어있는 정책 목록입니다. ------------------");
+        	for( int i=0; i<policyList.size(); i++ ) {
+        		System.out.println( i + ": " + policyList.get(i).getName() );
+        	}
+        	System.out.println("-------------------------------------------------------");
+    	}
+    	System.out.println("1. 확인  2. 지침 수립");
+    	int choice = TuiReader.choice( 1,  2 );
+    	if( choice==2 ) {
+    		while( true ) {
+    			System.out.println("지침 명칭, 지침 세부내용을 입력하세요.");
+    			String policyString;
+    			String[] policySplit;
+    			ContractManagementPolicy newPolicy = new ContractManagementPolicy();
+        		while( true ) {
+        			policyString = TuiReader.readInput("");
+            		policySplit = policyString.split("/");
+            		newPolicy.setName( policySplit[0] );
+            		newPolicy.setContent( policySplit[1] );
+            		newPolicy.setPolicyID( policyList.size() );
+            		int cnt = 0;
+            		for( ContractManagementPolicy alreadyPolicy: policyList ) {
+            			if( alreadyPolicy.getName().equals( newPolicy.getName() ) ) {
+            				System.out.println("이미 같은 명칭을 가진 정책이 존재합니다.");
+            				cnt=0;
+            				break;
+            			} else {
+            				cnt++;
+            			}
+            		}
+            		if( cnt==policyList.size()-1 ) break;
+        		}
+        		// 정책 이름 중복 확인
+        		System.out.println("------------입력한 정보가 올바른지 확인해주세요.-----------------");
+        		System.out.println("지침 명칭: " + newPolicy.getName() );
+        		System.out.println("지침 내용: " + newPolicy.getContent() );
+        		System.out.println("1. 확인  2. 취소");
+        		choice = TuiReader.choice( 1,  2 );
+        		if( choice==1 ) {
+        			contractManagementTeam.setPolicy( newPolicy );
+        			contractManagementTeam.manage( Target.CONTRACT_MANAGEMENT_POLICY, Crud.CREATE );
+        			break;
         		}
     		}
     	}

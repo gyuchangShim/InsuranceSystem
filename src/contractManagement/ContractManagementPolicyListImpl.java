@@ -1,5 +1,7 @@
 package contractManagement;
 
+import java.util.Vector;
+
 public class ContractManagementPolicyListImpl implements ContractManagementPolicyList {
 
 	public ContractManagementPolicy m_ContractManagementPolicy;
@@ -12,7 +14,7 @@ public class ContractManagementPolicyListImpl implements ContractManagementPolic
 
 	}
 
-	public void add(){
+	public void add( ContractManagementPolicy policy ){
 
 	}
 
@@ -20,11 +22,11 @@ public class ContractManagementPolicyListImpl implements ContractManagementPolic
 
 	}
 
-	public void retrieve(){
-
+	public Vector<ContractManagementPolicy> retrieve( String query ){
+		return null;
 	}
 
-	public void update(){
+	public void update( ContractManagementPolicy policy ){
 
 	}
 

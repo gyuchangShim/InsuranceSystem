@@ -18,7 +18,7 @@ public class CustomerManagementTeam {
         customerManagement = new CustomerManagement();
         customerManagementList = new CustomerManagementListImpl(customerManagement);
         customer = new Customer();
-        customerList = new CustomerListImpl(customer);
+       // customerList = new CustomerListImpl();		내거에서 수정한 부분 무시할 것
     }
     public ResultSet login(String userId, String password) {
         customerManagement.setID(userId);

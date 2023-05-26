@@ -13,6 +13,7 @@ public class Constants {
 		PAYMENT,						// 분납
 		EXPIRATION_CONTRACT,			// 만기 계약
 		CONTRACT,						// 계약
+		CONTRACT_MODIFY,				// 배서 신청
 		CONTRACT_STATISTIC,				// 계약 통계
 		EDUCATION,						// 교육
 		EDUCATION_STUDENT,				// 교육 수료자

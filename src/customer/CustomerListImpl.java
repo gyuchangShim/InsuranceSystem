@@ -11,8 +11,8 @@ public class CustomerListImpl implements CustomerList {
 	private Customer customer;
 
 
-	public CustomerListImpl(Customer customer) {
-		this.customer = customer;
+	public CustomerListImpl() {
+		//this.customer = customer;
 		try {
 //			dao = new Dao();
 //			dao.connect();
@@ -43,7 +43,7 @@ public class CustomerListImpl implements CustomerList {
 	@Override
 	public void update(Customer customer) {}
 	@Override
-	public int getCustomerID(){
+	public int getCustomerID (){
 		String query = "SELECT customerID from CustomerList";
 		ResultSet resultSet = dao.retrieve(query);
 		try {

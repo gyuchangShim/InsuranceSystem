@@ -2,6 +2,7 @@ package insurance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class InsuranceListImpl implements InsuranceList {
 
@@ -9,6 +10,11 @@ public class InsuranceListImpl implements InsuranceList {
 
 	public InsuranceListImpl(){
 		insuranceList = new ArrayList<>();
+	}
+	
+	public Vector<Insurance> getInsuranceByCustomerID( int customerID ){
+		// 해당 고객이 가입한 모든 보험 정보를 가져온다.
+		return null;
 	}
 
 	@Override

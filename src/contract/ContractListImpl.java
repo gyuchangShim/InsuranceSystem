@@ -2,6 +2,7 @@ package contract;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class ContractListImpl implements contract.ContractList {
 
@@ -23,11 +24,12 @@ public class ContractListImpl implements contract.ContractList {
 
 	}
 
-	public void retrieve(){
-
+	public Vector<Contract> retrieve( String query ){
+		
+		return null;
 	}
 
-	public void update(){
+	public void update( contract.Contract contract ){
 
 	}
 

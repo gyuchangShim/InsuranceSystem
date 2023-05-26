@@ -9,10 +9,7 @@ public class Contract {
 	private int contractID;
 	private int customerID;
 	private int insuranceID;
-
-	public Contract(){
-
-	}
+	private String specialization;		// 유저와 계약간의 특이사항
 	
 	public LocalDateTime getContractDate() {
 		return contractDate;
@@ -54,8 +51,12 @@ public class Contract {
 		this.insuranceID = insuranceID;
 	}
 
-	public void finalize() throws Throwable {
-
+	public void setSpecialization( String specialization ) {
+		this.specialization = specialization;
+	}
+	
+	public String getSpecialization() {
+		return this.specialization;
 	}
 
 }
