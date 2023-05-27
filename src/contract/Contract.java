@@ -9,9 +9,38 @@ public class Contract {
 	private int contractID;
 	private int customerID;
 	private int insuranceID;
+	private ContractState contractState;
+	private ContractRunState contractRunState;
+	private ContractUWState contractUWState;
 
 	public Contract(){
+		contractState = null;
+		contractRunState = null;
+		contractUWState = null;
+	}
 
+	public void setContractState(ContractState state) {
+		contractState = state;
+	}
+
+	public ContractState getContractState() {
+		return this.contractState;
+	}
+
+	public void setContractUWState(ContractUWState state) {
+		contractUWState = state;
+	}
+
+	public ContractUWState getContractUWState() {
+		return this.contractUWState;
+	}
+
+	public void setContractRunState(ContractRunState state) {
+		contractRunState = state;
+	}
+
+	public ContractRunState getContractRunState() {
+		return this.contractRunState;
 	}
 	
 	public LocalDateTime getContractDate() {

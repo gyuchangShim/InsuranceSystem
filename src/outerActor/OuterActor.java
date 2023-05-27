@@ -1,7 +1,11 @@
 package outerActor;
 
+import contract.Contract;
+import contract.ContractRunState;
 import insurance.Insurance;
 import insurance.InsuranceState;
+import marketingPlanning.CampaignProgram;
+import marketingPlanning.CampaignState;
 import java.time.LocalDateTime;
 
 public class OuterActor {
@@ -14,4 +18,13 @@ public class OuterActor {
         insurance.setInsuranceState(InsuranceState.AUTHORIZED);
         return LocalDateTime.now();
     }
+    public static void runProgram(CampaignProgram campaignProgram) {
+        campaignProgram.setProgramState(CampaignState.Run);
+    }
+
+    public static void collaborateUW(Contract contract) {
+        // 외부 Actor는 전달받은 계약에 대해 상태 변경 : Ready -> Finish
+        contract.setContractRunState(ContractRunState.Finish);
+    }
+
 }

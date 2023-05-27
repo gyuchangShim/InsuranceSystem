@@ -1,13 +1,11 @@
 package customer;
 
-import customer.Customer;
-import java.sql.ResultSet;
+import java.util.List;
 
 public interface CustomerList {
      void add(Customer customer);
-     void delete(Customer customer);
-     ResultSet retrieve(Customer customer);
+     void delete(int customerId);
+     Customer retrieve(int customerId);
      void update(Customer customer);
-
-     int getCustomerID();
+     List<Customer> retrieveAll();
 }

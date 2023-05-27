@@ -14,12 +14,12 @@ public class CampaignProgramListImpl implements CampaignProgramList {
 
 	@Override
 	public void add(CampaignProgram campaignProgram) {
-
+		campaignProgramList.add(campaignProgram);
 	}
 
 	@Override
-	public void delete(int campaignProgramId) {
-
+	public void delete(CampaignProgram campaignProgram) {
+		campaignProgramList.remove(campaignProgram);
 	}
 
 	@Override
