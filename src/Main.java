@@ -1,11 +1,11 @@
 import contract.*;
 import customer.Customer;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import customer.CustomerListImpl;
+import customerManagement.CustomerManagementList;
+import customerManagement.CustomerManagementListImpl;
 import java.util.Date;
 
 import customer.CustomerList;
-import customer.CustomerListImpl;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
 import marketingPlanning.CampaignProgramListImpl;
@@ -48,13 +48,14 @@ public class Main {
     private static AssumePolicyList assumePolicyList;
     private static CampaignProgramList campaignProgramList;
     private static ContractList contractList;
+    private static CustomerList customerList;
     private static UserPersonaList userPersonaList;
+    private static CustomerManagementList customerManagementList;
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
     private static int customerID;
-    private static CustomerList customerList;
 
     public static void initialize() {
         insuranceList = new InsuranceListImpl();
@@ -62,45 +63,57 @@ public class Main {
         campaignProgramList = new CampaignProgramListImpl();
         contractList = new ContractListImpl();
         userPersonaList = new UserPersonaListImpl();
+        customerList = new CustomerListImpl();
+        customerManagementList = new CustomerManagementListImpl();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
-        marketingPlanningTeam = new teams.MarketingPlanningTeam(campaignProgramList);
-        underwritingTeam = new teams.UnderwritingTeam(assumePolicyList);
-        customerManagementTeam = new teams.CustomerManagementTeam();
+        marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
+        underwritingTeam = new UnderwritingTeam(assumePolicyList);
+        customerManagementTeam = new CustomerManagementTeam(customerManagementList, customerList);
     }
     public static void main(String[] args) {
         initialize();
-        loginPage();
-        mainPage();
+        while (true) {
+            try {
+                loginPage();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     private static void loginPage(){
         System.out.println("*********************  로그인  *********************");
         System.out.println(" 1. 고객 로그인");
-        System.out.println(" 3. 회원가입");
+        System.out.println(" 2. 회원가입");
+        System.out.println(" 3. 관리자 로그인");
 
         int choice = TuiReader.choice(1, 3);
         switch (choice) {
             case 1 :
                 System.out.println("ID:");
-                String userId = TuiReader.readInput("정확히 입력해주세요.");
+                String userId = TuiReader.readInputCorrect();
                 System.out.println("PassWord:");
-                String password = TuiReader.readInput("정확히 입력해주세요.");
-                ResultSet resultSet = customerManagementTeam.login(userId,password);
-                try { while (resultSet.next()){customerID = resultSet.getInt("customerID");}
-                } catch (SQLException e) {throw new RuntimeException(e);}
+                String password = TuiReader.readInputCorrect();
+                customerID = customerManagementTeam.login(userId,password);
+                System.out.println("로그인 성공");
+                mainPage();
+                break;
+            case 2 :
+                System.out.println("ID:");
+                userId = TuiReader.readInputCorrect();
+                System.out.println("PassWord:");
+                password = TuiReader.readInputCorrect();
+                System.out.println("Name:");
+                String customerName = TuiReader.readInputCorrect();
+                customerManagementTeam.join(userId,password,customerName);
+                System.out.println("회원가입 성공");
                 break;
             case 3 :
-                System.out.println("ID:");
-                userId = TuiReader.readInput("정확히 입력해주세요.");
-                System.out.println("PassWord:");
-                password = TuiReader.readInput("정확히 입력해주세요.");
-                System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
-                    "address/age/job/name/phoneNumber/registrationNumber/salaryPercentage");
-                String customerInf = TuiReader.readInput("정확히 입력해주세요.");
-                customerManagementTeam.join(userId,password,customerInf);
-            default :
                 customerID=0;
-
+                mainPage();
+                break;
+            default:
+                throw new CIllegalArgumentException("잘못된 입력입니다.");
         }
     }
 

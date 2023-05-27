@@ -25,9 +25,25 @@ public class TuiReader {
     }
     public static String readInput(String errorMessage) {
         try {
-            return br.readLine();
+            String input = br.readLine();
+            if(input == null || input.isEmpty()) {
+                throw new CIllegalArgumentException(errorMessage);
+            }
+            return input;
         } catch (IOException e) {
             throw new CIllegalArgumentException(errorMessage);
+        }
+    }
+    public static String readInputCorrect() {
+        try {
+            String input = br.readLine();
+            if(input == null || input.isEmpty()) {
+                throw new RuntimeException();
+            }
+            return input;
+        } catch (Exception e) {
+            System.out.println("정확히 입력해주세요.");
+            return readInputCorrect();
         }
     }
 }

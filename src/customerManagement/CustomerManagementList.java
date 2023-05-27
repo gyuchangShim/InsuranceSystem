@@ -1,10 +1,11 @@
 package customerManagement;
 
-import java.sql.ResultSet;
+import java.util.List;
 
 public interface CustomerManagementList {
     void add(CustomerManagement customerManagement);
-    void delete(CustomerManagement customerManagement);
-    ResultSet retrieve(CustomerManagement customerManagement);
+    void delete(int customerManagementId);
+    CustomerManagement retrieve(int customerManagementId);
+    List<CustomerManagement> retrieveAll();
     void update(CustomerManagement customerManagement);
 }
