@@ -17,7 +17,7 @@ public class EducationStudentListImpl implements EducationStudentList {
 
 	}
 
-	public Vector<EducationStudent> retrieve( String query ){
+	public EducationStudent retrieve( int studentID ){
 		// 
 		return null;
 	}
@@ -25,5 +25,7 @@ public class EducationStudentListImpl implements EducationStudentList {
 	public void update(){
 
 	}
-
+	public Vector<EducationStudent> retrieveAll(){
+		return null;
+	}
 }

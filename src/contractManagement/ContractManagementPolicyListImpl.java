@@ -22,12 +22,14 @@ public class ContractManagementPolicyListImpl implements ContractManagementPolic
 
 	}
 
-	public Vector<ContractManagementPolicy> retrieve( String query ){
+	public ContractManagementPolicy retrieve( int policyID ){
 		return null;
 	}
 
 	public void update( ContractManagementPolicy policy ){
 
 	}
-
+	public Vector<ContractManagementPolicy> retrieveAll(){
+		return null;
+	}
 }

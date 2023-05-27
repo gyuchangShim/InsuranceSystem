@@ -9,11 +9,9 @@ public class Constants {
 		CONSULT,						// 상담
 		OPERATION_POLICY,				// 운영 정책
 		CONTRACT_MANAGEMENT_POLICY,		// 계약 관리 정책
-		COLLECTION,						// 수금
-		PAYMENT,						// 분납
+		PAYMENT,						// 납부
 		EXPIRATION_CONTRACT,			// 만기 계약
 		CONTRACT,						// 계약
-		CONTRACT_MODIFY,				// 배서 신청
 		CONTRACT_STATISTIC,				// 계약 통계
 		EDUCATION,						// 교육
 		EDUCATION_STUDENT,				// 교육 수료자
@@ -21,7 +19,18 @@ public class Constants {
 		ASSUME_POLICY,					// 인수 정책
 		CUSTOMER,						// 고객
 		REWARD,							// 보상
-		SELL_GROUP						// 판매 그룹
+		SELL_GROUP,						// 판매 그룹
+		ADVICE_NOTE						// 안내장
+	}
+	public enum PayWay{
+		OFFLINE_FTF("직접 만나서 결제"),					// 오프라인 대면 결제
+		ONLINE_AUTO("자동이체"),					// 온라인 자동 결제				
+		ONLINE_MANUAL("온라인 이체"),					// 온라인 수동 결제
+		OFFLINE_VISITING("직원 방문 결제");				// 오프라인 방문 결제
+		private String payway;
+		
+		PayWay( String payway ){ this.payway = payway; }
+		public String getString() { return this.payway; }
 	}
 	public enum Result{ 
 		PROCESS( "PROCESS" ), 

@@ -1,21 +1,21 @@
 package contract;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Contract {
 
-	private LocalDateTime contractDate;
+	private LocalDate contractDate;
 	private String contractFile;
 	private int contractID;
 	private int customerID;
 	private int insuranceID;
 	private String specialization;		// 유저와 계약간의 특이사항
 	
-	public LocalDateTime getContractDate() {
+	public LocalDate getContractDate() {
 		return contractDate;
 	}
 
-	public void setContractDate(LocalDateTime contractDate) {
+	public void setContractDate(LocalDate contractDate) {
 		this.contractDate = contractDate;
 	}
 

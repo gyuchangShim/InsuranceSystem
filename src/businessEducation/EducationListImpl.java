@@ -22,7 +22,7 @@ public class EducationListImpl implements EducationList {
 
 	}
 
-	public Vector<Education> retrieve( String query ){
+	public Education retrieve( int educationID ){
 		//
 		return null;
 	}
@@ -30,5 +30,7 @@ public class EducationListImpl implements EducationList {
 	public void update( Education education ){
 
 	}
-
+	public Vector<Education> retrieveAll(){
+		return null;
+	}
 }

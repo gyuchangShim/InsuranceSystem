@@ -24,13 +24,17 @@ public class ContractListImpl implements contract.ContractList {
 
 	}
 
-	public Vector<Contract> retrieve( String query ){
+	public Contract retrieve( int contractID ){
 		
 		return null;
 	}
 
 	public void update( contract.Contract contract ){
 
+	}
+	
+	public Vector<Contract> retrieveAll(){
+		return null;
 	}
 
 	public List<contract.Contract> getAllregist() {return contractList;}

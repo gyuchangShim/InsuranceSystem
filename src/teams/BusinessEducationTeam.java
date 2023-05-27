@@ -72,15 +72,20 @@ public class BusinessEducationTeam extends Team {
 	}
 	public Vector<Education> getAllEducation(){
 		// 모든 교육 정보를 가져온다.
-		return this.educationListImpl.retrieve( "" );
+		return this.educationListImpl.retrieveAll();
 	}
 	public Vector<EducationStudent> getStduentByEducation( int educationID ){
 		// 교육 ID가 해당 id인 수료자의 정보들을 가져온다.
-		return this.studentListImpl.retrieve( "" );
+		Vector<EducationStudent> studentList = this.studentListImpl.retrieveAll();
+		Vector<EducationStudent> result = new Vector<EducationStudent>();
+		for( EducationStudent student: studentList ) {
+			if( student.getEducationID()==educationID ) result.add( student );
+		}
+		return result;
 	}
 	public Vector<EducationStudent> getAllStudent(){
 		// 모든 학생들의 정보를 가져온다.
-		return this.studentListImpl.retrieve("");
+		return this.studentListImpl.retrieveAll();
 	}
 	public void setStudent( EducationStudent student ) {
 		this.m_EducationStudent = student;

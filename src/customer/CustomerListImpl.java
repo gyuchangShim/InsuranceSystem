@@ -37,7 +37,7 @@ public class CustomerListImpl implements CustomerList {
 	@Override
 	public void delete(Customer customer) {}
 	@Override
-	public ResultSet retrieve(Customer customer) {
+	public Customer retrieve( Customer customer ) {
 		return null;
 	}
 	@Override
