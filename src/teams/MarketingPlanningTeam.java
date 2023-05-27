@@ -1,19 +1,18 @@
 package teams;
 
 import marketingPlanning.CampaignProgram;
+import marketingPlanning.CampaignProgramList;
 import marketingPlanning.CampaignProgramListImpl;
+import marketingPlanning.CampaignState;
 import util.Constants.Target;
 import util.Constants.Crud;
 
 public class MarketingPlanningTeam extends Team {
 
-	public CampaignProgram campaignProgram;
-	public CampaignProgramListImpl campaignProgramList;
+	private CampaignProgramList campaignProgramList;
 
-
-	public MarketingPlanningTeam(){
-		this.campaignProgram = new CampaignProgram();
-		this.campaignProgramList = new CampaignProgramListImpl();
+	public MarketingPlanningTeam(CampaignProgramList campaignProgramList){
+		this.campaignProgramList = campaignProgramList;
 	}
 
 	public void finalize() throws Throwable {
@@ -40,15 +39,17 @@ public class MarketingPlanningTeam extends Team {
 	public void plan(Target target, Crud crud) {
 		if (target == Target.CAMPAIGN_PROGRAM) {
 			if (crud == Crud.CREATE) {
+				CampaignProgram campaignProgram = new CampaignProgram();
 				String campaignPlan = util.TuiReader.readInput("캠페인 프로그램의 내용이 형식과 맞지 않습니다.");
 				String[] campaignPlanSplit = campaignPlan.split("/");
+
 				campaignProgram.setInsuranceID(Integer.valueOf(campaignPlanSplit[0]));
 				campaignProgram.setCampaignTarget(campaignPlanSplit[1]);
 				campaignProgram.setDuration(Integer.valueOf(campaignPlanSplit[2]));
 				campaignProgram.setCampaignWay(campaignPlanSplit[3]);
 				campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[4])));
 				campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[5]));
-				campaignProgram.setProgramState(CampaignProgram.campaignState.Plan);
+				campaignProgram.setProgramState(CampaignState.Plan);
 				campaignProgramList.add(campaignProgram);
 			}
 		}
@@ -57,7 +58,7 @@ public class MarketingPlanningTeam extends Team {
 	@Override
 	public void process(Target target, Crud crud) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -7,24 +7,35 @@ public class CampaignProgram {
 	private String campaignName; // 캠페인 이름
 	private String campaignTarget; // 캠페인 대상
 	private int duration; // 캠페인 기간
-	private int exResult; // 캠페인 예상 손익률
+	private float exResult; // 캠페인 예상 손익률
 	private int insuranceID; // 캠페인 대상 보험
 	private String place; // 캠페인 장소
 	private String campaignWay; // 캠페인 수단 - 시나리오에 적혀있지만 설계 과정에서 attribute가 제외되서 추가함
-	private campaignState campaignState;
+	private float endResult; // 실제 손익률 - 시나리오에 적혀있지만 설계 과정에서 attribute가 제외되서 추가함
+	private CampaignProgram report; // 캠페인 결과 분석 보고서 - 시나리오에 적혀있지만 설계에서 제외됨
+	private CampaignState state;
+	private String outTeam;
 
 	public CampaignProgram(){
-		campaignState = null;
+		state = null;
+		endResult = 5.5f;
+		outTeam = "현우 없는 현우 팀";
 	}
 
-	public enum campaignState{
-		Plan, // 기획 완료
-		Run, // 진행 중
-		End // 종료
+	public void setProgramState(CampaignState campaignState) {
+		this.state = campaignState;
 	}
-	public void setProgramState(campaignState campaignState) {
-		this.campaignState = campaignState;
-	}
+
+	public void setOutTeam(String outTeam) {outTeam = outTeam;}
+	public String getOutTeam() {return outTeam;}
+
+	public void setEndResult(float endResult) {this.endResult = endResult;}
+	public CampaignState getProgramState() { return state; }
+	public float getEndResult() { return endResult; }
+	public void setReport(CampaignProgram report) { this.report = report; }
+
+	public CampaignProgram getReport() { return report; }
+
 	public int getBudget() {
 		return budget;
 	}
@@ -65,11 +76,11 @@ public class CampaignProgram {
 		this.duration = duration;
 	}
 
-	public int getExResult() {
+	public float getExResult() {
 		return exResult;
 	}
 
-	public void setExResult(int exResult) {
+	public void setExResult(float exResult) {
 		this.exResult = exResult;
 	}
 

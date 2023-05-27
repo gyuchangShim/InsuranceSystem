@@ -1,56 +1,33 @@
 package customer;
 
-import dao.Dao;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CustomerListImpl implements CustomerList {
 
-	private Dao dao;
-	private Customer customer;
+	private List<Customer> customerList;
 
 
-	public CustomerListImpl(Customer customer) {
-		this.customer = customer;
-		try {
-//			dao = new Dao();
-//			dao.connect();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public CustomerListImpl() {
+		customerList = new ArrayList<>();
 	}
 
 	@Override
 	public void add(Customer customer) {
-		String query = "insert into CustomerList(customerID,address,age,job,name,phoneNumber,registrationNumber,salaryPercentage) values("
-				+ (customer.getCustomerID()+1) + ",'"
-				+ customer.getAddress() + "', "
-				+ customer.getAge() + ", '"
-				+ customer.getJob() + "', '"
-				+ customer.getName() + "', '"
-				+ customer.getPhoneNumber() + "', '"
-				+ customer.getRegistrationNumber() + "', "
-				+ customer.getSalaryPercentage() +  ");";
-		dao.create(query);
+		customerList.add(customer);
 	}
 	@Override
-	public void delete(Customer customer) {}
+	public void delete(int customerId) {}
 	@Override
-	public ResultSet retrieve(Customer customer) {
+	public Customer retrieve(int customerId) {
 		return null;
 	}
 	@Override
 	public void update(Customer customer) {}
+
 	@Override
-	public int getCustomerID(){
-		String query = "SELECT customerID from CustomerList";
-		ResultSet resultSet = dao.retrieve(query);
-		try {
-			int a=0;
-			while (resultSet.next()) {a = resultSet.getInt("customerID");}
-			return a;
-		} catch (SQLException e) {throw new RuntimeException(e);}
+	public List<Customer> retrieveAll() {
+		return customerList;
 	}
 
 }
