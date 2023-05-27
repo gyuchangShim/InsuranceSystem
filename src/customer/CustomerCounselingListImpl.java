@@ -6,14 +6,18 @@ import java.util.List;
 public class CustomerCounselingListImpl implements CustomerCounselingList{
 
     private List<CustomerCounseling> counselingList;
+    private int customerCounselingIdGenerator;
 
     public CustomerCounselingListImpl() {
         this.counselingList = new ArrayList<>();
+        this.customerCounselingIdGenerator = 1;
     }
 
     @Override
     public void add(CustomerCounseling counseling) {
-
+        int counselingId = generateCustomerCounselingId();
+        counseling.setCounselingId(counselingId);
+        counselingList.add(counseling);
     }
 
     @Override
@@ -34,5 +38,9 @@ public class CustomerCounselingListImpl implements CustomerCounselingList{
     @Override
     public void update(CustomerCounseling counseling) {
 
+    }
+
+    private int generateCustomerCounselingId() {
+        return customerCounselingIdGenerator++;
     }
 }

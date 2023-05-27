@@ -1,5 +1,9 @@
 import contract.*;
+import customer.CounselingState;
 import customer.Customer;
+import customer.CustomerCounseling;
+import customer.CustomerCounselingList;
+import customer.CustomerCounselingListImpl;
 import customer.CustomerListImpl;
 import customerManagement.CustomerManagementList;
 import customerManagement.CustomerManagementListImpl;
@@ -50,6 +54,7 @@ public class Main {
     private static ContractList contractList;
     private static CustomerList customerList;
     private static UserPersonaList userPersonaList;
+    private static CustomerCounselingList customerCounselingList;
     private static CustomerManagementList customerManagementList;
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
     private static UnderwritingTeam underwritingTeam;
@@ -64,6 +69,7 @@ public class Main {
         contractList = new ContractListImpl();
         userPersonaList = new UserPersonaListImpl();
         customerList = new CustomerListImpl();
+        customerCounselingList = new CustomerCounselingListImpl();
         customerManagementList = new CustomerManagementListImpl();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
         marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
@@ -85,7 +91,7 @@ public class Main {
         System.out.println("*********************  로그인  *********************");
         System.out.println(" 1. 고객 로그인");
         System.out.println(" 2. 회원가입");
-        System.out.println(" 3. 관리자 로그인");
+        System.out.println(" 3. 직원 로그인");
 
         int choice = TuiReader.choice(1, 3);
         switch (choice) {
@@ -96,7 +102,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
-                mainPage();
+                customerPage();
                 break;
             case 2 :
                 System.out.println("ID:");
@@ -109,11 +115,30 @@ public class Main {
                 System.out.println("회원가입 성공");
                 break;
             case 3 :
-                customerID=0;
+                customerID=-1;
                 mainPage();
                 break;
             default:
                 throw new CIllegalArgumentException("잘못된 입력입니다.");
+        }
+    }
+
+    private static void customerPage() {
+        while (true) {
+            try {
+                System.out.println("********************* MENU *********************");
+                System.out.println(" 1. 상담 접수");
+                int choice = TuiReader.choice(1, 1);
+                switch (choice) {
+                    case 1:
+                        counselingApply();
+                        break;
+                    default:
+                        throw new CIllegalArgumentException("잘못된 입력입니다.");
+                }
+            } catch (CustomException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
@@ -825,5 +850,29 @@ public class Main {
 
     }
     private static void faceToFaceConsultation() {
+    }
+
+    private static void counselingApply() {
+        System.out.println("*************** 상담 신청 ***************");
+        boolean isSuccessInput = false;
+        while (!isSuccessInput) {
+            try {
+                System.out.println("상담 희망 장소, 상담 희망일(20**-**-**), 상담 희망 시간(**:**:**)을 /로 구분하여 입력하세요.");
+                String[] counselingInfo = TuiReader.readInput("상담 신청란에 정확히 입력하세요.").split("/");
+                if (counselingInfo.length != 3) {
+                    throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                }
+                CustomerCounseling counseling = new CustomerCounseling();
+                counseling.setCustomerId(customerID);
+                counseling.setCounselingPlace(counselingInfo[0]);
+                counseling.setCounselingTime(LocalDateTime.parse(counselingInfo[1] + "T" + counselingInfo[2]));
+                counseling.setCounselingState(CounselingState.APPLY);
+                customerCounselingList.add(counseling);
+                isSuccessInput = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        System.out.println("접수 완료되었습니다.");
     }
 }

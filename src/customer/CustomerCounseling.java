@@ -4,26 +4,26 @@ import java.time.LocalDateTime;
 
 public class CustomerCounseling {
 
-    private int counselingID;
-    private int customerID;
+    private int counselingId;
+    private int customerId;
     private String counselingPlace;
     private LocalDateTime counselingTime;
     private CounselingState counselingState;
 
-    public int getCounselingID() {
-        return counselingID;
+    public int getCounselingId() {
+        return counselingId;
     }
 
-    public void setCounselingID(int counselingID) {
-        this.counselingID = counselingID;
+    public void setCounselingId(int counselingId) {
+        this.counselingId = counselingId;
     }
 
-    public int getCustomerID() {
-        return customerID;
+    public int getCustomerId() {
+        return customerId;
     }
 
-    public void setCustomerID(int customerID) {
-        this.customerID = customerID;
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public String getCounselingPlace() {
