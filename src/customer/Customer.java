@@ -1,19 +1,31 @@
 package customer;
 
+import util.Constants.Gender;
+
 public class Customer {
-	
+
+	private int customerID;
 	private String address;
 	private int age;
-	private int customerID;
+	private Gender sex;
 	private String job;
 	private String name;
 	private String phoneNumber;
 	private String registrationNumber;
-	private int salaryPercentage;
+	private int incomeLevel;
 	private String accountNumber;
+	private String accountPassword;
 	
 	public Customer(){
 
+	}
+
+	public Gender getSex() {
+		return sex;
+	}
+
+	public void setSex(Gender sex) {
+		this.sex = sex;
 	}
 
 	public String getAccountNumber() {
@@ -80,16 +92,20 @@ public class Customer {
 		this.registrationNumber = registrationNumber;
 	}
 
-	public int getSalaryPercentage() {
-		return salaryPercentage;
+	public int getIncomeLevel() {
+		return incomeLevel;
 	}
 
-	public void setSalaryPercentage(int salaryPercentage) {
-		this.salaryPercentage = salaryPercentage;
+	public void setIncomeLevel(int incomeLevel) {
+		this.incomeLevel = incomeLevel;
 	}
 
-	public void finalize() throws Throwable {
+	public String getAccountPassword() {
+		return accountPassword;
+	}
 
+	public void setAccountPassword(String accountPassword) {
+		this.accountPassword = accountPassword;
 	}
 
 	public void apply(int diff){

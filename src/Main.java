@@ -5,8 +5,10 @@ import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
 import customer.CustomerListImpl;
+import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import customerManagement.CustomerManagementListImpl;
+import exception.CCounselingNotFoundException;
 import java.util.Date;
 
 import customer.CustomerList;
@@ -17,6 +19,7 @@ import marketingPlanning.CampaignState;
 import reward.Reward;
 import teams.CustomerManagementTeam;
 import teams.MarketingPlanningTeam;
+import teams.SellGroupTeam;
 import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
 import exception.CIllegalArgumentException;
@@ -60,6 +63,7 @@ public class Main {
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
+    private static SellGroupTeam sellGroupTeam;
     private static int customerID;
 
     public static void initialize() {
@@ -75,15 +79,44 @@ public class Main {
         marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new CustomerManagementTeam(customerManagementList, customerList);
+        sellGroupTeam = new SellGroupTeam(insuranceList);
     }
     public static void main(String[] args) {
         initialize();
+        initData();
         while (true) {
             try {
                 loginPage();
             } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+
+    private static void initData() {
+        // 고객 생성
+        Customer customer = new Customer();
+        customer.setName("엄준식");
+        int customerId = customerList.add(customer);
+        CustomerManagement customerManagement = new CustomerManagement();
+        customerManagement.setID("test");
+        customerManagement.setPW("test");
+        customerManagement.setCustomerId(customerId);
+        customerManagementList.add(customerManagement);
+        // 상담 생성
+        CustomerCounseling customerCounseling = new CustomerCounseling();
+        customerCounseling.setCustomerId(customerId);
+        customerCounseling.setCounselingPlace("서울시 강남구");
+        customerCounseling.setCounselingState(CounselingState.APPLIED);
+        customerCounseling.setCounselingTime(LocalDateTime.now());
+        customerCounselingList.add(customerCounseling);
+        // 인가 완료된 보험 생성
+        for (int i = 0; i < 3; i++) {
+            Insurance insurance = new Insurance();
+            insurance.setInsuranceName("살아있는보험" + i);
+            insurance.setInsuranceState(InsuranceState.AUTHORIZED);
+            insurance.setInsuranceType(InsuranceType.FIRE);
+            insuranceList.add(insurance);
         }
     }
 
@@ -124,14 +157,19 @@ public class Main {
     }
 
     private static void customerPage() {
-        while (true) {
+        boolean isContinue = true;
+        while (isContinue) {
             try {
                 System.out.println("********************* MENU *********************");
                 System.out.println(" 1. 상담 접수");
-                int choice = TuiReader.choice(1, 1);
+                System.out.println(" 2. 종료");
+                int choice = TuiReader.choice(1, 2);
                 switch (choice) {
                     case 1:
                         counselingApply();
+                        break;
+                    case 2:
+                        isContinue = false;
                         break;
                     default:
                         throw new CIllegalArgumentException("잘못된 입력입니다.");
@@ -421,7 +459,7 @@ public class Main {
                 // 인수 심사 전 basic, collaborative 구분
                 // TODO retrieve 고치고 다시 확인
                 Customer uwCustomer = customerList.retrieve(customerID);
-                if(uwCustomer.getSalaryPercentage() > 5) {
+                if(uwCustomer.getIncomeLevel() > 5) {
                     // 가입 신청 시 소득 분위에 따라 state 지정 - 인수 심사 경우
                     contract.setContractUWState(ContractUWState.Basic);
                     // 로그아웃 시 고객 ID null값 처리
@@ -432,7 +470,7 @@ public class Main {
                     contract.setContractRunState(ContractRunState.Ready);
                     contractList.add(contract);
                     System.out.println("보험 가입 신청이 완료되었습니다.");
-                } else if(uwCustomer.getSalaryPercentage() <= 5) {
+                } else if(uwCustomer.getIncomeLevel() <= 5) {
                     // 가입 신청 시 소득 분위에 따라 state 지정 - 공동 인수 심사 경우
                     contract.setContractUWState(ContractUWState.Collaborative);
                     // 로그인 하면 해당 고객의 ID를 전역에 배치 - 로그아웃 시 고객 ID null값 처리
@@ -847,11 +885,112 @@ public class Main {
         }
     }
     private static void setConsultationSchedule() {
-
+        System.out.println("*************** 상담 일정 ***************");
+        List<CustomerCounseling> counselingList = customerCounselingList.retrieveAll()
+            .stream()
+            .filter(counseling -> counseling.getCounselingState() == CounselingState.APPLIED)
+            .collect(Collectors.toList());
+        if (counselingList.size() == 0) {
+            throw new CCounselingNotFoundException("대면 상담 요청된 고객이 없습니다.");
+        }
+        List<Integer> customerIdList = counselingList.stream()
+            .map(CustomerCounseling::getCustomerId)
+            .distinct()
+            .collect(Collectors.toList());
+        for (int i = 0; i < customerIdList.size(); i++) {
+            Customer customer = customerList.retrieve(customerIdList.get(i));
+            System.out.println(i + ". " + customer.getName());
+        }
+        int choiceCustomer = TuiReader.choice(0, customerIdList.size() - 1);
+        Customer customer = customerList.retrieve(customerIdList.get(choiceCustomer));
+        List<CustomerCounseling> choiceCustomerCounselingList = counselingList.stream()
+            .filter(counseling -> counseling.getCustomerId() == customer.getCustomerID())
+            .collect(Collectors.toList());
+        for (int i = 0; i < choiceCustomerCounselingList.size(); i++) {
+            CustomerCounseling counseling = choiceCustomerCounselingList.get(i);
+            System.out.println(i + ". 상담 희망 장소: " + counseling.getCounselingPlace()
+                + " 상담 희망일: "+ counseling.getCounselingTime().getMonthValue() + "월 "
+                + counseling.getCounselingTime().getDayOfMonth() + "일 "
+                + "상담 시간: " + counseling.getCounselingTime().getHour() + "시 "
+                + counseling.getCounselingTime().getMinute() + "분");
+        }
+        int choiceCounseling = TuiReader.choice(0, choiceCustomerCounselingList.size() - 1);
+        CustomerCounseling counseling = choiceCustomerCounselingList.get(choiceCounseling);
+        counseling.setCounselingState(CounselingState.ACCEPTED_APPLY);
+        customerCounselingList.update(counseling);
+        OuterActor.sendSMS("상담 일정이 잡혔습니다.");
+        System.out.println("상담 일정이 잡혔습니다.");
     }
     private static void faceToFaceConsultation() {
+        System.out.println("*************** 대면 상담 ***************");
+        List<CustomerCounseling> counselingList = customerCounselingList.retrieveAll()
+            .stream()
+            .filter(counseling -> counseling.getCounselingState() == CounselingState.ACCEPTED_APPLY)
+            .collect(Collectors.toList());
+        if (counselingList.size() == 0) {
+            throw new CCounselingNotFoundException("대면 상담 수락된 고객이 없습니다.");
+        }
+        System.out.println(" 고객 리스트 ");
+        for (int i = 0; i < counselingList.size(); i++) {
+            CustomerCounseling counseling = counselingList.get(i);
+            Customer customer = customerList.retrieve(counseling.getCustomerId());
+            System.out.println(i + ". " + customer.getName());
+        }
+        int choiceCustomer = TuiReader.choice(0, counselingList.size() - 1);
+        // TODO: 선택한 고객이 상담 시간이 아닌 경우 수정
+        CustomerCounseling counseling = counselingList.get(choiceCustomer);
+        if (counseling.getCounselingTime().isAfter(LocalDateTime.now())) {
+            throw new CCounselingNotFoundException("상담 시간이 아닙니다.");
+        }
+        Customer customer = customerList.retrieve(counseling.getCustomerId());
+        boolean isSuccessInput = false;
+        while (!isSuccessInput) {
+            try {
+                System.out.println("고객 이름, 나이, 성별, 연락처, 소득 수준, 계좌번호, 계좌 비밀번호를 /로 구분하여 입력하세요.");
+                String[] input = TuiReader.readInput("고객 정보를 정확히 입력해주세요").split("/");
+                if (input.length != 7) {
+                    throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                }
+                customer.setName(input[0]);
+                customer.setAge(Integer.parseInt(input[1]));
+                customer.setSex(Gender.valueOf(input[2]));
+                customer.setPhoneNumber(input[3]);
+                customer.setIncomeLevel(Integer.parseInt(input[4]));
+                customer.setAccountNumber(input[5]);
+                customer.setAccountPassword(input[6]);
+                isSuccessInput = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        customerList.update(customer);
+        boolean isContinue = true;
+        while (isContinue) {
+            System.out.println("추천 보험 리스트");
+            List<Insurance> recommendInsurances = sellGroupTeam.recommendInsurance(customer);
+            for (int i = 0; i < recommendInsurances.size(); i++) {
+                Insurance insurance = recommendInsurances.get(i);
+                System.out.println(i + ". " + insurance.getInsuranceName());
+            }
+            int choiceInsurance = TuiReader.choice(0, recommendInsurances.size() - 1);
+            Insurance insurance = recommendInsurances.get(choiceInsurance);
+            System.out.println("추천 보험 상품: " + insurance.getInsuranceName());
+            System.out.println(" 보험료 가계산: " + sellGroupTeam.calculateInsuranceFee(insurance, customer));
+            System.out.println(" 보험 추천 이유: " + sellGroupTeam.recommendInsuranceReason(insurance, customer));
+            System.out.println("보험 선택: 1, 보험 판매 실패: 2, 뒤로 가기: 3");
+            int choice = TuiReader.choice(1, 3);
+            if (choice == 1) {
+                contract(insurance, customer);
+                isContinue = false;
+            } else if (choice == 2) {
+                System.out.println("보험 판매에 실패했습니다.");
+                isContinue = false;
+            }
+        }
     }
+    private static void contract(Insurance insurance, Customer customer) {
 
+    }
     private static void counselingApply() {
         System.out.println("*************** 상담 신청 ***************");
         boolean isSuccessInput = false;
@@ -866,7 +1005,7 @@ public class Main {
                 counseling.setCustomerId(customerID);
                 counseling.setCounselingPlace(counselingInfo[0]);
                 counseling.setCounselingTime(LocalDateTime.parse(counselingInfo[1] + "T" + counselingInfo[2]));
-                counseling.setCounselingState(CounselingState.APPLY);
+                counseling.setCounselingState(CounselingState.APPLIED);
                 customerCounselingList.add(counseling);
                 isSuccessInput = true;
             } catch (Exception e) {

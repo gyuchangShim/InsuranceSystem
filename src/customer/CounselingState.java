@@ -1,5 +1,5 @@
 package customer;
 
 public enum CounselingState {
-    APPLY, ACCEPTED, COMPLETED
+    APPLIED, ACCEPTED_APPLY, COMPLETED
 }

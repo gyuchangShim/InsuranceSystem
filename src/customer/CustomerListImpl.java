@@ -24,7 +24,10 @@ public class CustomerListImpl implements CustomerList {
 	public void delete(int customerId) {}
 	@Override
 	public Customer retrieve(int customerId) {
-		return null;
+		return customerList.stream()
+			.filter(customer -> customer.getCustomerID() == customerId)
+			.findFirst()
+			.get();
 	}
 	@Override
 	public void update(Customer customer) {}

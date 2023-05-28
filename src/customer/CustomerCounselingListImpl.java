@@ -32,7 +32,7 @@ public class CustomerCounselingListImpl implements CustomerCounselingList{
 
     @Override
     public List<CustomerCounseling> retrieveAll() {
-        return null;
+        return counselingList;
     }
 
     @Override

@@ -6,13 +6,16 @@ import java.util.List;
 public class InsuranceListImpl implements InsuranceList {
 
 	private ArrayList<Insurance> insuranceList;
+	private int insuranceIdGenerator;
 
 	public InsuranceListImpl(){
 		insuranceList = new ArrayList<>();
+		insuranceIdGenerator = 1;
 	}
 
 	@Override
 	public void add(Insurance insurance){
+		insurance.setInsuranceID(generateInsuranceId());
 		insuranceList.add(insurance);
 	}
 
@@ -36,5 +39,7 @@ public class InsuranceListImpl implements InsuranceList {
 
 	}
 
-
+	private int generateInsuranceId() {
+		return insuranceIdGenerator++;
+	}
 }

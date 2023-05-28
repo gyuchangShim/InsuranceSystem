@@ -1,14 +1,20 @@
 package teams;
-import business.SellGroup;
+import customer.Customer;
+import insurance.Insurance;
+import insurance.InsuranceList;
+import insurance.InsuranceState;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 import util.Constants.Crud;
 import util.Constants.Target;
 
 public class SellGroupTeam extends Team {
 
-	public SellGroup m_SellGroup;
+	private InsuranceList insuranceList;
 
-	public SellGroupTeam(){
-
+	public SellGroupTeam(InsuranceList insuranceList){
+		this.insuranceList = insuranceList;
 	}
 
 	public void finalize() throws Throwable {
@@ -43,4 +49,19 @@ public class SellGroupTeam extends Team {
 		
 	}
 
+	public List<Insurance> recommendInsurance(Customer customer) {
+		return insuranceList.retrieveAll()
+			.stream()
+			.filter(insurance -> insurance.getInsuranceState() == InsuranceState.AUTHORIZED)
+			.limit(5)
+			.collect(Collectors.toList());
+	}
+
+	public int calculateInsuranceFee(Insurance insurance, Customer customer) {
+		return new Random().nextInt(10000, 20000);
+	}
+
+	public String recommendInsuranceReason(Insurance insurance, Customer customer) {
+		return "~~~ 이유로 이 보험을 추천합니다.";
+	}
 }

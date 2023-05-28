@@ -27,4 +27,7 @@ public class OuterActor {
         contract.setContractRunState(ContractRunState.Finish);
     }
 
+    public static void sendSMS(String s) {
+        System.out.println("SMS 전송: " + s);
+    }
 }
