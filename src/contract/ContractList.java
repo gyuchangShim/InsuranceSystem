@@ -6,5 +6,5 @@ public interface ContractList {
 
     void add(Contract contract);
 
-    List<Contract> getAllregist();
+    List<Contract> retrieveAll();
 }

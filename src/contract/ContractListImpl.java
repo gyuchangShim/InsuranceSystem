@@ -5,7 +5,8 @@ import java.util.List;
 
 public class ContractListImpl implements ContractList {
 
-	public static List<contract.Contract> contractList;
+	private List<Contract> contractList;
+	private int contractIdGenerator;
 
 	public ContractListImpl(){
 		this.contractList = new ArrayList<>();
@@ -15,7 +16,8 @@ public class ContractListImpl implements ContractList {
 
 	}
 
-	public void add(contract.Contract contract){
+	public void add(Contract contract){
+		contract.setContractID(generateContractId());
 		contractList.add(contract);
 	}
 
@@ -31,6 +33,9 @@ public class ContractListImpl implements ContractList {
 
 	}
 
-	public List<contract.Contract> getAllregist() {return contractList;}
+	public List<Contract> retrieveAll() {return contractList;}
 
+	private int generateContractId(){
+		return contractIdGenerator++;
+	}
 }

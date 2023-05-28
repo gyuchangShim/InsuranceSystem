@@ -549,7 +549,7 @@ public class Main {
     }
     private static void basicUW() {
         // 인수 심사 대상 리스트 출력
-        List<Contract> registList = contractList.getAllregist()
+        List<Contract> registList = contractList.retrieveAll()
                 .stream()
                 .filter(contract -> contract.getContractState() == ContractState.Online
                         && contract.getContractRunState() == ContractRunState.Ready
@@ -574,7 +574,7 @@ public class Main {
     private static void collaborateUW() {
         // 공동 인수 시작
         // 인수 심사 대상 리스트 출력
-        List<Contract> registCList = contractList.getAllregist()
+        List<Contract> registCList = contractList.retrieveAll()
                 .stream()
                 .filter(contract -> contract.getContractState() == ContractState.Online
                         && contract.getContractRunState() == ContractRunState.Ready
@@ -989,6 +989,21 @@ public class Main {
         }
     }
     private static void contract(Insurance insurance, Customer customer) {
+        System.out.println("*************** 청약서 작성 ***************");
+        String contractFile = TuiReader.readInput(" 저장에 실패했습니다.");
+        Contract contract = new Contract();
+        contract.setInsuranceID(insurance.getInsuranceID());
+        contract.setCustomerID(customer.getCustomerID());
+        contract.setContractFile(contractFile);
+        contract.setContractDate(LocalDateTime.now());
+        contract.setContractState(ContractState.Offline);
+        contract.setContractRunState(ContractRunState.Ready);
+        ContractUWState contractUWState = customer.getIncomeLevel() < 5 ?
+            ContractUWState.Basic : ContractUWState.Collaborative;
+        contract.setContractUWState(contractUWState);
+        contractList.add(contract);
+        System.out.println("청약서 저장이 완료됐습니다. 인수 심사로 넘어갑니다.");
+        underWriting();
 
     }
     private static void counselingApply() {
