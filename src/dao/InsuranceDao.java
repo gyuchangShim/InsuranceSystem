@@ -27,7 +27,7 @@ public class InsuranceDao implements InsuranceList {
 
     @Override
     public void delete(int insuranceId) {
-
+    	
     }
 
     @Override

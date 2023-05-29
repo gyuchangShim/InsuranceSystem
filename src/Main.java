@@ -78,6 +78,7 @@ public class Main {
     public static void main(String[] args) {
         initialize();
         loginPage();
+        customerNotice();
         mainPage();
     }
     private static void loginPage(){
@@ -110,54 +111,65 @@ public class Main {
 
         }
     }
+    private static void customerNotice() {
+    	// 최초 로그인 시 자신의 계정에 와있는 알림을 확인한다.
+    	if( customerID != 0 ) {
+    		checkAdviceNote();
+    	}
+    	
+    }
     private static void mainPage() {
         while (true) {
             try {
-                printMenu();
-                int choice = TuiReader.choice(0, 8);
+            	if( customerID==0 ) {
+            		printEmployeeMenu();
+            	} else {
+            		printCustomerMenu();
+            	}
+                int choice = TuiReader.choice(0, 45);
                 switch (choice) {
-                    case 1:
+                    case 21:
                         createInsurance();
                         break;
-                    case 2:
+                    case 22:
                         // 인수 정책 관련 CRUD
                         uwPolicy();
                         break;
-                    case 3:
+                    case 23:
                         // 인수 심사 -> Contract 불러오기
                         underWriting();
                         break;
-                    case 4:
+                    case 11:
                         // 보험 가입 -> Contract에 저장
                         registerInsurance();
-                    case 5:
+                    case 24:
                         // 캠페인 프로그램 관련
                         campaignProgramMenu();
-                    case 7:
+                    case 25:
                         processSales();
                         break;
-                    case 8:
+                    case 26:
                         processReward();
                         break;
-                    case 9:
+                    case 12:
                         applyReward();
                         break;
-                    case 10:
+                    case 27:
                     	managePayment();
                     	break;
-                    case 13:
+                    case 28:
                     	manageStudent();
                     	break;
-                    case 14:
+                    case 29:
                     	manageEducation();
                     	break;
-                    case 15:
+                    case 30:
                     	manageExpireContract();
                     	break;
-                    case 19:
+                    case 31:
                     	addContractManagemetPolicy();
                     	break;
-                    case 20:
+                    case 32:
                     	manageContractAnalysis();
                     	break;
                     case 0:
@@ -172,22 +184,26 @@ public class Main {
             }
         }
     }
-    private static void printMenu() {
-        System.out.println("********************* MENU *********************");
-        System.out.println(" 1. 상품개발");
-        System.out.println(" 2. 인수정책");
-        System.out.println(" 3. 인수심사");
-        System.out.println(" 4. 보험가입");
-        System.out.println(" 5. 캠페인 프로그램");
-        System.out.println(" 7. 영업 활동");
-        System.out.println(" 8. 보상 처리");
-        System.out.println(" 9. 보험금 신청");
-        System.out.println(" 10. 분납/수금 관리");
-        System.out.println(" 13. 교육 수료자 관리");
-        System.out.println(" 14. 교육 추가");
-        System.out.println(" 15. 만기 계약 관리");
-        System.out.println("19. 계약 관리 지침");
-        System.out.println("20. 계약 통계 관리");
+    private static void printCustomerMenu() {
+    	System.out.println("********************* MENU *********************");
+    	System.out.println("11. 보험 가입");
+    	System.out.println("12. 보험금 신청");
+    	System.out.println(" 0. 종료 ");
+    }
+    private static void printEmployeeMenu() {
+    	System.out.println("********************* MENU *********************");
+    	System.out.println(" 21. 상품개발");
+        System.out.println(" 22. 인수정책");
+        System.out.println(" 23. 인수심사");
+        System.out.println(" 24. 캠페인 프로그램");
+        System.out.println(" 25. 영업 활동");
+        System.out.println(" 26. 보상 처리");
+        System.out.println(" 27. 분납/수금 관리");
+        System.out.println(" 28. 교육 수료자 관리");
+        System.out.println(" 29. 교육 추가");
+        System.out.println(" 30. 만기 계약 관리");
+        System.out.println(" 31. 계약 관리 지침");
+        System.out.println(" 32. 계약 통계 관리");
         System.out.println(" 0. 종료 ");
     }
     private static void createInsurance() {
@@ -411,7 +427,7 @@ public class Main {
                 System.out.println("보험 가입 신청이 완료되었습니다.");
                 break;
             case 2:
-                printMenu();
+                printCustomerMenu();
                 break;
         }
     }
@@ -583,7 +599,7 @@ public class Main {
                 campaignProgram.setProgramState(CampaignProgram.campaignState.Run);
                 break;
             case 2:
-                printMenu();
+                printEmployeeMenu();
         }
     }
     private static void modifyCampaignProgramPlan() {
@@ -985,6 +1001,7 @@ public class Main {
     		adviceNote.setAdviceNoteID( newID );
     		adviceNote.setResult( Result.PROCESS );
     		adviceNote.setCustomerID( selectedContract.getCustomerID() );
+    		adviceNote.setContractID( selectedContract.getContractID() );
     		Insurance tmpInsurance = contractManagementTeam.getInsurance( selectedContract.getInsuranceID() );
     		String content = tmpInsurance.getInsuranceName() + "에 대한 계약이 만료되었습니다. 재계약 여부를 확인해주세요. ";
     		adviceNote.setContent( content );
@@ -993,5 +1010,33 @@ public class Main {
     		System.out.println("안내장 발송이 완료되었습니다.");
     	}
     	// 안내장 발송까지 완료
+    }
+    // 로그인 시 확인할 것
+    private static void checkAdviceNote() {
+    	Vector<AdviceNote> adviceList = contractManagementTeam.getAllAdviceNote();
+    	Vector<AdviceNote> myAdviceNote = new Vector<AdviceNote>();
+    	for( AdviceNote advice : adviceList ) {
+    		if( advice.getCustomerID()==customerID ) myAdviceNote.add( advice );
+    	}
+    	if( myAdviceNote.size()!=0 ) {
+    		System.out.println("안내문이 있습니다.");
+    		for( AdviceNote advice : adviceList ) {
+    			Contract expireContract = contractManagementTeam.getContract( advice.getContractID() );
+    			Insurance expireInsurance = contractManagementTeam.getInsurance( expireContract.getInsuranceID() );
+    			System.out.println( expireInsurance.getInsuranceName() + " 상품에 대한 계약이 만기되었습니다." );
+    			System.out.println("1. 재계약   2. 확인 ");
+    			int choice = TuiReader.choice( 1,  2 );
+    			if( choice==1 ) {
+    				advice.setResult( Result.ACCEPT );
+    				contractManagementTeam.setAdviceNote( advice );
+    				contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
+    				System.out.println("재계약 신청이 완료되었습니다.");
+    			} else if( choice==2 ) {
+    				advice.setResult( Result.DENY );
+    				contractManagementTeam.setAdviceNote( advice );
+    				contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
+    			}
+    		}
+    	}
     }
 }
