@@ -9,6 +9,7 @@ import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import customerManagement.CustomerManagementListImpl;
 import exception.CCounselingNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import customer.CustomerList;
@@ -24,22 +25,27 @@ import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
+import exception.CustomException;
 import insurance.Insurance;
 import insurance.InsuranceList;
 import insurance.InsuranceListImpl;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
-import java.time.LocalDate;
+import marketingPlanning.CampaignProgram;
+import marketingPlanning.CampaignProgramList;
+import marketingPlanning.CampaignProgramListImpl;
+import outerActor.OuterActor;
+import reward.Reward;
+import teams.BusinessEducationTeam;
+import teams.ContractManagementTeam;
+import teams.CustomerManagementTeam;
 import teams.InsuranceDevelopmentTeam;
 
+import teams.MarketingPlanningTeam;
+import teams.UnderwritingTeam;
+import undewriting.AssumePolicy;
 import undewriting.AssumePolicyList;
 import undewriting.AssumePolicyListImpl;
-import exception.CustomException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Vector;
-import java.util.stream.Collectors;
-import outerActor.OuterActor;
 import userPersona.UserPersona;
 import userPersona.UserPersonaList;
 import userPersona.UserPersonaListImpl;
@@ -64,6 +70,8 @@ public class Main {
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
     private static SellGroupTeam sellGroupTeam;
+    private static BusinessEducationTeam businessEducationTeam;
+    private static ContractManagementTeam contractManagementTeam;
     private static int customerID;
 
     public static void initialize() {
@@ -80,6 +88,11 @@ public class Main {
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new CustomerManagementTeam(customerManagementList, customerList);
         sellGroupTeam = new SellGroupTeam(insuranceList);
+        marketingPlanningTeam = new teams.MarketingPlanningTeam();
+        underwritingTeam = new teams.UnderwritingTeam(assumePolicyList);
+        customerManagementTeam = new teams.CustomerManagementTeam();
+        businessEducationTeam = new teams.BusinessEducationTeam();
+        contractManagementTeam = new teams.ContractManagementTeam();
     }
     public static void main(String[] args) {
         initialize();
@@ -119,7 +132,6 @@ public class Main {
             insuranceList.add(insurance);
         }
     }
-
     private static void loginPage(){
         System.out.println("*********************  로그인  *********************");
         System.out.println(" 1. 고객 로그인");
@@ -179,39 +191,63 @@ public class Main {
             }
         }
     }
+    private static void customerNotice() {
+    	// 최초 로그인 시 자신의 계정에 와있는 알림을 확인한다.
+    	if( customerID != 0 ) {
+    		checkAdviceNote();
+    	}
 
+    }
     private static void mainPage() {
         while (true) {
             try {
                 printMenu();
                 int choice = TuiReader.choice(0, 8);
                 switch (choice) {
-                    case 1:
+                    case 21:
                         createInsurance();
                         break;
-                    case 2:
+                    case 22:
                         // 인수 정책 관련 CRUD
                         uwPolicy();
                         break;
-                    case 3:
+                    case 23:
                         // 인수 심사 -> Contract 불러오기
                         underWriting();
                         break;
-                    case 4:
+                    case 11:
                         // 보험 가입 -> Contract에 저장
                         registerInsurance();
-                    case 5:
+                    case 24:
                         // 캠페인 프로그램 관련
                         campaignProgramMenu();
-                    case 7:
+                    case 25:
                         processSales();
                         break;
-                    case 8:
+                    case 26:
                         processReward();
                         break;
-                    case 9:
+                    case 12:
                         applyReward();
                         break;
+                    case 27:
+                    	managePayment();
+                    	break;
+                    case 28:
+                    	manageStudent();
+                    	break;
+                    case 29:
+                    	manageEducation();
+                    	break;
+                    case 30:
+                    	manageExpireContract();
+                    	break;
+                    case 31:
+                    	addContractManagemetPolicy();
+                    	break;
+                    case 32:
+                    	manageContractAnalysis();
+                    	break;
                     case 0:
                         System.out.close();
                         break;
@@ -224,16 +260,26 @@ public class Main {
             }
         }
     }
-    private static void printMenu() {
-        System.out.println("********************* MENU *********************");
-        System.out.println(" 1. 상품개발");
-        System.out.println(" 2. 인수정책");
-        System.out.println(" 3. 인수심사");
-        System.out.println(" 4. 보험가입");
-        System.out.println(" 5. 캠페인 프로그램");
-        System.out.println(" 7. 영업 활동");
-        System.out.println(" 8. 보상 처리");
-        System.out.println(" 9. 보험금 신청");
+    private static void printCustomerMenu() {
+    	System.out.println("********************* MENU *********************");
+    	System.out.println("11. 보험 가입");
+    	System.out.println("12. 보험금 신청");
+    	System.out.println(" 0. 종료 ");
+    }
+    private static void printEmployeeMenu() {
+    	System.out.println("********************* MENU *********************");
+    	System.out.println(" 21. 상품개발");
+        System.out.println(" 22. 인수정책");
+        System.out.println(" 23. 인수심사");
+        System.out.println(" 24. 캠페인 프로그램");
+        System.out.println(" 25. 영업 활동");
+        System.out.println(" 26. 보상 처리");
+        System.out.println(" 27. 분납/수금 관리");
+        System.out.println(" 28. 교육 수료자 관리");
+        System.out.println(" 29. 교육 추가");
+        System.out.println(" 30. 만기 계약 관리");
+        System.out.println(" 31. 계약 관리 지침");
+        System.out.println(" 32. 계약 통계 관리");
         System.out.println(" 0. 종료 ");
     }
     private static void createInsurance() {
@@ -264,7 +310,6 @@ public class Main {
                 break;
         }
     }
-
     private static void processSales() {
         System.out.println("********************* 영업 활동 *********************");
         System.out.println(" 1. 영업 활동 계획");
@@ -488,7 +533,6 @@ public class Main {
                 break;
         }
     }
-
     private static void uwPolicy() {
         System.out.println("********************* 인수 정책 *********************");
         System.out.println(" 1. 인수 정책 열람");
@@ -595,7 +639,6 @@ public class Main {
             System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
         }
     }
-
     private static void campaignProgramMenu() {
         System.out.println(" 1. 새로운 캠페인 프로그램 기획");
         System.out.println(" 2. 캠페인 프로그램 열람");
@@ -607,11 +650,10 @@ public class Main {
                 break;
             case 2:
                 // 캠페인 프로그램 열람
-                retrieveCampaignProgram();
+//                retrieveCampaignProgram();
                 break;
         }
     }
-
     private static void campaignPlan() {
         // 기획안이 통과되지 않은 경우 구현 X
         System.out.println("********************* 새로운 캠페인 프로그램 기획 *********************");
@@ -684,7 +726,7 @@ public class Main {
         campaignProgram.setReport(campaignPrograms.get(endCampaignChoice));
         }
     }
-    
+
     private static void runCampaign() {
         // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제
         System.out.println("********************* 캠페인 프로그램 실행 *********************");
@@ -760,6 +802,50 @@ public class Main {
     	applyReward.setCustomerName( tmpCustomer.getName() );
     	rewardTeam.setReward( applyReward );
     	rewardTeam.manage( Target.REWARD, Crud.UPDATE );
+    }
+    private static void runCampaign() {
+        // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제
+        System.out.println("********************* 캠페인 프로그램 실행 *********************");
+        // 통과된 기획 리스트 보여주기 - DB
+        List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll();
+        for(CampaignProgram campaignProgram : campaignPrograms) {
+            System.out.println(campaignProgram.getCampaignID() + campaignProgram.getCampaignName());
+        }
+        // 실행할 campaignProgram 선택
+        int campaignChoice = TuiReader.choice(0, campaignPrograms.size() - 1);
+        System.out.println("실행할 캠페인 프로그램을 선택하세요.");
+
+        // 선택된 campaign 실행 or 취소
+        System.out.println("선택한 기획안 출력");
+        System.out.println(" 1. 프로그램 실행");
+        System.out.println(" 0. 초기 화면으로");
+        int runChoice = TuiReader.choice(0, 1);
+        switch (runChoice) {
+            case 1:
+                System.out.println("해당 프로그램이 실행됩니다.");
+                // 선택된 프로그램 상태를 진행 중으로 변환
+                CampaignProgram campaignProgram = campaignPrograms.get(campaignChoice);
+                campaignProgram.setProgramState(CampaignProgram.campaignState.Run);
+                break;
+            case 2:
+                printEmployeeMenu();
+        }
+    }
+    private static void modifyCampaignProgramPlan() {
+        System.out.println("********************* 캠페인 프로그램 기획안 수정 *********************");
+        // 캠페인 프로그램 진행 전, 중 상태의 기획안만 수정 - 시나리오 X
+    }
+    private static void endCampaign() {
+        // 지난 캠페인
+        System.out.println("********************* 지난 캠페인 페이지 *********************");
+        // TODO(혁): 지난 캠페인만 filter로 걸러내기
+        List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll();
+        for(CampaignProgram campaignProgram : campaignPrograms) {
+            System.out.println(campaignProgram.getCampaignID() + campaignProgram.getCampaignName());
+        }
+        int endCampaignChoice = TuiReader.choice(0, campaignPrograms.size() - 1);
+
+
     }
     private static void processReward() {
         teams.RewardTeam rewardTeam = new teams.RewardTeam();
@@ -1028,5 +1114,298 @@ public class Main {
             }
         }
         System.out.println("접수 완료되었습니다.");
+    }
+    private static void manageStudent() {
+    	Vector<Education> educationList = businessEducationTeam.getAllEducation();
+    	if( educationList.size()==0 )System.out.println("아직 수행된 교육이 없습니다.");
+    	else {
+	    	System.out.println("--------------------교육 수료자를 관리할 교육을 선택하세요 -----------------------");
+	    	for( int i=0; i < educationList.size(); i++ ) {
+	    		System.out.println( i + ": " + educationList.get(i).getName() + "( " + educationList.get(i).getTeacherName()  + ") " );
+	    	}
+	    	System.out.println("----------------------------------------------------------------------");
+	    	int select = TuiReader.choice(0, educationList.size() - 1);
+	    	int selectedEducationID = educationList.get(select).getEducationID();
+
+	    	System.out.println("수행할 작업을 선택하세요");
+	    	System.out.println("1. 학생 추가 2. 학생 정보 수정 3. 학생 조회");
+	    	select = TuiReader.choice( 1,  3 );
+	    	switch( select ) {
+	    	case 1:
+	    		System.out.println("수료자의 이름, 나이, 전화번호, 평가, 점수를 입력하세요");
+	    		String studentString = TuiReader.readInput("정확한 정보를 입력하세요");
+	    		String[] studentSplit = studentString.split("/");
+	    		EducationStudent student = new EducationStudent();
+	    		student.setName( studentSplit[0] );
+	    		student.setAge( Integer.parseInt( studentSplit[1] ) );
+	    		student.setPhone( studentSplit[2] );
+	    		student.setExamination( studentSplit[3] );
+	    		student.setStudentScore( Integer.parseInt( studentSplit[4] ) );
+	    		student.setEducationID( selectedEducationID );
+	    		Vector<EducationStudent> studentList = businessEducationTeam.getAllStudent();
+	    		student.setStudentID( studentList.get(-1).getStudentID() + 1 );
+	    		businessEducationTeam.setStudent( student );
+	    		businessEducationTeam.manage( Target.EDUCATION_STUDENT, Crud.CREATE );
+	    		System.out.println("저장이 완료되었습니다");
+	    		break;
+	    	}
+    	}
+    	/*
+    	Vector<EducationStudent> studentList = businessEducationTeam.getStduentByEducation( selectedEducationID );
+    	System.out.println( "--------------- 학생 번호를 선택하세요 -------------------");
+    	for( EducationStudent student : studentList ) {
+    		System.out.println( student.getStudentID() + ": " + student.getName() );
+    	}
+    	System.out.println( "----------------------------------------------------");
+    	select = TuiReader.choice( studentList.get(0).getStudentID(), studentList.get(0).getStudentID() + studentList.size() );
+    	*/
+    }
+    private static void manageEducation() {
+    	System.out.println("추가할 교육 이름, 교육 기간, 교육 장소, 강사 이름, 강사 전화번호, 교육 예산, 교육 내용을 입력하세요.");		// 예산, 강사 전화번호 추가 & 교육 날짜, 교육 대상자 삭제
+    	String educationString = TuiReader.readInput("정확한 정보를 입력하세요");
+    	String[] educationSplit = educationString.split("/");
+    	Education education = new Education();
+    	education.setName( educationSplit[0] );
+    	education.setDuration( Integer.parseInt( educationSplit[1] ) );
+    	education.setPlace( educationSplit[2] );
+    	education.setTeacherName( educationSplit[3] );
+    	education.setTeacherPhoneNumber( educationSplit[4] );
+    	education.setBudget( Integer.parseInt( educationSplit[5] ) );
+    	education.setContent( educationSplit[6] );
+    	int newEducationID = businessEducationTeam.getAllEducation().get(-1).getEducationID() + 1;
+    	education.setEducationID( newEducationID );
+    	System.out.println( "입력하신 정보가 올바르게 입력되었다면 확인을 눌러주세요.");
+    	System.out.println( education.getName() + ": " + education.getTeacherName() + " " + education.getContent() );
+    	System.out.println("1. 확인  2. 취소");
+    	int choice = TuiReader.choice( 1,  2 );
+    	if( choice==1 ) {
+    		businessEducationTeam.setEducation( education );
+        	businessEducationTeam.manage( Target.EDUCATION, Crud.CREATE );
+        	System.out.println("새로운 교육이 추가되었습니다.");
+    	}
+    }
+    private static void addContractManagemetPolicy() {
+    	Vector<ContractManagementPolicy> policyList = contractManagementTeam.getAllPolicy();
+    	if( policyList.size()== 0 ) {
+    		System.out.println("아직 수립된 정책이 없습니다.");
+    	} else {
+    		System.out.println("-----------현재 수립되어있는 정책 목록입니다. ------------------");
+        	for( int i=0; i<policyList.size(); i++ ) {
+        		System.out.println( i + ": " + policyList.get(i).getName() );
+        	}
+        	System.out.println("-------------------------------------------------------");
+    	}
+    	System.out.println("1. 확인  2. 지침 수립");
+    	int choice = TuiReader.choice( 1,  2 );
+    	if( choice==2 ) {
+    		while( true ) {
+    			System.out.println("지침 명칭, 지침 세부내용을 입력하세요.");
+    			String policyString;
+    			String[] policySplit;
+    			ContractManagementPolicy newPolicy = new ContractManagementPolicy();
+        		while( true ) {
+        			policyString = TuiReader.readInput("");
+            		policySplit = policyString.split("/");
+            		newPolicy.setName( policySplit[0] );
+            		newPolicy.setContent( policySplit[1] );
+            		newPolicy.setPolicyID( policyList.size() );
+            		int cnt = 0;
+            		for( ContractManagementPolicy alreadyPolicy: policyList ) {
+            			if( alreadyPolicy.getName().equals( newPolicy.getName() ) ) {
+            				System.out.println("이미 같은 명칭을 가진 정책이 존재합니다.");
+            				cnt=0;
+            				break;
+            			} else {
+            				cnt++;
+            			}
+            		}
+            		if( cnt==policyList.size()-1 ) break;
+        		}
+        		// 정책 이름 중복 확인
+        		System.out.println("------------입력한 정보가 올바른지 확인해주세요.-----------------");
+        		System.out.println("지침 명칭: " + newPolicy.getName() );
+        		System.out.println("지침 내용: " + newPolicy.getContent() );
+        		System.out.println("1. 확인  2. 취소");
+        		choice = TuiReader.choice( 1,  2 );
+        		if( choice==1 ) {
+        			contractManagementTeam.setPolicy( newPolicy );
+        			contractManagementTeam.manage( Target.CONTRACT_MANAGEMENT_POLICY, Crud.CREATE );
+        			break;
+        		}
+    		}
+    	}
+    }
+    private static void manageContractAnalysis() {
+    	Vector<Insurance> insuranceList = contractManagementTeam.getAllInsurance();
+    	if( insuranceList.size()==0 ) {
+    		System.out.println("보험 상품 내역을 불러올 수 없습니다");
+    	} else {
+    		System.out.println("------------------ 현재 생성되어있는 보험 목록 -------------------------");
+        	for( int i=0; i<insuranceList.size(); i++ ) {
+        		Insurance tempInsurance = insuranceList.get(i);
+        		Vector<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( tempInsurance.getInsuranceID() );
+        		int signedCustomerCount = contractListAboutInsurance.size();
+        		System.out.println( i + ": " + tempInsurance.getInsuranceName() + " " + tempInsurance.getPayment() + " " + tempInsurance.getGuarantee() +
+        				" " + tempInsurance.getRewardAmount() + " " + signedCustomerCount + "명의 가입자" );
+        	}
+        	System.out.println("----------------------------------------------------------------");
+        	System.out.println("자세히 보고 싶은 보험을 선택하세요");
+        	int choice = TuiReader.choice( 0, insuranceList.size() - 1 );
+        	Insurance selectedInsurance = insuranceList.get( choice );
+        	int signedCustomerCount=0;
+        	int amountResult=0;
+        	if( selectedInsurance.getSalesPerformance() == 0 ) {
+        		System.out.println("아직 해당 상품에 대한 실적을 계산할 수 없습니다.");
+        		return;
+        	} else {
+        		Vector<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( selectedInsurance.getInsuranceID() );
+        		signedCustomerCount = contractListAboutInsurance.size();
+        		amountResult = signedCustomerCount * selectedInsurance.getPayment();
+        	}
+        	if( selectedInsurance.getResultAnalysis()==0 ) {
+        		System.out.println("아직 효율 데이터를 계산할 수 없습니다.");
+        		return;
+        	}
+        	System.out.println( "--------------" + selectedInsurance.getInsuranceName() + "에 대한 통계입니다. ---------------------" );
+        	System.out.println( "예상 손익률: " + selectedInsurance.getEstimatedProfitRate() );
+        	System.out.println( "목표 가입자수: " + selectedInsurance.getGoalPeopleNumber() );
+        	System.out.println( "판매 실적: " + amountResult );
+        	System.out.println( "분석 결과: " + selectedInsurance.getResultAnalysis() );
+        	System.out.println("-----------------------------------------------------------------------------------------------");
+    	}
+    }
+    private static void managePayment() {
+    	Vector<Payment> paymentList = contractManagementTeam.getAllPayment();
+    	if( paymentList.size()==0 ) {
+    		System.out.println("현재 상품에 가입된 고객이 없습니다");
+    		return;
+    	}
+    	int tmp = 0;
+    	for( Payment payment : paymentList ) {
+    		if( !payment.getResult() ) break;
+    		else tmp++;
+    	}
+    	if( tmp==paymentList.size() ) {
+    		System.out.println("현재 미납 대상자가 존재하지 않습니다.");
+    		return;
+    	}
+    	System.out.println("----------------- 납부 대상자들 목록입니다 ----------------------");
+    	int num = 0;
+    	for( Payment payment : paymentList ) {
+    		Contract tempContract = contractManagementTeam.getContract( payment.getContractID() );
+    		Customer tempCustomer = contractManagementTeam.getCustomerInformation( tempContract.getCustomerID() );
+    		Insurance tempInsurance = contractManagementTeam.getInsurance( tempContract.getInsuranceID() );
+    		String payState;
+    		if( payment.getResult() ) payState="납부";
+    		else payState="미납부";
+    		System.out.println( num + " " + tempCustomer.getName() + " " + tempCustomer.getAge() + " " +
+    				tempInsurance.getInsuranceName() + " " + payment.getAmount() + "원 " + payment.getPayway().getString() + " " +
+    				payment.getContractDuration() + " " + payState );
+    		num++;
+    	}
+    	System.out.println( "---------------------------------------------------");
+    	System.out.println("원하시는 고객을 선택하세요");
+    	int choice = TuiReader.choice( 0, num-1 );
+    	Payment selectedPayment = paymentList.get( choice );
+    	Contract selectedContract = contractManagementTeam.getContract( selectedPayment.getContractDuration() );
+    	Customer selectedCustomer = contractManagementTeam.getCustomerInformation( selectedContract.getCustomerID() );
+		Insurance selectedInsurance = contractManagementTeam.getInsurance( selectedContract.getInsuranceID() );
+		System.out.println( "------------------ 해당 고객 정보입니다 -----------------------");
+		System.out.println("고객 번호: " + selectedCustomer.getCustomerID() );
+		System.out.println("고객 성명: " + selectedCustomer.getName() );
+		System.out.println("고객 나이: " + selectedCustomer.getAge() );				// 생년월일이 없어 나이로 대체
+		System.out.println("해당 상품: " + selectedInsurance.getInsuranceName() );
+		int unPayedMonth = selectedPayment.getContractDuration() - selectedPayment.getDuration();
+		int unPayed = unPayedMonth * selectedPayment.getAmount();
+		System.out.println("미납 금액: " + unPayed );
+		System.out.println("수납 방법: " + selectedPayment.getPayway().getString() );
+		System.out.println("가입 기간: " + selectedPayment.getContractDuration() );
+		System.out.println("미납 기간: " + unPayedMonth );
+		System.out.println("미납 안내: " + selectedPayment.getContent() );
+		System.out.println("----------------------------------------------------------");
+		System.out.println("1. 미납 공지  2. 확인");
+		choice = TuiReader.choice(1,  2 );
+		if( choice==1 ) {
+			// 미납 안내 문구
+			String unpayedWarning = "현재 보험료가 미납되었습니다. 빠른 시일 내에 납부 부탁드립니다.";
+			selectedPayment.setContent(unpayedWarning);
+			contractManagementTeam.setPayment(selectedPayment);
+			contractManagementTeam.manage( Target.PAYMENT, Crud.UPDATE );
+			System.out.println("미납 공지가 완료되었습니다.");
+		}
+    }
+    private static void manageExpireContract() {
+    	Vector<Contract> contractList = contractManagementTeam.getAllContract();
+    	if( contractList.size()==0 ) {
+    		System.out.println("현재 상품에 가입된 사용자가 없습니다.");
+    		return;
+    	}
+    	LocalDate today = LocalDate.now();
+    	Vector<Contract> expireList = new Vector<Contract>();
+    	for( Contract contract : contractList ) {
+    		Insurance tempInsurance = contractManagementTeam.getInsurance( contract.getInsuranceID() );
+    		if( today.isAfter( contract.getContractDate().plusMonths( tempInsurance.getDuration() ) ) ) expireList.add( contract );
+    	}
+    	if( expireList.size()==0 ) {
+    		System.out.println("만기 대상자가 없습니다");
+    		return;
+    	}
+    	System.out.println("---------------------계약이 만기된 고객 목록입니다.-------------------------");
+    	int i = 0;
+    	for( Contract contract: expireList ) {
+    		Customer tmpCustomer = contractManagementTeam.getCustomerInformation( contract.getCustomerID() );
+    		Insurance tmpInsurance = contractManagementTeam.getInsurance( contract.getInsuranceID() );
+    		System.out.println( i + " " + tmpCustomer.getName() + " " + tmpInsurance.getInsuranceName() + " " + contract.getContractDate()+ " " +
+    				tmpInsurance.getDuration() + "달 " );
+    		i++;
+    	}
+    	System.out.println("--------------------------------------------------------------------");
+    	int choice = TuiReader.choice( 0, i-1 );
+    	Contract selectedContract = expireList.get( choice );
+    	System.out.println("1. 안내장 발송  2. 확인");
+    	choice = TuiReader.choice(1,  2 );
+    	if( choice==1 ) {
+    		AdviceNote adviceNote = new AdviceNote();
+    		int newID = contractManagementTeam.getAllAdviceNote().size();
+    		adviceNote.setAdviceNoteID( newID );
+    		adviceNote.setResult( Result.PROCESS );
+    		adviceNote.setCustomerID( selectedContract.getCustomerID() );
+    		adviceNote.setContractID( selectedContract.getContractID() );
+    		Insurance tmpInsurance = contractManagementTeam.getInsurance( selectedContract.getInsuranceID() );
+    		String content = tmpInsurance.getInsuranceName() + "에 대한 계약이 만료되었습니다. 재계약 여부를 확인해주세요. ";
+    		adviceNote.setContent( content );
+    		contractManagementTeam.setAdviceNote(adviceNote);
+    		contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.CREATE );
+    		System.out.println("안내장 발송이 완료되었습니다.");
+    	}
+    	// 안내장 발송까지 완료
+    }
+    // 로그인 시 확인할 것
+    private static void checkAdviceNote() {
+    	Vector<AdviceNote> adviceList = contractManagementTeam.getAllAdviceNote();
+    	Vector<AdviceNote> myAdviceNote = new Vector<AdviceNote>();
+    	for( AdviceNote advice : adviceList ) {
+    		if( advice.getCustomerID()==customerID ) myAdviceNote.add( advice );
+    	}
+    	if( myAdviceNote.size()!=0 ) {
+    		System.out.println("안내문이 있습니다.");
+    		for( AdviceNote advice : adviceList ) {
+    			Contract expireContract = contractManagementTeam.getContract( advice.getContractID() );
+    			Insurance expireInsurance = contractManagementTeam.getInsurance( expireContract.getInsuranceID() );
+    			System.out.println( expireInsurance.getInsuranceName() + " 상품에 대한 계약이 만기되었습니다." );
+    			System.out.println("1. 재계약   2. 확인 ");
+    			int choice = TuiReader.choice( 1,  2 );
+    			if( choice==1 ) {
+    				advice.setResult( Result.ACCEPT );
+    				contractManagementTeam.setAdviceNote( advice );
+    				contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
+    				System.out.println("재계약 신청이 완료되었습니다.");
+    			} else if( choice==2 ) {
+    				advice.setResult( Result.DENY );
+    				contractManagementTeam.setAdviceNote( advice );
+    				contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
+    			}
+    		}
+    	}
     }
 }

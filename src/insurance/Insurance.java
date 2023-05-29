@@ -23,10 +23,10 @@ public class Insurance {
 	private String salesMethod; // 판매 방식
 
 	private float rate; // 보험요율
-	private int duration;
-	private int resultAnalysis;
-	private int rewardAmount;
-	private int salesPerformance;
+	private int duration;	// 기간
+	private int resultAnalysis;	// 결과 분석
+	private int rewardAmount;	// 보상 금액
+	private int salesPerformance;	// 판매 실적
 	
 	public Insurance(){
 		this.insuranceState = InsuranceState.PLANED;

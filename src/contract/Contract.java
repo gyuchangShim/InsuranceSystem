@@ -1,10 +1,10 @@
 package contract;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Contract {
 
-	private LocalDateTime contractDate;
+	private LocalDate contractDate;
 	private String contractFile;
 	private int contractID;
 	private int customerID;
@@ -42,12 +42,13 @@ public class Contract {
 	public ContractRunState getContractRunState() {
 		return this.contractRunState;
 	}
-	
-	public LocalDateTime getContractDate() {
+	private String specialization;		// 유저와 계약간의 특이사항
+
+	public LocalDate getContractDate() {
 		return contractDate;
 	}
 
-	public void setContractDate(LocalDateTime contractDate) {
+	public void setContractDate(LocalDate contractDate) {
 		this.contractDate = contractDate;
 	}
 
@@ -83,8 +84,12 @@ public class Contract {
 		this.insuranceID = insuranceID;
 	}
 
-	public void finalize() throws Throwable {
+	public void setSpecialization( String specialization ) {
+		this.specialization = specialization;
+	}
 
+	public String getSpecialization() {
+		return this.specialization;
 	}
 
 }

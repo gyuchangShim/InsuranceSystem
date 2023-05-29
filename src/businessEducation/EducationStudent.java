@@ -7,7 +7,26 @@ public class EducationStudent {
 	private int age;
 	private String name;
 	private String phone;
-	private String studentID;
+	private int studentID;
+	private int educationID;
+	private String examination;
+	private int studentScore;
+	
+	public String getExamination() {
+		return examination;
+	}
+
+	public void setExamination(String examination) {
+		this.examination = examination;
+	}
+
+	public int getStudentScore() {
+		return studentScore;
+	}
+
+	public void setStudentScore(int studentScore) {
+		this.studentScore = studentScore;
+	}
 
 	public EducationStudent(){
 
@@ -37,16 +56,20 @@ public class EducationStudent {
 		this.phone = phone;
 	}
 
-	public String getStudentID() {
+	public int getStudentID() {
 		return studentID;
 	}
 
-	public void setStudentID(String studentID) {
+	public void setStudentID(int studentID) {
 		this.studentID = studentID;
 	}
 
-	public void finalize() throws Throwable {
-
+	public int getEducationID() {
+		return this.educationID;
+	}
+	
+	public void setEducationID( int educationID ) {
+		this.educationID = educationID;
 	}
 
 	public void evaluateEducation(){
