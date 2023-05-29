@@ -19,10 +19,10 @@ import customer.CustomerListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import customerManagement.CustomerManagementListImpl;
+import dao.InsuranceDao;
 import exception.CCounselingNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import customer.CustomerList;
 import java.util.List;
@@ -44,7 +44,6 @@ import exception.CInsuranceNotFoundException;
 import exception.CustomException;
 import insurance.Insurance;
 import insurance.InsuranceList;
-import insurance.InsuranceListImpl;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
 import outerActor.OuterActor;
@@ -78,6 +77,7 @@ public class Main {
     private static OperationPolicyList operationPolicyList;
     private static AdviceNoteList adviceNoteList;
     private static ContractManagementPolicyList contractManagementPolicyList;
+
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
@@ -89,7 +89,7 @@ public class Main {
     private static int customerID;
 
     public static void initialize() {
-        insuranceList = new InsuranceListImpl();
+        insuranceList = new InsuranceDao();
         assumePolicyList = new AssumePolicyListImpl();
         campaignProgramList = new CampaignProgramListImpl();
         contractList = new ContractListImpl();
@@ -102,6 +102,7 @@ public class Main {
         paymentList = new PaymentListImpl();
         adviceNoteList = new AdviceNoteListImpl();
         contractManagementPolicyList = new ContractManagementPolicyListImpl();
+
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
         marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
@@ -114,7 +115,6 @@ public class Main {
     }
     public static void main(String[] args) {
         initialize();
-        initData();
         while (true) {
             try {
                 loginPage();
@@ -131,7 +131,7 @@ public class Main {
         CustomerManagement customerManagement = new CustomerManagement();
         customerManagement.setID("test");
         customerManagement.setPW("test");
-        customerManagement.setCustomerId(customerId);
+        customerManagement.setCustomerID(customerId);
         customerManagementList.add(customerManagement);
         // 상담 생성
         CustomerCounseling customerCounseling = new CustomerCounseling();
@@ -145,7 +145,6 @@ public class Main {
             Insurance insurance = new Insurance();
             insurance.setInsuranceName("살아있는보험" + i);
             insurance.setInsuranceState(InsuranceState.AUTHORIZED);
-            insurance.setInsuranceType(InsuranceType.FIRE);
             insuranceList.add(insurance);
         }
     }
@@ -830,8 +829,7 @@ public class Main {
     	applyReward.setAccidentProfile( inputList[1] );
     	applyReward.setIdentifyProfile( inputList[2] );
     	applyReward.setAppliResult( Result.PROCESS );
-    	Date date = new Date();
-    	applyReward.setAppliDate( date );
+    	applyReward.setAppliDate( LocalDate.now() );
     	applyReward.setReward(0);
     	applyReward.setContractID( assignedContract.get( selectedContract ).getContractID() );
     	Customer tmpCustomer = rewardTeam.getCustomerInformation( customerID );
@@ -854,8 +852,8 @@ public class Main {
                 System.out.println( rewardList.get(i).getCustomerName() + ": " +
                     rewardList.get(i).getAppliResult().getString() +
                     " " + rewardList.get(i).getContent() +
-                    " " + Integer.toString( rewardList.get(i).getAppliDate().getMonth() ) + "월 " +
-                    Integer.toString( rewardList.get(i).getAppliDate().getDay() ) + "일 " );
+                    " " + Integer.toString( rewardList.get(i).getAppliDate().getMonthValue() ) + "월 " +
+                    Integer.toString( rewardList.get(i).getAppliDate().getDayOfMonth() ) + "일 " );
             }
             System.out.println( "------------------------------" );
             int select = TuiReader.choice(0, rewardList.size()-1);

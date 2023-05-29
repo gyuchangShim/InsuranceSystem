@@ -1,9 +1,12 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.function.Supplier;
 
 public class Dao {
     private Connection connect = null;
@@ -13,7 +16,8 @@ public class Dao {
     // 우리가 exception 만들면 더 좋음
     public void connect() throws Exception{
         try {
-            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/insurance?useSSL=false", "root", "1234");
+            String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false";
+            connect = DriverManager.getConnection(url,  "root", "wodnd0131");
         } catch (Exception e) {
             throw e;
         }
@@ -60,5 +64,12 @@ public class Dao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public <T> T enumNullCheck(String value, Supplier<T> supplier) {
+        return value.contains("null") ? null : supplier.get();
+    }
+    public LocalDate dateNullCheck(Date value) {
+        return value == null ? null : value.toLocalDate();
     }
 }

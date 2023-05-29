@@ -3,7 +3,7 @@ package business;
 public class SellGroup {
 
 	private String exResult;
-	private int groupID;
+	private int sellGroupID;
 	private String name;
 	private String representative;
 	private String representativePhoneNumber;
@@ -22,11 +22,11 @@ public class SellGroup {
 	}
 
 	public int getGroupID() {
-		return groupID;
+		return sellGroupID;
 	}
 
 	public void setGroupID(int groupID) {
-		this.groupID = groupID;
+		this.sellGroupID = groupID;
 	}
 
 	public String getName() {

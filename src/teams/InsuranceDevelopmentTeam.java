@@ -3,6 +3,7 @@ package teams;
 import insurance.Insurance;
 import insurance.InsuranceList;
 import exception.CSaveFailException;
+import insurance.InsuranceState;
 import util.Constants.Crud;
 import util.Constants.Target;
 import util.TuiReader;

@@ -22,6 +22,7 @@ public class CustomerListImpl implements CustomerList {
 	}
 	@Override
 	public void delete(int customerId) {}
+
 	@Override
 	public Customer retrieve(int customerId) {
 		return customerList.stream()

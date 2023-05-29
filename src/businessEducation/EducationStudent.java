@@ -1,10 +1,11 @@
 package businessEducation;
 
+import util.Constants.Gender;
+
 public class EducationStudent {
 
-	@SuppressWarnings("unused")
-	private enum gender{ M, FEMALE };
 	private int age;
+	private Gender gender;
 	private String name;
 	private String phone;
 	private int studentID;
@@ -70,6 +71,14 @@ public class EducationStudent {
 	
 	public void setEducationID( int educationID ) {
 		this.educationID = educationID;
+	}
+
+	public Gender getGender() {
+		return gender;
+	}
+
+	public void setGender(Gender gender) {
+		this.gender = gender;
 	}
 
 	public void evaluateEducation(){
