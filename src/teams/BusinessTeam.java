@@ -1,19 +1,29 @@
 package teams;
-import business.OperationPolicy;
+import business.*;
 import util.Constants.Crud;
 import util.Constants.Target;
+import util.TuiReader;
+
+import java.util.List;
 
 public class BusinessTeam extends Team {
 
-	public OperationPolicy m_OperationPolicy;
+	private OperationPolicyList operationPolicyList;
+	private SellGroupList sellGroupList;
 
-	public BusinessTeam(){
-
+	public BusinessTeam(OperationPolicyList operationPolicyList, SellGroupList sellGroupList){
+		this.operationPolicyList = operationPolicyList;
+		this.sellGroupList = sellGroupList;
 	}
 
 	@Override
 	public void establishPolicy(Target target, Crud crud) {
-
+		String policyInf = TuiReader.readInput("정확히 입력해주세요.");
+		String[] policyInfList = policyInf.split("/");
+		OperationPolicy operationPolicy = new OperationPolicy();
+		operationPolicy.setName(policyInfList[0]);
+		operationPolicy.setContent(policyInfList[1]);
+		operationPolicyList.add(operationPolicy);
 	}
 
 	@Override
@@ -31,12 +41,17 @@ public class BusinessTeam extends Team {
 
 	}
 
-	public void finalize() throws Throwable {
-		super.finalize();
-	}
-
 	public void evaluateResult(){
-
+		String policyInf = TuiReader.readInput("정확히 입력해주세요.");
+		String[] policyInfList = policyInf.split("/");
+		SellGroup sellGroup = new SellGroup();
+		sellGroup.setName(policyInfList[0]);
+		sellGroup=sellGroupList.retrieve(sellGroup.getGroupID());
+		sellGroup.setExResult(policyInfList[1]);
+		sellGroupList.update(sellGroup);
 	}
 
+	public List<OperationPolicy> getAllPolicy() {
+		return operationPolicyList.retrieveAll();
+	}
 }

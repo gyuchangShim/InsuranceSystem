@@ -1,24 +1,26 @@
 package teams;
+
+import business.SellGroup;
+import business.SellGroupList;
 import customer.Customer;
 import insurance.Insurance;
 import insurance.InsuranceList;
 import insurance.InsuranceState;
-import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import util.Constants.Crud;
 import util.Constants.Target;
 
+import java.util.List;
+
 public class SellGroupTeam extends Team {
 
+	private SellGroupList sellGroupList;
 	private InsuranceList insuranceList;
 
-	public SellGroupTeam(InsuranceList insuranceList){
+	public SellGroupTeam(SellGroupList sellGroupList, InsuranceList insuranceList){
+		this.sellGroupList = sellGroupList;
 		this.insuranceList = insuranceList;
-	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
 	}
 
 	public void concludeContract(){
@@ -31,24 +33,26 @@ public class SellGroupTeam extends Team {
 
 	@Override
 	public void establishPolicy(Target target, Crud crud) {
-		
+
 	}
 
 	@Override
 	public void manage(Target target, Crud crud) {
-		
+
 	}
 
 	@Override
 	public void plan(Target target, Crud crud) {
-		
+
 	}
 
 	@Override
 	public void process(Target target, Crud crud) {
-		
-	}
 
+	}
+	public List<SellGroup> getAllGroup() {
+		return sellGroupList.retrieveAll();
+	}
 	public List<Insurance> recommendInsurance(Customer customer) {
 		return insuranceList.retrieveAll()
 			.stream()

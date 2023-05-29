@@ -7,7 +7,7 @@ public class Constants {
 		BUSINESS_PLAN,					// 운영 계획
 		BUSINESS_PERSONA,				// 운영 유저 페르소나
 		CONSULT,						// 상담
-		OPERATION_POLICY,				// 운영 정책
+		OPERATION_POLICY,				// 운영 방침
 		CONTRACT_MANAGEMENT_POLICY,		// 계약 관리 정책
 		PAYMENT,						// 납부
 		EXPIRATION_CONTRACT,			// 만기 계약

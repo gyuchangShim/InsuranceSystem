@@ -1,4 +1,12 @@
+import business.OperationPolicy;
+import business.OperationPolicyList;
+import business.SellGroup;
+import business.SellGroupList;
+import business.SellGroupListImpl;
+import businessEducation.Education;
+import businessEducation.EducationStudent;
 import contract.*;
+import contractManagement.ContractManagementPolicy;
 import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
@@ -9,15 +17,20 @@ import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import customerManagement.CustomerManagementListImpl;
 import exception.CCounselingNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 import customer.CustomerList;
+import java.util.List;
+import java.util.Vector;
+import java.util.stream.Collectors;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
 import marketingPlanning.CampaignProgramListImpl;
 import marketingPlanning.CampaignState;
 import reward.Reward;
+import teams.BusinessTeam;
 import teams.CustomerManagementTeam;
 import teams.MarketingPlanningTeam;
 import teams.SellGroupTeam;
@@ -31,19 +44,11 @@ import insurance.InsuranceList;
 import insurance.InsuranceListImpl;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
-import marketingPlanning.CampaignProgram;
-import marketingPlanning.CampaignProgramList;
-import marketingPlanning.CampaignProgramListImpl;
 import outerActor.OuterActor;
-import reward.Reward;
 import teams.BusinessEducationTeam;
 import teams.ContractManagementTeam;
-import teams.CustomerManagementTeam;
 import teams.InsuranceDevelopmentTeam;
 
-import teams.MarketingPlanningTeam;
-import teams.UnderwritingTeam;
-import undewriting.AssumePolicy;
 import undewriting.AssumePolicyList;
 import undewriting.AssumePolicyListImpl;
 import userPersona.UserPersona;
@@ -65,11 +70,14 @@ public class Main {
     private static UserPersonaList userPersonaList;
     private static CustomerCounselingList customerCounselingList;
     private static CustomerManagementList customerManagementList;
+    private static SellGroupList sellGroupList;
+    private static OperationPolicyList operationPolicyList;
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
     private static SellGroupTeam sellGroupTeam;
+    private static BusinessTeam businessTeam;
     private static BusinessEducationTeam businessEducationTeam;
     private static ContractManagementTeam contractManagementTeam;
     private static int customerID;
@@ -83,16 +91,15 @@ public class Main {
         customerList = new CustomerListImpl();
         customerCounselingList = new CustomerCounselingListImpl();
         customerManagementList = new CustomerManagementListImpl();
+        sellGroupList = new SellGroupListImpl();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
         marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new CustomerManagementTeam(customerManagementList, customerList);
-        sellGroupTeam = new SellGroupTeam(insuranceList);
-        marketingPlanningTeam = new teams.MarketingPlanningTeam();
-        underwritingTeam = new teams.UnderwritingTeam(assumePolicyList);
-        customerManagementTeam = new teams.CustomerManagementTeam();
-        businessEducationTeam = new teams.BusinessEducationTeam();
-        contractManagementTeam = new teams.ContractManagementTeam();
+        sellGroupTeam = new SellGroupTeam(sellGroupList, insuranceList);
+        businessTeam = new BusinessTeam(operationPolicyList, sellGroupList);
+        businessEducationTeam = new BusinessEducationTeam();
+        contractManagementTeam = new ContractManagementTeam();
     }
     public static void main(String[] args) {
         initialize();
@@ -105,7 +112,6 @@ public class Main {
             }
         }
     }
-
     private static void initData() {
         // 고객 생성
         Customer customer = new Customer();
@@ -147,7 +153,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
-                customerPage();
+                customerMenu();
                 break;
             case 2 :
                 System.out.println("ID:");
@@ -161,26 +167,33 @@ public class Main {
                 break;
             case 3 :
                 customerID=-1;
-                mainPage();
+                employeeMenu();
                 break;
             default:
                 throw new CIllegalArgumentException("잘못된 입력입니다.");
         }
     }
-
-    private static void customerPage() {
+    private static void customerMenu() {
         boolean isContinue = true;
         while (isContinue) {
             try {
                 System.out.println("********************* MENU *********************");
                 System.out.println(" 1. 상담 접수");
-                System.out.println(" 2. 종료");
-                int choice = TuiReader.choice(1, 2);
+                System.out.println(" 2. 보험 가입");
+                System.out.println(" 3. 보험금 신청");
+                System.out.println(" 0. 종료");
+                int choice = TuiReader.choice(0, 3);
                 switch (choice) {
                     case 1:
                         counselingApply();
                         break;
                     case 2:
+                        registerInsurance();
+                        break;
+                    case 3:
+                        applyReward();
+                        break;
+                    case 0:
                         isContinue = false;
                         break;
                     default:
@@ -198,58 +211,73 @@ public class Main {
     	}
 
     }
-    private static void mainPage() {
-        while (true) {
+    private static void printEmployeeMenu() {
+        System.out.println("********************* MENU *********************");
+        System.out.println(" 1. 상품개발");
+        System.out.println(" 2. 인수정책");
+        System.out.println(" 3. 인수심사");
+        System.out.println(" 4. 캠페인 프로그램");
+        System.out.println(" 5. 영업 활동");
+        System.out.println(" 6. 보상 처리");
+        System.out.println(" 7. 분납/수금 관리");
+        System.out.println(" 8. 교육 수료자 관리");
+        System.out.println(" 9. 교육 추가");
+        System.out.println(" 10. 만기 계약 관리");
+        System.out.println(" 11. 계약 관리 지침");
+        System.out.println(" 12. 계약 통계 관리");
+        System.out.println(" 13. 영업 조직 관리");
+        System.out.println(" 0. 종료 ");
+    }
+    private static void employeeMenu() {
+        boolean isContinue = true;
+        while (isContinue) {
             try {
-                printMenu();
-                int choice = TuiReader.choice(0, 8);
+                printEmployeeMenu();
+                int choice = TuiReader.choice(0, 12);
                 switch (choice) {
-                    case 21:
+                    case 1:
                         createInsurance();
                         break;
-                    case 22:
+                    case 2:
                         // 인수 정책 관련 CRUD
                         uwPolicy();
                         break;
-                    case 23:
+                    case 3:
                         // 인수 심사 -> Contract 불러오기
                         underWriting();
                         break;
-                    case 11:
-                        // 보험 가입 -> Contract에 저장
-                        registerInsurance();
-                    case 24:
+                    case 4:
                         // 캠페인 프로그램 관련
                         campaignProgramMenu();
-                    case 25:
+                    case 5:
                         processSales();
                         break;
-                    case 26:
+                    case 6:
                         processReward();
                         break;
-                    case 12:
-                        applyReward();
-                        break;
-                    case 27:
+                    case 7:
                     	managePayment();
                     	break;
-                    case 28:
+                    case 8:
                     	manageStudent();
                     	break;
-                    case 29:
+                    case 9:
                     	manageEducation();
                     	break;
-                    case 30:
+                    case 10:
                     	manageExpireContract();
                     	break;
-                    case 31:
-                    	addContractManagemetPolicy();
+                    case 11:
+                    	addContractManagementPolicy();
                     	break;
-                    case 32:
+                    case 12:
                     	manageContractAnalysis();
                     	break;
+                    case 13:
+                        businessTeamManage();
+                        break;
                     case 0:
-                        System.out.close();
+                        isContinue = false;
                         break;
                     default:
                         System.out.println("잘못된 입력입니다.");
@@ -259,28 +287,6 @@ public class Main {
                 System.out.println(e.getMessage());
             }
         }
-    }
-    private static void printCustomerMenu() {
-    	System.out.println("********************* MENU *********************");
-    	System.out.println("11. 보험 가입");
-    	System.out.println("12. 보험금 신청");
-    	System.out.println(" 0. 종료 ");
-    }
-    private static void printEmployeeMenu() {
-    	System.out.println("********************* MENU *********************");
-    	System.out.println(" 21. 상품개발");
-        System.out.println(" 22. 인수정책");
-        System.out.println(" 23. 인수심사");
-        System.out.println(" 24. 캠페인 프로그램");
-        System.out.println(" 25. 영업 활동");
-        System.out.println(" 26. 보상 처리");
-        System.out.println(" 27. 분납/수금 관리");
-        System.out.println(" 28. 교육 수료자 관리");
-        System.out.println(" 29. 교육 추가");
-        System.out.println(" 30. 만기 계약 관리");
-        System.out.println(" 31. 계약 관리 지침");
-        System.out.println(" 32. 계약 통계 관리");
-        System.out.println(" 0. 종료 ");
     }
     private static void createInsurance() {
         System.out.println("********************* 상품 개발 *********************");
@@ -510,7 +516,7 @@ public class Main {
                     // 로그아웃 시 고객 ID null값 처리
                     contract.setCustomerID(customerID);
                     contract.setInsuranceID(registList.get(registChoice).getInsuranceID());
-                    contract.setContractDate(LocalDateTime.now());
+                    contract.setContractDate(LocalDate.now());
                     contract.setContractState(ContractState.Online);
                     contract.setContractRunState(ContractRunState.Ready);
                     contractList.add(contract);
@@ -521,7 +527,7 @@ public class Main {
                     // 로그인 하면 해당 고객의 ID를 전역에 배치 - 로그아웃 시 고객 ID null값 처리
                     contract.setCustomerID(customerID);
                     contract.setInsuranceID(registList.get(registChoice).getInsuranceID());
-                    contract.setContractDate(LocalDateTime.now());
+                    contract.setContractDate(LocalDate.now());
                     contract.setContractState(ContractState.Online);
                     contract.setContractRunState(ContractRunState.Ready);
                     contractList.add(contract);
@@ -529,7 +535,7 @@ public class Main {
                 }
                 break;
             case 2:
-                printMenu();
+//                printMenu();
                 break;
         }
     }
@@ -650,7 +656,7 @@ public class Main {
                 break;
             case 2:
                 // 캠페인 프로그램 열람
-//                retrieveCampaignProgram();
+                retrieveCampaignProgram();
                 break;
         }
     }
@@ -726,7 +732,6 @@ public class Main {
         campaignProgram.setReport(campaignPrograms.get(endCampaignChoice));
         }
     }
-
     private static void runCampaign() {
         // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제
         System.out.println("********************* 캠페인 프로그램 실행 *********************");
@@ -747,11 +752,7 @@ public class Main {
         // 외부 엑터에 전달
         OuterActor.runProgram(campaignProgram);
         System.out.println("해당 프로그램이 실행됩니다.");
-        printMenu();
-    }
-    private static void modifyCampaignProgramPlan() {
-        // 캠페인 프로그램 진행 전, 중 상태의 기획안만 수정 - 시나리오 X
-        System.out.println("********************* 캠페인 프로그램 기획안 수정 *********************");
+//        printMenu();
     }
     private static void applyReward() {
     	// 고객 ID를 어떻게 가져오는가...
@@ -803,49 +804,9 @@ public class Main {
     	rewardTeam.setReward( applyReward );
     	rewardTeam.manage( Target.REWARD, Crud.UPDATE );
     }
-    private static void runCampaign() {
-        // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제
-        System.out.println("********************* 캠페인 프로그램 실행 *********************");
-        // 통과된 기획 리스트 보여주기 - DB
-        List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll();
-        for(CampaignProgram campaignProgram : campaignPrograms) {
-            System.out.println(campaignProgram.getCampaignID() + campaignProgram.getCampaignName());
-        }
-        // 실행할 campaignProgram 선택
-        int campaignChoice = TuiReader.choice(0, campaignPrograms.size() - 1);
-        System.out.println("실행할 캠페인 프로그램을 선택하세요.");
-
-        // 선택된 campaign 실행 or 취소
-        System.out.println("선택한 기획안 출력");
-        System.out.println(" 1. 프로그램 실행");
-        System.out.println(" 0. 초기 화면으로");
-        int runChoice = TuiReader.choice(0, 1);
-        switch (runChoice) {
-            case 1:
-                System.out.println("해당 프로그램이 실행됩니다.");
-                // 선택된 프로그램 상태를 진행 중으로 변환
-                CampaignProgram campaignProgram = campaignPrograms.get(campaignChoice);
-                campaignProgram.setProgramState(CampaignProgram.campaignState.Run);
-                break;
-            case 2:
-                printEmployeeMenu();
-        }
-    }
     private static void modifyCampaignProgramPlan() {
         System.out.println("********************* 캠페인 프로그램 기획안 수정 *********************");
         // 캠페인 프로그램 진행 전, 중 상태의 기획안만 수정 - 시나리오 X
-    }
-    private static void endCampaign() {
-        // 지난 캠페인
-        System.out.println("********************* 지난 캠페인 페이지 *********************");
-        // TODO(혁): 지난 캠페인만 filter로 걸러내기
-        List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll();
-        for(CampaignProgram campaignProgram : campaignPrograms) {
-            System.out.println(campaignProgram.getCampaignID() + campaignProgram.getCampaignName());
-        }
-        int endCampaignChoice = TuiReader.choice(0, campaignPrograms.size() - 1);
-
-
     }
     private static void processReward() {
         teams.RewardTeam rewardTeam = new teams.RewardTeam();
@@ -1081,7 +1042,7 @@ public class Main {
         contract.setInsuranceID(insurance.getInsuranceID());
         contract.setCustomerID(customer.getCustomerID());
         contract.setContractFile(contractFile);
-        contract.setContractDate(LocalDateTime.now());
+        contract.setContractDate(LocalDate.now());
         contract.setContractState(ContractState.Offline);
         contract.setContractRunState(ContractRunState.Ready);
         ContractUWState contractUWState = customer.getIncomeLevel() < 5 ?
@@ -1184,7 +1145,7 @@ public class Main {
         	System.out.println("새로운 교육이 추가되었습니다.");
     	}
     }
-    private static void addContractManagemetPolicy() {
+    private static void addContractManagementPolicy() {
     	Vector<ContractManagementPolicy> policyList = contractManagementTeam.getAllPolicy();
     	if( policyList.size()== 0 ) {
     		System.out.println("아직 수립된 정책이 없습니다.");
@@ -1407,5 +1368,110 @@ public class Main {
     			}
     		}
     	}
+    }
+
+    private static void businessTeamManage() {
+        System.out.println("********************* 영업 조직 관리 *********************");
+        System.out.println(" 1. 운영 방침");
+        System.out.println(" 2. 성과 평가");
+        int campaignChoice = TuiReader.choice(1, 2);
+        switch(campaignChoice) {
+            case 1:
+                operationPolicy();
+                break;
+            case 2:
+                evaluationMenu();
+                break;
+            default:
+                System.out.println("잘못된 입력입니다.");
+                break;
+        }
+    }
+
+    private static void operationPolicy() {
+        System.out.println("********************* 운영 방침 *********************");
+        System.out.println(" 1. 운영 방침 열람");
+        System.out.println(" 2. 운영 방침 수립");
+        System.out.println(" 3. 메인 메뉴로 돌아가기");
+        int choice = TuiReader.choice(1, 3);
+        switch (choice) {
+            case 1:
+                retrieveOPPolicy();
+                operationPolicy();
+                break;
+            case 2:
+                createOPPolicy();
+                operationPolicy();
+                break;
+            case 3:
+                break;
+            default:
+                System.out.println("잘못된 입력입니다.");
+                break;
+        }
+    }
+
+    private static void createOPPolicy() {
+        System.out.println("********************* 운영 방침 수립 *********************");
+        System.out.println("'운영 방침 제목 / 운영 방침 내용'를 입력해주세요.");
+        businessTeam.establishPolicy(Target.OPERATION_POLICY, Crud.CREATE);
+        System.out.println("인수 정책이 저장되었습니다.");
+    }
+
+    private static void retrieveOPPolicy() {
+        System.out.println("********************* 운영 방침 열람 *********************");
+        List<OperationPolicy> policyList = businessTeam.getAllPolicy();
+        if(policyList != null) {
+            for (int i = 0; i < policyList.size(); i++) {
+                System.out.println(i + ". " + policyList.get(i).getPolicyID() + " " + policyList.get(i).getName());
+                System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
+            }
+        } else {
+            System.out.println("현재 운영 방침이 존재하지 않습니다.");
+        }
+    }
+    private static void evaluationMenu() {
+        System.out.println("********************* 성과 평가 *********************");
+        System.out.println(" 1. 판매 조직 목록");
+        System.out.println(" 2. 성과 평가");
+        System.out.println(" 3. 메인 메뉴로 돌아가기");
+        int choice = TuiReader.choice(1, 3);
+        switch (choice) {
+            case 1:
+                retrieveEvaluation();
+                evaluationMenu();
+                break;
+            case 2:
+                updateEvaluation();
+                evaluationMenu();
+                break;
+            case 3:
+                break;
+            default:
+                System.out.println("잘못된 입력입니다.");
+                break;
+        }
+
+    }
+    private static void updateEvaluation() {
+        System.out.println("********************* 성과 평가 *********************");
+        System.out.println("'팀 이름 / 성과'를 입력해주세요.");
+        businessTeam.evaluateResult();
+        System.out.println("평가 내용을 저장되었습니다.");
+    }
+    private static void retrieveEvaluation() {
+        System.out.println("********************* 판매 조직 조회 *********************");
+        List<SellGroup> sellGroupList = sellGroupTeam.getAllGroup();
+        if(sellGroupList != null) {
+            for (int i = 0; i < sellGroupList.size(); i++) {
+                System.out.println(sellGroupList.get(i).getGroupID() + " . " +
+                    sellGroupList.get(i).getExResult()+" / "+
+                    sellGroupList.get(i).getName()+" / "+
+                    sellGroupList.get(i).getRepresentative()+" / "+
+                    sellGroupList.get(i).getRepresentativePhoneNumber());
+            }
+        } else {
+            System.out.println("현재 판매 조직이 존재하지 않습니다.");
+        }
     }
 }

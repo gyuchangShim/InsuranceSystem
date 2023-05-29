@@ -1,31 +1,48 @@
 package business;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SellGroupListImpl implements SellGroupList {
 
-	public SellGroup m_SellGroup;
+	private List<SellGroup> sellGroupList;
+	private int selGroupId;
 
-	public SellGroupListImpl(){
+	public SellGroupListImpl() {
+		sellGroupList = new ArrayList<>();
+		selGroupId = 1;
+	}
+
+	@Override
+	public void add(SellGroup sellGroup) {
+		sellGroup.setGroupID(generateSellGroupId());
+		sellGroupList.add(sellGroup);
+	}
+
+	@Override
+	public void delete(int sellGroupId) {
 
 	}
 
-	public void finalize() throws Throwable {
+	@Override
+	public SellGroup retrieve(int sellGroupId) {
+		return sellGroupList.stream()
+			.filter(sellGroup -> sellGroup.getGroupID() == sellGroupId)
+			.findFirst()
+			.get();
+	}
+
+	@Override
+	public void update(SellGroup sellGroup) {
 
 	}
 
-	public void add(){
-
+	@Override
+	public List<SellGroup> retrieveAll() {
+		return sellGroupList;
 	}
 
-	public void delete(){
-
+	private int generateSellGroupId() {
+		return selGroupId++;
 	}
-
-	public void retrieve(){
-
-	}
-
-	public void update(){
-
-	}
-
 }
