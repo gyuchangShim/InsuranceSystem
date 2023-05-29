@@ -60,7 +60,6 @@ public class SellGroupTeam extends Team {
 			.limit(5)
 			.collect(Collectors.toList());
 	}
-
 	public int calculateInsuranceFee(Insurance insurance, Customer customer) {
 		return new Random().nextInt(10000, 20000);
 	}

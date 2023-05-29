@@ -1,18 +1,19 @@
 package teams;
+import contract.AdviceNoteList;
+import contract.ContractList;
+import contract.PaymentList;
+import contractManagement.ContractManagementPolicyList;
+import customer.CustomerList;
+import insurance.InsuranceList;
+import java.util.List;
 import java.util.Vector;
 
 import contract.AdviceNote;
-import contract.AdviceNoteListImpl;
 import contract.Contract;
-import contract.ContractListImpl;
 import contract.Payment;
-import contract.PaymentListImpl;
 import contractManagement.ContractManagementPolicy;
-import contractManagement.ContractManagementPolicyListImpl;
 import customer.Customer;
-import customer.CustomerListImpl;
 import insurance.Insurance;
-import insurance.InsuranceListImpl;
 import util.Constants.Crud;
 import util.Constants.Target;
 
@@ -21,29 +22,29 @@ public class ContractManagementTeam extends Team {
 	public Contract m_Contract;
 	public Payment m_Payment;
 	public AdviceNote m_AdviceNote;
-	private ContractListImpl contractListImpl;
-	private InsuranceListImpl insuranceListImpl;
-	private CustomerListImpl customerListImpl;
-	private ContractManagementPolicyListImpl policyListImpl;
-	private PaymentListImpl paymentListImpl;
-	private AdviceNoteListImpl adviceNoteListImpl;	
+	private ContractList contractList;
+	private InsuranceList insuranceList;
+	private CustomerList customerList;
+	private ContractManagementPolicyList policyList;
+	private PaymentList paymentList;
+	private AdviceNoteList adviceNoteList;	
 
-	public ContractManagementTeam(){
-		this.contractListImpl = new ContractListImpl();
-		this.insuranceListImpl = new InsuranceListImpl();
-		this.customerListImpl = new CustomerListImpl();
-		this.policyListImpl = new ContractManagementPolicyListImpl();
-		this.paymentListImpl = new PaymentListImpl();
-		this.adviceNoteListImpl = new AdviceNoteListImpl();
+	public ContractManagementTeam(ContractList contractList, InsuranceList insuranceList, CustomerList customerList, ContractManagementPolicyList policyList, PaymentList paymentList, AdviceNoteList adviceNoteList){
+		this.contractList = contractList;
+		this.insuranceList = insuranceList;
+		this.customerList = customerList;
+		this.policyList = policyList;
+		this.paymentList = paymentList;
+		this.adviceNoteList = adviceNoteList;
 	}
 	public Customer getCustomerInformation( int customerID ) {
-		return this.customerListImpl.retrieve(null);		// 확인 필요
+		return this.customerList.retrieve(1);		// 확인 필요
 	}
 	public Contract getContract( int contractID ) {
-		return this.contractListImpl.retrieve( contractID );
+		return this.contractList.retrieve( contractID );
 	}
 	public Insurance getInsurance( int insuranceID ) {
-		return this.insuranceListImpl.retrieve(insuranceID);
+		return this.insuranceList.retrieve(insuranceID);
 	}
 	public void setContract( Contract contract ) {
 		this.m_Contract = contract;
@@ -57,14 +58,11 @@ public class ContractManagementTeam extends Team {
 	public void setAdviceNote( AdviceNote adviceNote ) {
 		this.m_AdviceNote = adviceNote;
 	}
-	public Vector<AdviceNote> getAllAdviceNote() {
-		return this.adviceNoteListImpl.retrieveAll();
-	}
-	public Vector<Insurance> getInsuranceByCustomerID( int customerID ){
-		return this.insuranceListImpl.getInsuranceByCustomerID(customerID);
+	public List<AdviceNote> getAllAdviceNote() {
+		return this.adviceNoteList.retrieveAll();
 	}
 	public Vector<Contract> getContractByInsuranceAndCustomerID( int insuranceID, int customerID ) {
-		Vector<Contract> contractList = this.contractListImpl.retrieveAll();
+		List<Contract> contractList = this.contractList.retrieveAll();
 		Vector<Contract> result = new Vector<Contract>();
 		for( Contract contract : contractList ) {
 			if( contract.getInsuranceID()==insuranceID && contract.getCustomerID()==customerID ) result.add( contract );
@@ -72,13 +70,13 @@ public class ContractManagementTeam extends Team {
 		return result;
 	}
 	public Vector<ContractManagementPolicy> getAllPolicy(){
-		return this.policyListImpl.retrieveAll();
+		return this.policyList.retrieveAll();
 	}
 	public Vector<Insurance> getAllInsurance(){
-		return (Vector<Insurance>) this.insuranceListImpl.retrieveAll();
+		return (Vector<Insurance>) this.insuranceList.retrieveAll();
 	}
 	public Vector<Contract> getContractByInsuranceID( int insuranceID ){
-		Vector<Contract> contractList = this.contractListImpl.retrieveAll();
+		List<Contract> contractList = this.contractList.retrieveAll();
 		Vector<Contract> result = new Vector<Contract>();
 		for( Contract contract : contractList ) {
 			if( contract.getInsuranceID()==insuranceID ) result.add( contract );
@@ -86,10 +84,10 @@ public class ContractManagementTeam extends Team {
 		return result;
 	}
 	public Vector<Payment> getAllPayment(){
-		return this.paymentListImpl.retrieveAll();
+		return this.paymentList.retrieveAll();
 	}
-	public Vector<Contract> getAllContract(){
-		return this.contractListImpl.retrieveAll();
+	public List<Contract> getAllContract(){
+		return this.contractList.retrieveAll();
 	}
 
 	@Override
@@ -104,7 +102,7 @@ public class ContractManagementTeam extends Team {
 			case READ:
 				break;
 			case UPDATE:
-				this.contractListImpl.update( this.m_Contract );
+				this.contractList.update( this.m_Contract );
 				break;
 			case DELETE:
 				break;
@@ -113,7 +111,7 @@ public class ContractManagementTeam extends Team {
 		case ADVICE_NOTE:
 			switch( crud ) {
 			case CREATE:
-				this.adviceNoteListImpl.add( this.m_AdviceNote );
+				this.adviceNoteList.add( this.m_AdviceNote );
 				break;
 			case READ:
 				break;

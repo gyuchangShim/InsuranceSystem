@@ -2,7 +2,6 @@ package contract;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class ContractListImpl implements ContractList {
 
@@ -22,24 +21,23 @@ public class ContractListImpl implements ContractList {
 		contractList.add(contract);
 	}
 
-	public void delete(){
+	@Override
+	public void delete(int contractId) {
 
 	}
 
-	public Contract retrieve( int contractID ){
-		
+	@Override
+	public Contract retrieve(int contractId) {
 		return null;
 	}
 
-	public void update( contract.Contract contract ){
-
-	}
-	
-	public Vector<Contract> retrieveAll(){
-		return null;
-	}
 
 	public List<Contract> retrieveAll() {return contractList;}
+
+	@Override
+	public void update(Contract contract) {
+
+	}
 
 	private int generateContractId(){
 		return contractIdGenerator++;

@@ -1,13 +1,19 @@
 package contract;
 
+import java.util.List;
 import java.util.Vector;
 
-public class AdviceNoteListImpl {
+public class AdviceNoteListImpl implements AdviceNoteList{
 	
 	public void add( AdviceNote adviceNote ) {
 		
 	}
-	
+
+	@Override
+	public List<Contract> getAllregist() {
+		return null;
+	}
+
 	public AdviceNote retrieve( int adviceNoteID ) {
 		return null;
 	}

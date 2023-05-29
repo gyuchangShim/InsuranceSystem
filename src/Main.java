@@ -1,5 +1,6 @@
 import business.OperationPolicy;
 import business.OperationPolicyList;
+import business.OperationPolicyListImpl;
 import business.SellGroup;
 import business.SellGroupList;
 import business.SellGroupListImpl;
@@ -7,6 +8,8 @@ import businessEducation.Education;
 import businessEducation.EducationStudent;
 import contract.*;
 import contractManagement.ContractManagementPolicy;
+import contractManagement.ContractManagementPolicyList;
+import contractManagement.ContractManagementPolicyListImpl;
 import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
@@ -71,7 +74,10 @@ public class Main {
     private static CustomerCounselingList customerCounselingList;
     private static CustomerManagementList customerManagementList;
     private static SellGroupList sellGroupList;
+    private static PaymentList paymentList;
     private static OperationPolicyList operationPolicyList;
+    private static AdviceNoteList adviceNoteList;
+    private static ContractManagementPolicyList contractManagementPolicyList;
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
@@ -91,7 +97,11 @@ public class Main {
         customerList = new CustomerListImpl();
         customerCounselingList = new CustomerCounselingListImpl();
         customerManagementList = new CustomerManagementListImpl();
+        operationPolicyList = new OperationPolicyListImpl();
         sellGroupList = new SellGroupListImpl();
+        paymentList = new PaymentListImpl();
+        adviceNoteList = new AdviceNoteListImpl();
+        contractManagementPolicyList = new ContractManagementPolicyListImpl();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
         marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
@@ -99,7 +109,8 @@ public class Main {
         sellGroupTeam = new SellGroupTeam(sellGroupList, insuranceList);
         businessTeam = new BusinessTeam(operationPolicyList, sellGroupList);
         businessEducationTeam = new BusinessEducationTeam();
-        contractManagementTeam = new ContractManagementTeam();
+        contractManagementTeam = new ContractManagementTeam(contractList, insuranceList, customerList,
+            contractManagementPolicyList, paymentList, adviceNoteList);
     }
     public static void main(String[] args) {
         initialize();
@@ -153,6 +164,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
+                customerNotice();
                 customerMenu();
                 break;
             case 2 :
@@ -206,8 +218,32 @@ public class Main {
     }
     private static void customerNotice() {
     	// 최초 로그인 시 자신의 계정에 와있는 알림을 확인한다.
-    	if( customerID != 0 ) {
-    		checkAdviceNote();
+    	if( customerID != -1 ) {
+            List<AdviceNote> adviceList = contractManagementTeam.getAllAdviceNote();
+            Vector<AdviceNote> myAdviceNote = new Vector<>();
+            for( AdviceNote advice : adviceList ) {
+                if( advice.getCustomerID()==customerID ) myAdviceNote.add( advice );
+            }
+            if( myAdviceNote.size()!=0 ) {
+                System.out.println("안내문이 있습니다.");
+                for( AdviceNote advice : adviceList ) {
+                    Contract expireContract = contractManagementTeam.getContract( advice.getContractID() );
+                    Insurance expireInsurance = contractManagementTeam.getInsurance( expireContract.getInsuranceID() );
+                    System.out.println( expireInsurance.getInsuranceName() + " 상품에 대한 계약이 만기되었습니다." );
+                    System.out.println("1. 재계약   2. 확인 ");
+                    int choice = TuiReader.choice( 1,  2 );
+                    if( choice==1 ) {
+                        advice.setResult( Result.ACCEPT );
+                        contractManagementTeam.setAdviceNote( advice );
+                        contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
+                        System.out.println("재계약 신청이 완료되었습니다.");
+                    } else if( choice==2 ) {
+                        advice.setResult( Result.DENY );
+                        contractManagementTeam.setAdviceNote( advice );
+                        contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
+                    }
+                }
+            }
     	}
 
     }
@@ -535,7 +571,6 @@ public class Main {
                 }
                 break;
             case 2:
-//                printMenu();
                 break;
         }
     }
@@ -1046,7 +1081,7 @@ public class Main {
         contract.setContractState(ContractState.Offline);
         contract.setContractRunState(ContractRunState.Ready);
         ContractUWState contractUWState = customer.getIncomeLevel() < 5 ?
-            ContractUWState.Basic : ContractUWState.Collaborative;
+            ContractUWState.Collaborative : ContractUWState.Basic;
         contract.setContractUWState(contractUWState);
         contractList.add(contract);
         System.out.println("청약서 저장이 완료됐습니다. 인수 심사로 넘어갑니다.");
@@ -1296,13 +1331,13 @@ public class Main {
 		}
     }
     private static void manageExpireContract() {
-    	Vector<Contract> contractList = contractManagementTeam.getAllContract();
+    	List<Contract> contractList = contractManagementTeam.getAllContract();
     	if( contractList.size()==0 ) {
     		System.out.println("현재 상품에 가입된 사용자가 없습니다.");
     		return;
     	}
     	LocalDate today = LocalDate.now();
-    	Vector<Contract> expireList = new Vector<Contract>();
+    	List<Contract> expireList = new Vector<>();
     	for( Contract contract : contractList ) {
     		Insurance tempInsurance = contractManagementTeam.getInsurance( contract.getInsuranceID() );
     		if( today.isAfter( contract.getContractDate().plusMonths( tempInsurance.getDuration() ) ) ) expireList.add( contract );
@@ -1341,35 +1376,6 @@ public class Main {
     	}
     	// 안내장 발송까지 완료
     }
-    // 로그인 시 확인할 것
-    private static void checkAdviceNote() {
-    	Vector<AdviceNote> adviceList = contractManagementTeam.getAllAdviceNote();
-    	Vector<AdviceNote> myAdviceNote = new Vector<AdviceNote>();
-    	for( AdviceNote advice : adviceList ) {
-    		if( advice.getCustomerID()==customerID ) myAdviceNote.add( advice );
-    	}
-    	if( myAdviceNote.size()!=0 ) {
-    		System.out.println("안내문이 있습니다.");
-    		for( AdviceNote advice : adviceList ) {
-    			Contract expireContract = contractManagementTeam.getContract( advice.getContractID() );
-    			Insurance expireInsurance = contractManagementTeam.getInsurance( expireContract.getInsuranceID() );
-    			System.out.println( expireInsurance.getInsuranceName() + " 상품에 대한 계약이 만기되었습니다." );
-    			System.out.println("1. 재계약   2. 확인 ");
-    			int choice = TuiReader.choice( 1,  2 );
-    			if( choice==1 ) {
-    				advice.setResult( Result.ACCEPT );
-    				contractManagementTeam.setAdviceNote( advice );
-    				contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
-    				System.out.println("재계약 신청이 완료되었습니다.");
-    			} else if( choice==2 ) {
-    				advice.setResult( Result.DENY );
-    				contractManagementTeam.setAdviceNote( advice );
-    				contractManagementTeam.manage( Target.ADVICE_NOTE, Crud.UPDATE );
-    			}
-    		}
-    	}
-    }
-
     private static void businessTeamManage() {
         System.out.println("********************* 영업 조직 관리 *********************");
         System.out.println(" 1. 운영 방침");

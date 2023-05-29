@@ -8,4 +8,5 @@ public interface AdviceNoteList {
 
     List<Contract> getAllregist();
 
+    List<AdviceNote> retrieveAll();
 }

@@ -1,13 +1,19 @@
 package contract;
 
+import java.util.List;
 import java.util.Vector;
 
-public class PaymentListImpl {
+public class PaymentListImpl implements  PaymentList{
 	
 	public void add( Payment payment ) {
 		
 	}
-	
+
+	@Override
+	public List<Payment> getAllregist() {
+		return null;
+	}
+
 	public Payment retrieve( int paymentID ) {
 		return null;
 	}
