@@ -25,7 +25,7 @@ public class CustomerManagementTeam {
                 customerManagement.getPW().equals(password))
             .findFirst();
         if (findCustomer.isPresent()) {
-            return findCustomer.get().getCustomerId();
+            return findCustomer.get().getCustomerID();
         }
         throw new CIllegalArgumentException("로그인을 실패했습니다.");
     }
@@ -36,7 +36,7 @@ public class CustomerManagementTeam {
         CustomerManagement customerManagement = new CustomerManagement();
         customerManagement.setID(userId);
         customerManagement.setPW(password);
-        customerManagement.setCustomerId(customerId);
+        customerManagement.setCustomerID(customerId);
         customerManagementList.add(customerManagement);
     }
 

@@ -13,8 +13,8 @@ public class Customer {
 	private String phoneNumber;
 	private String registrationNumber;
 	private int incomeLevel;
-	private String accountNumber;
-	private String accountPassword;
+	private String accountNumber; //계좌번호
+	private String accountPassword; //계좌비밀번호
 	
 	public Customer(){
 
