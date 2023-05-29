@@ -45,14 +45,32 @@ public class CustomerDao implements CustomerList {
 
 	@Override
 	public void delete(int customerId) {
-
+		String query = "DELETE FROM Customer WHERE customerId = " + customerId + ";";
+		dao.delete(query);
 	}
 	@Override
 	public Customer retrieve(int customerId) {
-		return null;
+		String query = "SELECT * FROM Customer WHERE customerId = " + customerId + ";";
+		try {
+			return getCustomer(dao.retrieve(query));
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	@Override
-	public void update(Customer customer) {}
+	public void update(Customer customer) {
+		String query = "UPDATE CustomerList SET address = '" +  customer.getAddress() + "', "
+				+ "sex= '"+customer.getSex() + "', "
+				+ "age= "+ customer.getAge() + ", "
+				+ "job= '"+ customer.getJob() + "', "
+				+ "name= '"+ customer.getName() + "', "
+				+ "phoneNumber= '"+ customer.getPhoneNumber() + "', "
+				+ "registrationNumber= '"+ customer.getRegistrationNumber() + "', "
+				+ "incomeLevel= "+ customer.getIncomeLevel() + ", "
+				+ "accountNumber= '"+ customer.getAccountNumber() + "',"
+				+ "accountPassword= '"+ customer.getAccountPassword() + "');";
+		dao.update(query);
+	}
 
 	@Override
 	public List<Customer> retrieveAll() {
@@ -82,7 +100,6 @@ public class CustomerDao implements CustomerList {
 		customer.setIncomeLevel(resultSet.getInt("incomeLevel"));
 		customer.setAccountNumber(resultSet.getString("accountNumber"));
 		customer.setAccountPassword(resultSet.getString("accountPassword"));
-
 		return customer;
 	}
 }
