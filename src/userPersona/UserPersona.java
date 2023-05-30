@@ -4,27 +4,27 @@ import util.Constants.Gender;
 
 public class UserPersona {
 
-    private int userPersonaId;
-    private int insuranceId;
+    private int userPersonaID;
+    private int insuranceID;
     private Gender sex;
     private int age;
     private String job;
     private int incomeLevel;
 
     public int getUserPersonaId() {
-        return userPersonaId;
+        return userPersonaID;
     }
 
-    public void setUserPersonaId(int userPersonaId) {
-        this.userPersonaId = userPersonaId;
+    public void setUserPersonaId(int userPersonaID) {
+        this.userPersonaID = userPersonaID;
     }
 
     public int getInsuranceId() {
-        return insuranceId;
+        return insuranceID;
     }
 
-    public void setInsuranceId(int insuranceId) {
-        this.insuranceId = insuranceId;
+    public void setInsuranceId(int insuranceID) {
+        this.insuranceID = insuranceID;
     }
 
     public Gender getSex() {

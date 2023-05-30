@@ -26,8 +26,8 @@ public class CustomerCounselingListImpl implements CustomerCounselingList{
     }
 
     @Override
-    public void retrieve() {
-
+    public CustomerCounseling retrieve(int counselingId) {
+        return null;
     }
 
     @Override

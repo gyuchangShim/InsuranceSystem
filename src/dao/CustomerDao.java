@@ -58,14 +58,19 @@ public class CustomerDao implements CustomerList {
 	public Customer retrieve(int customerId) {
 		String query = "SELECT * FROM Customer WHERE customerId = " + customerId + ";";
 		try {
-			return getCustomer(dao.retrieve(query));
+			ResultSet retrieve = dao.retrieve(query);
+			if (retrieve.next()) {
+				return getCustomer(retrieve);
+			} else {
+				return null;
+			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	@Override
 	public void update(Customer customer) {
-		String query = "UPDATE CustomerList SET address = '" +  customer.getAddress() + "', "
+		String query = "UPDATE Customer SET address = '" +  customer.getAddress() + "', "
 				+ "sex= '"+customer.getSex() + "', "
 				+ "age= "+ customer.getAge() + ", "
 				+ "job= '"+ customer.getJob() + "', "
@@ -74,7 +79,7 @@ public class CustomerDao implements CustomerList {
 				+ "registrationNumber= '"+ customer.getRegistrationNumber() + "', "
 				+ "incomeLevel= "+ customer.getIncomeLevel() + ", "
 				+ "accountNumber= '"+ customer.getAccountNumber() + "',"
-				+ "accountPassword= '"+ customer.getAccountPassword() + "');";
+				+ "accountPassword= '"+ customer.getAccountPassword() + "';";
 		dao.update(query);
 	}
 
@@ -97,7 +102,8 @@ public class CustomerDao implements CustomerList {
 		Customer customer = new Customer();
 		customer.setCustomerID(resultSet.getInt("customerID"));
 		customer.setAddress(resultSet.getString("address"));
-		customer.setSex(Gender.valueOf(resultSet.getString("sex")));
+		String sex = resultSet.getString("sex");
+		customer.setSex(dao.enumNullCheck(sex, () -> Gender.valueOf(sex)));
 		customer.setAge(resultSet.getInt("age"));
 		customer.setJob(resultSet.getString("job"));
 		customer.setName(resultSet.getString("name"));

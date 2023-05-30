@@ -25,12 +25,12 @@ public class ContractDao implements ContractList {
 
     @Override
     public void add(Contract contract) {
-        String query = "INSERT INTO Contract (contractID, contractDate, contractFile, customerID, insuranceID, specialization, contractState, contractRunState, contractUWState"
-            + "VALUES ('" + contract.getContractID() + "', '" + contract.getContractDate()
-            + "', '" + contract.getContractDate() + "', '" + contract.getContractFile()
-                + "', '" + contract.getCustomerID() + "', '" + contract.getInsuranceID()
-                + "', '" + contract.getSpecialization() + "', '" + contract.getContractState()
-                + "', '" + contract.getContractRunState() + "', '" + contract.getContractUWState() + "');";
+        String query = "INSERT INTO Contract(contractDate, contractFile, customerID, insuranceID, specialization, contractState, contractRunState, contractUWState)"
+            + " VALUES ('" + contract.getContractDate()
+            + "', '" + contract.getContractFile()
+            + "', " + contract.getCustomerID() + ", " + contract.getInsuranceID()
+            + ", '" + contract.getSpecialization() + "', '" + contract.getContractState()
+            + "', '" + contract.getContractRunState() + "', '" + contract.getContractUWState() + "');";
         dao.create(query);
     }
 
@@ -44,7 +44,12 @@ public class ContractDao implements ContractList {
     public Contract retrieve(int contractId) {
         try {
             String query = "SELECT * FROM Contract WHERE contractID = " + contractId + ";";
-            return getContract(dao.retrieve(query));
+            ResultSet retrieve = dao.retrieve(query);
+            if (retrieve.next()) {
+                return getContract(retrieve);
+            } else {
+                return null;
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -70,11 +75,11 @@ public class ContractDao implements ContractList {
 
     @Override
     public void update(Contract contract) {
-        String query = "UPDATE Contract SET contractId = '" + contract.getContractID() + "', "
+        String query = "UPDATE Contract SET "
                 + "contractDate = '" + contract.getContractDate() + "', "
                 + "contractFile = '" + contract.getContractFile() + "', "
-                + "customerId = '" + contract.getCustomerID() + "', "
-                + "insuranceId = '" + contract.getInsuranceID() + "', "
+                + "customerId = " + contract.getCustomerID() + ", "
+                + "insuranceId = " + contract.getInsuranceID() + ", "
                 + "specialization = '" + contract.getSpecialization() + "', "
                 + "contractState = " + contract.getContractState() + ", "
                 + "contractRunState = '" + contract.getContractRunState() + "', "
@@ -92,9 +97,12 @@ public class ContractDao implements ContractList {
         contract.setCustomerID(resultSet.getInt("customerId"));
         contract.setInsuranceID(resultSet.getInt("insuranceId"));
         contract.setSpecialization(resultSet.getString("specialization"));
-        contract.setContractState(ContractState.valueOf(resultSet.getString("contractState")));
-        contract.setContractRunState(ContractRunState.valueOf(resultSet.getString("contractRunState")));
-        contract.setContractUWState(ContractUWState.valueOf(resultSet.getString("contractUWState")));
+        String contractState = resultSet.getString("contractState");
+        contract.setContractState(dao.enumNullCheck(contractState, () -> ContractState.valueOf(contractState)));
+        String contractRunState = resultSet.getString("contractRunState");
+        contract.setContractRunState(dao.enumNullCheck(contractRunState, () -> ContractRunState.valueOf(contractRunState)));
+        String contractUWState = resultSet.getString("contractUWState");
+        contract.setContractUWState(dao.enumNullCheck(contractUWState, () -> ContractUWState.valueOf(contractUWState)));
         return contract;
     }
 

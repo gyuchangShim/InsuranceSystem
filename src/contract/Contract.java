@@ -12,6 +12,7 @@ public class Contract {
 	private ContractState contractState;
 	private ContractRunState contractRunState;
 	private ContractUWState contractUWState;
+	private String specialization;		// 유저와 계약간의 특이사항
 
 	public Contract(){
 		contractState = null;
@@ -42,7 +43,6 @@ public class Contract {
 	public ContractRunState getContractRunState() {
 		return this.contractRunState;
 	}
-	private String specialization;		// 유저와 계약간의 특이사항
 
 	public LocalDate getContractDate() {
 		return contractDate;

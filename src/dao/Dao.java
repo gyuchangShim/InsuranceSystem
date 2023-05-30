@@ -5,7 +5,9 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.function.Supplier;
 
 public class Dao {
@@ -17,7 +19,7 @@ public class Dao {
     public void connect() throws Exception{
         try {
             String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false";
-            connect = DriverManager.getConnection(url,  "root", "your password");
+            connect = DriverManager.getConnection(url,  "root", "");
         } catch (Exception e) {
             throw e;
         }
@@ -71,5 +73,8 @@ public class Dao {
     }
     public LocalDate dateNullCheck(Date value) {
         return value == null ? null : value.toLocalDate();
+    }
+    public LocalDateTime dateTimeNullCheck(Timestamp value) {
+        return value == null ? null : value.toLocalDateTime();
     }
 }

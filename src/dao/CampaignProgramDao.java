@@ -26,13 +26,18 @@ public class CampaignProgramDao implements CampaignProgramList {
 
     @Override
     public void add(CampaignProgram campaignProgram) {
-        String query = "INSERT INTO CampaignProgram (campaignID, budget, campaignName, campaignTarget, duration, exResult, insuranceID, place, campaignWay, endResult, state, outTeam) VALUES ('"
-                + campaignProgram.getCampaignID() + "', '" + campaignProgram.getBudget() + "', '" + campaignProgram.getCampaignName()
-                + "', '" + campaignProgram.getCampaignTarget() + "', '" + campaignProgram.getDuration()
-                + "', '" + campaignProgram.getExResult() + "', '" + campaignProgram.getInsuranceID()
-                + "', '" + campaignProgram.getPlace() + "', '" + campaignProgram.getCampaignWay()
-                + "', '" + campaignProgram.getEndResult() + "', '" + campaignProgram.getProgramState()
-                + "', '" + campaignProgram.getOutTeam() + "');";
+        String query = "INSERT INTO CampaignProgram (budget, campaignName, campaignTarget, duration, exResult, insuranceID, place, campaignWay, endResult, state, outTeam) VALUES ("
+                + campaignProgram.getBudget() + ", '"
+                + campaignProgram.getCampaignName() + "', '"
+                + campaignProgram.getCampaignTarget() + "', "
+                + campaignProgram.getDuration() + ", '"
+                + campaignProgram.getExResult() + "', "
+                + campaignProgram.getInsuranceID() + ", '"
+                + campaignProgram.getPlace() + "', '"
+                + campaignProgram.getCampaignWay() + "', '"
+                + campaignProgram.getEndResult() + "', '"
+                + campaignProgram.getProgramState() + "', '"
+                + campaignProgram.getOutTeam() + "');";
         dao.create(query);
     }
 
@@ -45,20 +50,18 @@ public class CampaignProgramDao implements CampaignProgramList {
 
     @Override
     public void update(CampaignProgram campaignProgram) {
-        // create query
-        String query = "UPDATE CampaignProgram SET campaignID = '" + campaignProgram.getCampaignID() + "', "
-                + "budget = '" + campaignProgram.getBudget() + "', "
-                + "campaignName = '" + campaignProgram.getCampaignName() + "', "
-                + "campaignTarget = '" + campaignProgram.getCampaignTarget() + "', "
-                + "duration = '" + campaignProgram.getDuration() + "', "
-                + "exResult = '" + campaignProgram.getExResult() + "', "
-                + "insuranceID = '" + campaignProgram.getInsuranceID() + "', "
-                + "place = '" + campaignProgram.getPlace() + "', "
-                + "campaignWay = '" + campaignProgram.getCampaignWay() + "', "
-                + "endResult = '" + campaignProgram.getEndResult() + "', "
-                + "programState = '" + campaignProgram.getProgramState() + "', "
-                + "outTeam = '" + campaignProgram.getOutTeam() + "' "
-                + "WHERE campaignID = " + campaignProgram.getCampaignID()  + ";";
+        String query = "UPDATE CampaignProgram SET budget = " + campaignProgram.getBudget() + ", "
+            + "campaignName = '" + campaignProgram.getCampaignName() + "', "
+            + "campaignTarget = '" + campaignProgram.getCampaignTarget() + "', "
+            + "duration = " + campaignProgram.getDuration() + ", "
+            + "exResult = '" + campaignProgram.getExResult() + "', "
+            + "insuranceID = " + campaignProgram.getInsuranceID() + ", "
+            + "place = '" + campaignProgram.getPlace() + "', "
+            + "campaignWay = '" + campaignProgram.getCampaignWay() + "', "
+            + "endResult = '" + campaignProgram.getEndResult() + "', "
+            + "state = '" + campaignProgram.getProgramState() + "', "
+            + "outTeam = '" + campaignProgram.getOutTeam() + "' "
+            + "WHERE campaignID = " + campaignProgram.getCampaignID() + ";";
         dao.update(query);
     }
 
@@ -81,7 +84,11 @@ public class CampaignProgramDao implements CampaignProgramList {
     public CampaignProgram retrieve(int campaignProgramId) {
         String query = "SELECT * FROM CampaignProgram WHERE campaignID = " + campaignProgramId + ";";
         try {
-            return getCampaignProgram(dao.retrieve(query));
+            ResultSet resultSet = dao.retrieve(query);
+            if (resultSet.next()) {
+                return getCampaignProgram(resultSet);
+            }
+            return null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -17,21 +17,25 @@ import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
+import dao.AssumePolicyDao;
+import dao.ContractDao;
+import dao.CustomerCounselingDao;
 import dao.CustomerDao;
 import dao.CustomerManagementDao;
 import dao.InsuranceDao;
 import dao.CampaignProgramDao;
+import dao.UserPersonaDao;
 import exception.CCounselingNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import customer.CustomerList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 import java.util.stream.Collectors;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
-import marketingPlanning.CampaignProgramListImpl;
 import marketingPlanning.CampaignState;
 import reward.Reward;
 import teams.BusinessTeam;
@@ -94,9 +98,9 @@ public class Main {
         assumePolicyList = new AssumePolicyDao();
         campaignProgramList = new CampaignProgramDao();
         contractList = new ContractDao();
-        userPersonaList = new UserPersonaListImpl();
+        userPersonaList = new UserPersonaDao();
         customerList = new CustomerDao();
-        customerCounselingList = new CustomerCounselingListImpl();
+        customerCounselingList = new CustomerCounselingDao();
         customerManagementList = new CustomerManagementDao();
         operationPolicyList = new OperationPolicyListImpl();
         sellGroupList = new SellGroupListImpl();
@@ -287,6 +291,7 @@ public class Main {
                     case 4:
                         // 캠페인 프로그램 관련
                         campaignProgramMenu();
+                        break;
                     case 5:
                         processSales();
                         break;
@@ -778,9 +783,9 @@ public class Main {
         List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll()
                 .stream().filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.Plan)
                 .toList();
-        for(CampaignProgram campaignProgram : campaignPrograms) {
-            System.out.println(campaignProgram.getInsuranceID()
-                    + " " + campaignProgram.getDuration() + " " + campaignProgram.getCampaignTarget()
+        for(int i = 0; i < campaignPrograms.size(); i++) {
+            CampaignProgram campaignProgram = campaignPrograms.get(i);
+            System.out.println(i + ". " + campaignProgram.getDuration() + " " + campaignProgram.getCampaignTarget()
                     + " " + campaignProgram.getPlace() + " " + campaignProgram.getOutTeam());
         }
         // 실행할 campaignProgram 선택
@@ -900,12 +905,13 @@ public class Main {
         }
         int choice1 = TuiReader.choice(0, insurances.size()-1);
         Insurance insurance = insurances.get(choice1);
-        CampaignProgram campaignProgram = campaignProgramList.retrieve(insurance.getInsuranceID());
-        // TODO: db 추가되면 null 말고 다른 값으로 넘어오는지 확인해야 함
-        if (campaignProgram == null) {
+        Optional<CampaignProgram> findCampaign = campaignProgramList.retrieveAll().stream()
+            .filter(campaignProgram -> campaignProgram.getInsuranceID() == insurance.getInsuranceID())
+            .findFirst();
+        if (findCampaign.isEmpty()) {
             throw new CInsuranceNotFoundException("해당 보험 상품이 진행한 캠페인이 없습니다.");
         }
-        System.out.println("캠페인 이름: " + campaignProgram.getCampaignName());
+        System.out.println("캠페인 이름: " + findCampaign.get().getCampaignName());
         int choice2;
         boolean isSuccessInput = false;
         do {
@@ -951,7 +957,7 @@ public class Main {
         while (!isSuccessInput) {
             try {
                 // TODO: 영업 활동 시작일이 종료일보다 빨라야 한다.
-                System.out.println("영업 활동 시작일, 종료일, 예상 목표 인원, 판매 방식을 /로 구분하여 입력하세요.");
+                System.out.println("영업 활동 시작일(20**-**-**), 종료일(20**-**-**), 예상 목표 인원, 판매 방식을 /로 구분하여 입력하세요.");
                 String[] salesPlanInfo = TuiReader.readInput("영업 활동 계획란에 정확히 입력하세요.")
                     .split("/");
                 if (salesPlanInfo.length != 4) {
@@ -1060,7 +1066,7 @@ public class Main {
             int choiceInsurance = TuiReader.choice(0, recommendInsurances.size() - 1);
             Insurance insurance = recommendInsurances.get(choiceInsurance);
             System.out.println("추천 보험 상품: " + insurance.getInsuranceName());
-            System.out.println(" 보험료 가계산: " + sellGroupTeam.calculateInsuranceFee(insurance, customer));
+            System.out.println(" 보험료 가계산: " + sellGroupTeam.calculateInsuranceFee(insurance, customer) + "원");
             System.out.println(" 보험 추천 이유: " + sellGroupTeam.recommendInsuranceReason(insurance, customer));
             System.out.println("보험 선택: 1, 보험 판매 실패: 2, 뒤로 가기: 3");
             int choice = TuiReader.choice(1, 3);

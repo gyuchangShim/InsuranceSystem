@@ -36,9 +36,9 @@ public class InsuranceDao implements InsuranceList {
             + insurance.getGuarantee() + "', "
             + insurance.getEstimatedDevelopment() + ", "
             + insurance.getEstimatedProfitRate() + ", "
-            + insurance.getRiskDegree() + ", "
-            + insurance.getSalesStartDate() + ", "
-            + insurance.getSalesEndDate() + ", "
+            + insurance.getRiskDegree() + ", '"
+            + insurance.getSalesStartDate() + "', '"
+            + insurance.getSalesEndDate() + "', "
             + insurance.getGoalPeopleNumber() + ", '"
             + insurance.getSalesMethod() + "', "
             + insurance.getRate() + ", "
@@ -97,8 +97,8 @@ public class InsuranceDao implements InsuranceList {
             + "estimatedDevelopment = " + insurance.getEstimatedDevelopment() + ", "
             + "estimatedProfitRate = " + insurance.getEstimatedProfitRate() + ", "
             + "riskDegree = " + insurance.getRiskDegree() + ", "
-            + "salesStartDate = " + insurance.getSalesStartDate() + ", "
-            + "salesEndDate = " + insurance.getSalesEndDate() + ", "
+            + "salesStartDate = '" + insurance.getSalesStartDate() + "', "
+            + "salesEndDate = '" + insurance.getSalesEndDate() + "', "
             + "goalPeopleNumber = " + insurance.getGoalPeopleNumber() + ", "
             + "salesMethod = '" + insurance.getSalesMethod() + "', "
             + "rate = " + insurance.getRate() + ", "
@@ -115,7 +115,8 @@ public class InsuranceDao implements InsuranceList {
         insurance.setInsuranceID(resultSet.getInt("insuranceID"));
         insurance.setInsuranceName(resultSet.getString("insuranceName"));
         insurance.setPlanReport(resultSet.getString("planReport"));
-        insurance.setInsuranceState(InsuranceState.valueOf(resultSet.getString("insuranceState")));
+        String insuranceState = resultSet.getString("insuranceState");
+        insurance.setInsuranceState(dao.enumNullCheck(insuranceState, () -> InsuranceState.valueOf(insuranceState)));
         String insuranceType = resultSet.getString("insuranceType");
         insurance.setInsuranceType(dao.enumNullCheck(insuranceType, () -> InsuranceType.valueOf(insuranceType)));
         insurance.setSalesTarget(resultSet.getString("salesTarget"));

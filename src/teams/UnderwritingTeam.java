@@ -53,7 +53,7 @@ public class UnderwritingTeam extends Team {
 
 	// 인수 정책 제거 - 시나리오 X
 	public AssumePolicy deletePolicy() {
-		List<AssumePolicy> policyList = assumePolicyList.getAllPolicy();
+		List<AssumePolicy> policyList = assumePolicyList.retreiveAll();
 		for (int i = 0; i < policyList.size(); i++) {
 			System.out.println(i + ". " + policyList.get(i).getPolicyID() + " " + policyList.get(i).getName());
 		}
