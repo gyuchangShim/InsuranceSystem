@@ -19,6 +19,8 @@ import customer.CustomerListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import customerManagement.CustomerManagementListImpl;
+import dao.CustomerDao;
+import dao.CustomerManagementDao;
 import dao.InsuranceDao;
 import exception.CCounselingNotFoundException;
 import java.time.LocalDate;
@@ -94,9 +96,9 @@ public class Main {
         campaignProgramList = new CampaignProgramListImpl();
         contractList = new ContractListImpl();
         userPersonaList = new UserPersonaListImpl();
-        customerList = new CustomerListImpl();
+        customerList = new CustomerDao();
         customerCounselingList = new CustomerCounselingListImpl();
-        customerManagementList = new CustomerManagementListImpl();
+        customerManagementList = new CustomerManagementDao();
         operationPolicyList = new OperationPolicyListImpl();
         sellGroupList = new SellGroupListImpl();
         paymentList = new PaymentListImpl();
@@ -120,6 +122,7 @@ public class Main {
             try {
                 loginPage();
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println(e.getMessage());
             }
         }
@@ -164,7 +167,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
-                customerNotice();
+//                customerNotice();
                 customerMenu();
                 break;
             case 2 :

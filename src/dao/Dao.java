@@ -30,7 +30,7 @@ public class Dao {
                 System.out.println("insert OK!!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -39,7 +39,7 @@ public class Dao {
             statement = connect.createStatement();
             resultSet = statement.executeQuery(query);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return resultSet;
     }
@@ -51,7 +51,7 @@ public class Dao {
                 System.out.println("update OK!!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -62,7 +62,7 @@ public class Dao {
                 System.out.println("delete OK!!");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

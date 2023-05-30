@@ -59,7 +59,11 @@ public class InsuranceDao implements InsuranceList {
     public Insurance retrieve(int insuranceId) {
         String query = "SELECT * FROM Insurance WHERE insuranceID = " + insuranceId + ";";
         try {
-            return getInsurance(dao.retrieve(query));
+            ResultSet resultSet = dao.retrieve(query);
+            if (resultSet.next()) {
+                return getInsurance(resultSet);
+            }
+            return null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -82,7 +86,28 @@ public class InsuranceDao implements InsuranceList {
 
     @Override
     public void update(Insurance insurance) {
-
+        String query = "UPDATE Insurance SET insuranceName = '" + insurance.getInsuranceName() + "', "
+            + "planReport = '" + insurance.getPlanReport() + "', "
+            + "insuranceState = '" + insurance.getInsuranceState() + "', "
+            + "insuranceType = '" + insurance.getInsuranceType() + "', "
+            + "salesTarget = '" + insurance.getSalesTarget() + "', "
+            + "canRegistTarget = '" + insurance.getCanRegistTarget() + "', "
+            + "payment = " + insurance.getPayment() + ", "
+            + "guarantee = '" + insurance.getGuarantee() + "', "
+            + "estimatedDevelopment = " + insurance.getEstimatedDevelopment() + ", "
+            + "estimatedProfitRate = " + insurance.getEstimatedProfitRate() + ", "
+            + "riskDegree = " + insurance.getRiskDegree() + ", "
+            + "salesStartDate = " + insurance.getSalesStartDate() + ", "
+            + "salesEndDate = " + insurance.getSalesEndDate() + ", "
+            + "goalPeopleNumber = " + insurance.getGoalPeopleNumber() + ", "
+            + "salesMethod = '" + insurance.getSalesMethod() + "', "
+            + "rate = " + insurance.getRate() + ", "
+            + "duration = " + insurance.getDuration() + ", "
+            + "resultAnalysis = " + insurance.getResultAnalysis() + ", "
+            + "rewardAmount = " + insurance.getRewardAmount() + ", "
+            + "salesPerformance = " + insurance.getSalesPerformance() + " "
+            + "WHERE insuranceID = " + insurance.getInsuranceID() + ";";
+        dao.update(query);
     }
 
     private Insurance getInsurance(ResultSet resultSet) throws SQLException {

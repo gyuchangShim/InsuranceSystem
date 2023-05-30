@@ -12,35 +12,41 @@ import java.util.List;
 public class CustomerDao implements CustomerList {
 
 	private Dao dao;
-	private Customer customer;
 
-
-	public CustomerDao(Customer customer) {
-		this.customer = customer;
+	public CustomerDao() {
 		try {
 			dao = new Dao();
 			dao.connect();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public int add(Customer customer) {
-		String query = "insert into CustomerList(address,sex,age,job,name,phoneNumber,"
-				+ "registrationNumber,incomeLevel,accountNumber,accountPassword) values('"
-				+ customer.getAddress() + "', "
+		String query = "insert into Customer(address, sex, age, job, name, phoneNumber, "
+				+ "registrationNumber, incomeLevel, accountNumber, accountPassword) values('"
+				+ customer.getAddress() + "', '"
 				+ customer.getSex() + "', "
 				+ customer.getAge() + ", '"
 				+ customer.getJob() + "', '"
 				+ customer.getName() + "', '"
 				+ customer.getPhoneNumber() + "', '"
-				+ customer.getRegistrationNumber() + "', '"
+				+ customer.getRegistrationNumber() + "', "
 				+ customer.getIncomeLevel() + ", '"
 				+ customer.getAccountNumber() + "','"
 				+ customer.getAccountPassword() + "');";
 		dao.create(query);
-		return customer.getCustomerID();
+		ResultSet retrieve = dao.retrieve("SELECT LAST_INSERT_ID();");
+		try {
+			if (retrieve.next()) {
+				return retrieve.getInt(1);
+			} else {
+				throw new RuntimeException("Customer ID를 찾을 수 없습니다.");
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
