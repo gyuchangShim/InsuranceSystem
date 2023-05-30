@@ -162,7 +162,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
-                customerNotice();
+                //customerNotice();
                 customerMenu();
                 break;
             case 2 :

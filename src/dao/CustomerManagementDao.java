@@ -1,10 +1,12 @@
 package dao;
 
+import customer.Customer;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerManagementDao implements CustomerManagementList {
@@ -48,7 +50,19 @@ public class CustomerManagementDao implements CustomerManagementList {
 
     @Override
     public List<CustomerManagement> retrieveAll() {
-        return null;
+
+        String query = "SELECT * FROM CustomerManagement;";
+        try {
+            ResultSet resultSet = dao.retrieve(query);
+            List<CustomerManagement> customerManagementList = new ArrayList<>();
+            while(resultSet.next()) {
+                customerManagementList.add(getCustomerManagement(resultSet));
+            }
+            return customerManagementList;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
