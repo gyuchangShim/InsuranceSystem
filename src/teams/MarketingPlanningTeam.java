@@ -44,11 +44,12 @@ public class MarketingPlanningTeam extends Team {
 				String[] campaignPlanSplit = campaignPlan.split("/");
 
 				campaignProgram.setInsuranceID(Integer.valueOf(campaignPlanSplit[0]));
-				campaignProgram.setCampaignTarget(campaignPlanSplit[1]);
-				campaignProgram.setDuration(Integer.valueOf(campaignPlanSplit[2]));
-				campaignProgram.setCampaignWay(campaignPlanSplit[3]);
-				campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[4])));
-				campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[5]));
+				campaignProgram.setCampaignName(campaignPlanSplit[1]);
+				campaignProgram.setCampaignTarget(campaignPlanSplit[2]);
+				campaignProgram.setDuration(Integer.valueOf(campaignPlanSplit[3]));
+				campaignProgram.setCampaignWay(campaignPlanSplit[4]);
+				campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[5])));
+				campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[6]));
 				campaignProgram.setProgramState(CampaignState.Plan);
 				campaignProgramList.add(campaignProgram);
 			}

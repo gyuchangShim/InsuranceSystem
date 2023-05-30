@@ -12,7 +12,7 @@ public class Dao {
     // 우리가 exception 만들면 더 좋음
     public void connect() throws Exception{
         try {
-            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/insurance?useSSL=false", "root", "1234");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost:3306/insurance?useSSL=false", "root", "tlarbckd@17");
         } catch (Exception e) {
             throw e;
         }
