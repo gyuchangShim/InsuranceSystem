@@ -6,7 +6,7 @@ import marketingPlanning.CampaignProgram;
 
 public interface CampaignProgramList {
     void add(CampaignProgram campaignProgram);
-    void delete(CampaignProgram campaignProgramId);
+    void delete(int campaignProgramId);
     CampaignProgram retrieve(int campaignProgramId);
     List<CampaignProgram> retrieveAll();
     void update(CampaignProgram campaignProgram);

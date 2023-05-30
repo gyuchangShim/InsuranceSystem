@@ -15,13 +15,12 @@ import customer.Customer;
 import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
-import customer.CustomerListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
-import customerManagement.CustomerManagementListImpl;
 import dao.CustomerDao;
 import dao.CustomerManagementDao;
 import dao.InsuranceDao;
+import dao.CampaignProgramDao;
 import exception.CCounselingNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -92,9 +91,9 @@ public class Main {
 
     public static void initialize() {
         insuranceList = new InsuranceDao();
-        assumePolicyList = new AssumePolicyListImpl();
-        campaignProgramList = new CampaignProgramListImpl();
-        contractList = new ContractListImpl();
+        assumePolicyList = new AssumePolicyDao();
+        campaignProgramList = new CampaignProgramDao();
+        contractList = new ContractDao();
         userPersonaList = new UserPersonaListImpl();
         customerList = new CustomerDao();
         customerCounselingList = new CustomerCounselingListImpl();
@@ -602,7 +601,7 @@ public class Main {
     }
     private static void retrieveUWPolicy() {
         System.out.println("********************* 인수 정책 열람 *********************");
-        List<AssumePolicy> policyList = assumePolicyList.getAllPolicy();
+        List<AssumePolicy> policyList = assumePolicyList.retreiveAll();
         if(policyList != null) {
             for (int i = 0; i < policyList.size(); i++) {
                 System.out.println(i + ". " + policyList.get(i).getPolicyID() + " " + policyList.get(i).getName());
@@ -655,6 +654,7 @@ public class Main {
         if(registList.get(inChoice).getContractID() != 0) {
             // 인수 심사 시작
             registList.get(inChoice).setContractRunState(ContractRunState.Finish);
+            contractList.update(registList.get(inChoice));
                 System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
             }
         }
@@ -680,6 +680,7 @@ public class Main {
         if(registCList.get(inChoice).getContractID() != 0) {
             // 외부 Actor에 계약 명단 전달
             OuterActor.collaborateUW(registCList.get(inChoice));
+            contractList.update(registCList.get(inChoice));
             System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
         }
     }
@@ -767,7 +768,7 @@ public class Main {
         float endResult = campaignProgram.getEndResult();
         campaignPrograms.get(endCampaignChoice).setEndResult(endResult);
         // 캠페인 프로그램 보고서 저장
-        campaignProgram.setReport(campaignPrograms.get(endCampaignChoice));
+        //campaignProgram.setReport(campaignPrograms.get(endCampaignChoice));
         }
     }
     private static void runCampaign() {
@@ -789,8 +790,8 @@ public class Main {
         CampaignProgram campaignProgram = campaignPrograms.get(campaignChoice);
         // 외부 엑터에 전달
         OuterActor.runProgram(campaignProgram);
+        campaignProgramList.update(campaignProgram);
         System.out.println("해당 프로그램이 실행됩니다.");
-//        printMenu();
     }
     private static void applyReward() {
     	// 고객 ID를 어떻게 가져오는가...

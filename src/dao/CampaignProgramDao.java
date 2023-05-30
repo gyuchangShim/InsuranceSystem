@@ -3,49 +3,105 @@ package dao;
 import insurance.Insurance;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
+import marketingPlanning.CampaignState;
+import util.Constants;
 
-public class CampaignProgramDao extends Dao{
+import java.sql.Array;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CampaignProgramDao implements CampaignProgramList {
+    private Dao dao;
 
     public CampaignProgramDao() {
         try {
-            super.connect();
+            dao = new Dao();
+            dao.connect();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void create(Insurance insurance) {
+
+    @Override
+    public void add(CampaignProgram campaignProgram) {
+        String query = "INSERT INTO CampaignProgram (campaignID, budget, campaignName, campaignTarget, duration, exResult, insuranceID, place, campaignWay, endResult, state, outTeam) VALUES ('"
+                + campaignProgram.getCampaignID() + "', '" + campaignProgram.getBudget() + "', '" + campaignProgram.getCampaignName()
+                + "', '" + campaignProgram.getCampaignTarget() + "', '" + campaignProgram.getDuration()
+                + "', '" + campaignProgram.getExResult() + "', '" + campaignProgram.getInsuranceID()
+                + "', '" + campaignProgram.getPlace() + "', '" + campaignProgram.getCampaignWay()
+                + "', '" + campaignProgram.getEndResult() + "', '" + campaignProgram.getProgramState()
+                + "', '" + campaignProgram.getOutTeam() + "');";
+        dao.create(query);
+    }
+
+    @Override
+    public void delete(int campaignProgramID) {
         // create query
-        String query = "insert into insurance values ("
-                + insurance.getInsuranceID() + ", "
-                + insurance.getInsuranceName() + ");";
-        System.out.println(query);
+        String query = "DELETE FROM CampaignProgram WHERE campaingProgramID = " + campaignProgramID + ";";
+        dao.delete(query);
     }
 
-    public CampaignProgram retrieveAll() {
-        String query = "";
-//        CampaignProgramList campaignProgramList = new CampaignProgramList();
-        return null;
-    }
-
-    public CampaignProgram retrieveById(int campaignProgramId) {
-        return null;
-    }
-
+    @Override
     public void update(CampaignProgram campaignProgram) {
         // create query
-        String query = "update into campaign values ("
-                + campaignProgram.getCampaignID() + ", "
-                + campaignProgram.getCampaignName() + ");";
-        System.out.println(query);
+        String query = "UPDATE CampaignProgram SET campaignID = '" + campaignProgram.getCampaignID() + "', "
+                + "budget = '" + campaignProgram.getBudget() + "', "
+                + "campaignName = '" + campaignProgram.getCampaignName() + "', "
+                + "campaignTarget = '" + campaignProgram.getCampaignTarget() + "', "
+                + "duration = '" + campaignProgram.getDuration() + "', "
+                + "exResult = '" + campaignProgram.getExResult() + "', "
+                + "insuranceID = '" + campaignProgram.getInsuranceID() + "', "
+                + "place = '" + campaignProgram.getPlace() + "', "
+                + "campaignWay = '" + campaignProgram.getCampaignWay() + "', "
+                + "endResult = '" + campaignProgram.getEndResult() + "', "
+                + "programState = '" + campaignProgram.getProgramState() + "', "
+                + "outTeam = '" + campaignProgram.getOutTeam() + "' "
+                + "WHERE campaignID = " + campaignProgram.getCampaignID()  + ";";
+        dao.update(query);
     }
 
-    public void delete(CampaignProgram campaignProgram) {
-        // create query
-        String query = "delete from campaign values ("
-                + campaignProgram.getCampaignID() + ", "
-                + campaignProgram.getCampaignName() + ");";
-        System.out.println(query);
+    @Override
+    public List<CampaignProgram> retrieveAll() {
+        String query = "SELECT * FROM CampaignProgram";
+        try {
+            ResultSet resultSet = dao.retrieve(query);
+            List<CampaignProgram> campaignProgramList = new ArrayList<>();
+            while(resultSet.next()) {
+                campaignProgramList.add(getCampaignProgram(resultSet));
+            }
+            return campaignProgramList;
+        }catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
     }
 
+    @Override
+    public CampaignProgram retrieve(int campaignProgramId) {
+        String query = "SELECT * FROM CampaignProgram WHERE campaignID = " + campaignProgramId + ";";
+        try {
+            return getCampaignProgram(dao.retrieve(query));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public CampaignProgram getCampaignProgram(ResultSet resultSet) throws SQLException {
+        CampaignProgram campaignProgram = new CampaignProgram();
+        campaignProgram.setCampaignID(resultSet.getInt("campaignID"));
+        campaignProgram.setBudget(resultSet.getInt("budget"));
+        campaignProgram.setCampaignName(resultSet.getString("campaignName"));
+        campaignProgram.setCampaignTarget(resultSet.getString("campaignTarget"));
+        campaignProgram.setDuration(resultSet.getInt("duration"));
+        campaignProgram.setExResult(resultSet.getFloat("exResult"));
+        campaignProgram.setInsuranceID(resultSet.getInt("insuranceID"));
+        campaignProgram.setPlace(resultSet.getString("place"));
+        campaignProgram.setCampaignWay(resultSet.getString("campaignWay"));
+        campaignProgram.setEndResult(resultSet.getFloat("endResult"));
+        campaignProgram.setProgramState(CampaignState.valueOf(resultSet.getString("state")));
+        campaignProgram.setOutTeam(resultSet.getString("outTeam"));
+        return campaignProgram;
+    }
 
 }
