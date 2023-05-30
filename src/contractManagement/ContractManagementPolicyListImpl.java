@@ -1,6 +1,6 @@
 package contractManagement;
 
-import java.util.Vector;
+import java.util.List;
 
 public class ContractManagementPolicyListImpl implements ContractManagementPolicyList {
 
@@ -22,14 +22,25 @@ public class ContractManagementPolicyListImpl implements ContractManagementPolic
 
 	}
 
-	public ContractManagementPolicy retrieve( int policyID ){
+	public List<ContractManagementPolicy> retrieveAll(){
 		return null;
 	}
 
-	public void update( ContractManagementPolicy policy ){
-
+	@Override
+	public void delete(int contractManagementPolicyID) {
+		// TODO Auto-generated method stub
+		
 	}
-	public Vector<ContractManagementPolicy> retrieveAll(){
+
+	@Override
+	public void update(ContractManagementPolicy contractManagementPolicy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ContractManagementPolicy retrieve(int contractManagementPolicyID) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

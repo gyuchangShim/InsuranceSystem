@@ -1,6 +1,6 @@
 package businessEducation;
 
-import java.util.Vector;
+import java.util.List;
 
 public class EducationStudentListImpl implements EducationStudentList {
 
@@ -25,7 +25,17 @@ public class EducationStudentListImpl implements EducationStudentList {
 	public void update(){
 
 	}
-	public Vector<EducationStudent> retrieveAll(){
+	public List<EducationStudent> retrieveAll(){
 		return null;
+	}
+	@Override
+	public void delete(int studentID) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void update(EducationStudent student) {
+		// TODO Auto-generated method stub
+		
 	}
 }

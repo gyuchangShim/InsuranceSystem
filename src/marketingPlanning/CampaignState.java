@@ -1,7 +1,16 @@
 package marketingPlanning;
 
 public enum CampaignState {
-        Plan, // 기획 완료
-        Run, // 진행 중
-        End; // 종료
-    }
+    PLAN("PLAN"), // 기획 완료
+    RUN("RUN"), // 진행 중
+    END("END"); // 종료
+	
+	private String campaignState;
+	CampaignState( String campaignState ){
+		this.campaignState = campaignState;
+	}
+	
+	public String getString() {
+		return this.campaignState;
+	}
+}

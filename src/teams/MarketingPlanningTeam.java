@@ -49,7 +49,7 @@ public class MarketingPlanningTeam extends Team {
 				campaignProgram.setCampaignWay(campaignPlanSplit[3]);
 				campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[4])));
 				campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[5]));
-				campaignProgram.setProgramState(CampaignState.Plan);
+				campaignProgram.setProgramState(CampaignState.PLAN);
 				campaignProgramList.add(campaignProgram);
 			}
 		}

@@ -19,12 +19,12 @@ public class OuterActor {
         return LocalDateTime.now();
     }
     public static void runProgram(CampaignProgram campaignProgram) {
-        campaignProgram.setProgramState(CampaignState.Run);
+        campaignProgram.setProgramState(CampaignState.RUN);
     }
 
     public static void collaborateUW(Contract contract) {
         // 외부 Actor는 전달받은 계약에 대해 상태 변경 : Ready -> Finish
-        contract.setContractRunState(ContractRunState.Finish);
+        contract.setContractRunState(ContractRunState.FINISH);
     }
 
     public static void sendSMS(String s) {

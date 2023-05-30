@@ -1,12 +1,12 @@
 package reward;
-import java.util.Date;
+import java.time.LocalDate;
 
 import util.Constants;
 
 public class Reward {
 	private Constants.Result appliResult;
 	private String accidentProfile;			// File 형식이 TUI에서는 지원되지 않으므로 String으로 대신함
-	private Date appliDate;
+	private LocalDate appliDate;
 	private String content;
 	private int contractID;
 	private String customerName;
@@ -19,8 +19,8 @@ public class Reward {
 	public void setAppliResult( Constants.Result appliResult ) { this.appliResult = appliResult; }
 	public String getAccidentProfile() {return accidentProfile;}
 	public void setAccidentProfile(String accidentProfile) {this.accidentProfile = accidentProfile;}
-	public Date getAppliDate() {return appliDate;}
-	public void setAppliDate(Date appliDate) {this.appliDate = appliDate;}
+	public LocalDate getAppliDate() {return appliDate;}
+	public void setAppliDate(LocalDate appliDate) {this.appliDate = appliDate;}
 	public String getContent() {return content;}
 	public void setContent(String content) {this.content = content;}
 	public int getContractID() {return contractID;}

@@ -1,8 +1,12 @@
 package contractManagement;
 
-import java.util.Vector;
+import java.util.List;
 
 public interface ContractManagementPolicyList {
 
-    Vector<ContractManagementPolicy> retrieveAll();
+    List<ContractManagementPolicy> retrieveAll();
+    void add( ContractManagementPolicy contractManagementPolicy );
+    void delete( int contractManagementPolicyID );
+    ContractManagementPolicy retrieve( int contractManagementPolicyID );
+    void update( ContractManagementPolicy contractManagementPolicy );
 }

@@ -1,8 +1,6 @@
 package reward;
 
-import java.util.Vector;
-import reward.Reward;
-import reward.RewardList;
+import java.util.List;
 
 public class RewardListImpl implements RewardList {
 	public Reward m_Reward;
@@ -30,7 +28,7 @@ public class RewardListImpl implements RewardList {
 	public void update( Reward reward ){
 		// 받은 Reward의 ID를 확인해 기존 Reward와 변경
 	}
-	public Vector<Reward> retrieveAll(){
+	public List<Reward> retrieveAll(){
 		return null;
 	}
 }
