@@ -12,7 +12,7 @@ public class CampaignProgram {
 	private String place; // 캠페인 장소
 	private String campaignWay; // 캠페인 수단 - 시나리오에 적혀있지만 설계 과정에서 attribute가 제외되서 추가함
 	private float endResult; // 실제 손익률 - 시나리오에 적혀있지만 설계 과정에서 attribute가 제외되서 추가함
-	private CampaignProgram report; // 캠페인 결과 분석 보고서 - 시나리오에 적혀있지만 설계에서 제외됨
+	//private CampaignProgram report; // 캠페인 결과 분석 보고서 - 시나리오에 적혀있지만 설계에서 제외됨
 	private CampaignState state;
 	private String outTeam;
 
@@ -32,9 +32,9 @@ public class CampaignProgram {
 	public void setEndResult(float endResult) {this.endResult = endResult;}
 	public CampaignState getProgramState() { return state; }
 	public float getEndResult() { return endResult; }
-	public void setReport(CampaignProgram report) { this.report = report; }
+	//public void setReport(CampaignProgram report) { this.report = report; }
 
-	public CampaignProgram getReport() { return report; }
+	//public CampaignProgram getReport() { return report; }
 
 	public int getBudget() {
 		return budget;

@@ -1,9 +1,8 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.function.Supplier;
 
 public class Dao {
     private Connection connect = null;
@@ -61,4 +60,12 @@ public class Dao {
             e.printStackTrace();
         }
     }
+
+    public <T> T enumNullCheck(String value, Supplier<T> supplier) {
+        return value.contains("null") ? null : supplier.get();
+    }
+    public LocalDate dateNullCheck(Date value) {
+        return value == null ? null : value.toLocalDate();
+    }
+
 }

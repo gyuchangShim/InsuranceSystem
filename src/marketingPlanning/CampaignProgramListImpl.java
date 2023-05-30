@@ -14,11 +14,36 @@ public class CampaignProgramListImpl implements CampaignProgramList {
 
 	@Override
 	public void add(CampaignProgram campaignProgram) {
+
+	}
+
+	@Override
+	public void delete(int campaignProgramId) {
+
+	}
+
+	@Override
+	public CampaignProgram retrieve(int campaignProgramId) {
+		return null;
+	}
+
+	@Override
+	public List<CampaignProgram> retrieveAll() {
+		return null;
+	}
+
+	@Override
+	public void update(CampaignProgram campaignProgram) {
+
+	}
+
+	/*@Override
+	public void add(CampaignProgram campaignProgram) {
 		campaignProgramList.add(campaignProgram);
 	}
 
 	@Override
-	public void delete(CampaignProgram campaignProgram) {
+	public void delete(int campaignProgramID) {
 		campaignProgramList.remove(campaignProgram);
 	}
 
@@ -36,5 +61,5 @@ public class CampaignProgramListImpl implements CampaignProgramList {
 	@Override
 	public void update(CampaignProgram campaignProgram) {
 
-	}
+	}*/
 }

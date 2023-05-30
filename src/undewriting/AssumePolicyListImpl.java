@@ -17,7 +17,28 @@ public class AssumePolicyListImpl implements AssumePolicyList {
 	public void add(AssumePolicy assumePolicy){
 		assumePolicyList.add(assumePolicy);
 	}
-	public void delete(AssumePolicy assumePolicy){assumePolicyList.remove(assumePolicy);}
+
+	@Override
+	public void delete(int assumePolicyId) {
+
+	}
+
+	@Override
+	public AssumePolicy retreive(int policyId) {
+		return null;
+	}
+
+	@Override
+	public List<AssumePolicy> retreiveAll() {
+		return null;
+	}
+
+	@Override
+	public void update(AssumePolicy assumePolicy) {
+
+	}
+
+	/*public void delete(AssumePolicy assumePolicy){assumePolicyList.remove(assumePolicy);}
 
 	public void retrieve(){
 
@@ -27,5 +48,5 @@ public class AssumePolicyListImpl implements AssumePolicyList {
 
 	}
 
-	public List<AssumePolicy> getAllPolicy() {return assumePolicyList;}
+	public List<AssumePolicy> getAllPolicy() {return assumePolicyList;}*/
 }

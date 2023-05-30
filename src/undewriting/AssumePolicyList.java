@@ -1,13 +1,19 @@
 package undewriting;
 
 import java.util.List;
+
+import dao.AssumePolicyDao;
 import undewriting.AssumePolicy;
 
 public interface AssumePolicyList {
 
     void add(AssumePolicy assumePolicy);
 
-    void delete(AssumePolicy assumePolicy);
+    void delete(int assumePolicyId);
 
-    List<AssumePolicy> getAllPolicy();
+    AssumePolicy retreive(int policyId);
+
+    List<AssumePolicy> retreiveAll();
+
+    void update(AssumePolicy assumePolicy);
 }
