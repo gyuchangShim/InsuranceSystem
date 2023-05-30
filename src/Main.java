@@ -161,7 +161,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
-//               customerNotice();
+//              customerNotice();
                 customerMenu();
                 break;
             case 2 :
@@ -170,7 +170,7 @@ public class Main {
                 System.out.println("PassWord:");
                 password = TuiReader.readInputCorrect();
                 System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
-                        "address/age/sex/job/name/phoneNumber/registrationNumber/incomeLevel/accountNumber/accountPassword");
+                "address/age/sex/job/name/phoneNumber/registrationNumber/incomeLevel/accountNumber/accountPassword");
                 String customerInf = TuiReader.readInputCorrect();
                 customerManagementTeam.join(userId,password,customerInf);
                 System.out.println("회원가입 성공");
@@ -1465,7 +1465,7 @@ public class Main {
     private static void retrieveEvaluation() {
         System.out.println("********************* 판매 조직 조회 *********************");
         List<SellGroup> sellGroupList = sellGroupTeam.getAllGroup();
-        if(sellGroupList != null) {
+        if(sellGroupList.get(0).getGroupID() !=0) {
             for (int i = 0; i < sellGroupList.size(); i++) {
                 System.out.println(sellGroupList.get(i).getGroupID() + " . " +
                     sellGroupList.get(i).getExResult()+" / "+
