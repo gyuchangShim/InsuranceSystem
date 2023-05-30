@@ -710,12 +710,11 @@ public class Main {
         System.out.println("인가 확정 상품 / 마케팅 대상 / 마케팅 기간 / 캠페인 수단 / 마케팅 예산 / 예상 손익률 : ");
         marketingPlanningTeam.plan(Target.CAMPAIGN_PROGRAM, Crud.CREATE);
         System.out.println("새로운 캠페인 프로그램 기획이 저장되었습니다!");
-        //printMenu();
     }
 
     private static void retrieveCampaignProgram() {
         System.out.println("********************* 캠페인 프로그램 열람 *********************");
-        System.out.println(" 1. 현재 진행 중인 캠페인");
+        System.out.println(" 1. 현재 진행 중인 캠페인 & 캠페인 종료");
         System.out.println(" 2. 지난 캠페인");
         System.out.println(" 3. 새로운 캠페인 실행");
         System.out.println(" 4. 캠페인 기획안 수정");
@@ -737,18 +736,38 @@ public class Main {
     }
 
     private static void runningCampaign() {
-        // 실행 중인 캠페인 리스트 조회 - 시나리오 X
-        System.out.println("********************* 실행 중인 캠페인 페이지 *********************");
+        // 실행 중인 캠페인 리스트 조회 + 캠페인 진행 종료 버튼 추가 - 시나리오 X
+        System.out.println("********************* 실행 중인 캠페인 & 캠페인 종료 페이지 *********************");
+        System.out.println("종료할 프로그램을 선택하세요.");
         List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll()
                 .stream()
                 .filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.Run)
                 .collect(Collectors.toList());
-        for(CampaignProgram campaignProgram : campaignPrograms) {
-            System.out.println("캠페인 이름: " + campaignProgram.getCampaignName()
-                    + "/ 대상 보험: " + campaignProgram.getInsuranceID() + "/ 캠페인 대상: " + campaignProgram.getCampaignTarget()
-                    + "/ 기간: " + campaignProgram.getDuration() + "/ 장소: " + campaignProgram.getPlace()
-                    + "/ 예산: " + campaignProgram.getBudget() + "/ 예상 손익률: " + campaignProgram.getExResult());
+        if(campaignPrograms != null) {
+            for (int i = 0; i < campaignPrograms.size(); i++) {
+                System.out.println("캠페인 이름: " + campaignPrograms.get(i).getCampaignName()
+                        + "/ 대상 보험: " + campaignPrograms.get(i).getInsuranceID() + "/ 캠페인 대상: " + campaignPrograms.get(i).getCampaignTarget()
+                        + "/ 기간: " + campaignPrograms.get(i).getDuration() + "/ 장소: " + campaignPrograms.get(i).getPlace()
+                        + "/ 예산: " + campaignPrograms.get(i).getBudget() + "/ 예상 손익률: " + campaignPrograms.get(i).getExResult());
+            }
+        } else {
+            System.out.println("현재 진행중인 캠페인 프로그램 대상이 존재하지 않습니다.");
         }
+        int inChoice = TuiReader.choice(0, campaignPrograms.size() - 1);
+        System.out.println("선택한 프로그램: " + campaignPrograms.get(inChoice).getCampaignID() + ", "
+                            + campaignPrograms.get(inChoice).getCampaignName());
+        System.out.println("1. 종료");
+        System.out.println("2. 취소");
+        int removeChoice = TuiReader.choice(0, 2);
+        switch (removeChoice) {
+            case 1:
+                campaignPrograms.get(inChoice).setProgramState(CampaignState.End);
+                campaignProgramList.update(campaignPrograms.get(inChoice));
+                break;
+            case 2:
+                break;
+        }
+        
     }
 
     private static void endCampaign() {
