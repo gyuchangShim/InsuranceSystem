@@ -129,7 +129,7 @@ public class Main {
     }
     public static void main(String[] args) {
         initialize();
-        initData();
+        //initData();
         while (true) {
             try {
                 loginPage();
@@ -1133,7 +1133,14 @@ public class Main {
 	    	System.out.println("----------------------------------------------------------------------");
 	    	int select = TuiReader.choice(0, educationList.size() - 1);
 	    	int selectedEducationID = educationList.get(select).getEducationID();
-
+	    	List<EducationStudent> studentList = businessEducationTeam.getAllStudent();
+	    	List<EducationStudent> educatedStudentList = new ArrayList<EducationStudent>();
+	    	for( EducationStudent student : studentList ) {
+	    		if( student.getEducationID()==selectedEducationID ) educatedStudentList.add( student );
+	    	}
+	    	if( educatedStudentList.size()==0 ) {
+	    		System.out.println("해당 교육을 수료한 사람이 없습니다.");
+	    	}
 	    	System.out.println("수행할 작업을 선택하세요");
 	    	System.out.println("1. 학생 추가 2. 학생 정보 수정 3. 학생 조회");
 	    	select = TuiReader.choice( 1,  3 );
@@ -1149,11 +1156,41 @@ public class Main {
 	    		student.setExamination( studentSplit[3] );
 	    		student.setStudentScore( Integer.parseInt( studentSplit[4] ) );
 	    		student.setEducationID( selectedEducationID );
-	    		List<EducationStudent> studentList = businessEducationTeam.getAllStudent();
-	    		student.setStudentID( studentList.get(-1).getStudentID() + 1 );
 	    		businessEducationTeam.setStudent( student );
 	    		businessEducationTeam.manage( Target.EDUCATION_STUDENT, Crud.CREATE );
 	    		System.out.println("저장이 완료되었습니다");
+	    		break;
+	    	case 2:
+	    		if( educatedStudentList.size()==0 ) {
+		    		System.out.println("해당 교육을 수료한 사람이 없습니다.");
+		    	}
+	    		else {
+		    		for( int i=0; i<educatedStudentList.size(); i++ ) {
+		    			EducationStudent tmpStudent = educatedStudentList.get(i);
+		    			System.out.println( i + ": " + tmpStudent.getName() + " " + tmpStudent.getAge() );
+		    		}
+		    		System.out.println("수정하고자 하는 학생을 선택하세요.");
+		    		select = TuiReader.choice( 0, educatedStudentList.size()-1 );
+		    		EducationStudent selectedStudent = educatedStudentList.get( select );
+		    		System.out.println("수료자의 평가, 점수를 입력하세요");
+		    		String tmpString = TuiReader.readInput("정확한 정보를 입력하세요");
+		    		String[] tmpSplit = tmpString.split("/");
+		    		selectedStudent.setExamination( tmpSplit[0] );
+		    		selectedStudent.setStudentScore( Integer.parseInt( tmpSplit[1] ) );
+		    		businessEducationTeam.setStudent( selectedStudent );
+		    		businessEducationTeam.manage( Target.EDUCATION_STUDENT, Crud.UPDATE );
+		    		System.out.println("수정이 완료되었습니다.");
+	    		}
+	    		break;
+	    	case 3:
+	    		if( educatedStudentList.size()==0 ) {
+		    		System.out.println("해당 교육을 수료한 사람이 없습니다.");
+		    	} else {
+		    		for( int i=0; i<educatedStudentList.size(); i++ ) {
+		    			EducationStudent tmpStudent = educatedStudentList.get(i);
+		    			System.out.println( i + ": " + tmpStudent.getName() + " " + tmpStudent.getAge() );
+		    		}
+		    	}
 	    		break;
 	    	}
     	}
@@ -1171,6 +1208,7 @@ public class Main {
     	System.out.println("추가할 교육 이름, 교육 기간, 교육 장소, 강사 이름, 강사 전화번호, 교육 예산, 교육 내용을 입력하세요.");		// 예산, 강사 전화번호 추가 & 교육 날짜, 교육 대상자 삭제
     	String educationString = TuiReader.readInput("정확한 정보를 입력하세요");
     	String[] educationSplit = educationString.split("/");
+    	System.out.println( educationSplit.length );	//debug
     	Education education = new Education();
     	education.setName( educationSplit[0] );
     	education.setDuration( Integer.parseInt( educationSplit[1] ) );
@@ -1179,8 +1217,6 @@ public class Main {
     	education.setTeacherPhoneNumber( educationSplit[4] );
     	education.setBudget( Integer.parseInt( educationSplit[5] ) );
     	education.setContent( educationSplit[6] );
-    	int newEducationID = businessEducationTeam.getAllEducation().get(-1).getEducationID() + 1;
-    	education.setEducationID( newEducationID );
     	System.out.println( "입력하신 정보가 올바르게 입력되었다면 확인을 눌러주세요.");
     	System.out.println( education.getName() + ": " + education.getTeacherName() + " " + education.getContent() );
     	System.out.println("1. 확인  2. 취소");

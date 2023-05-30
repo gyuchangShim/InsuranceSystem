@@ -51,6 +51,7 @@ public class BusinessEducationTeam extends Team {
 			case READ:
 				break;
 			case UPDATE:
+				this.studentListImpl.update( this.m_EducationStudent );
 				break;
 			case DELETE:
 				break;
