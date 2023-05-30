@@ -59,7 +59,11 @@ public class InsuranceDao implements InsuranceList {
     public Insurance retrieve(int insuranceId) {
         String query = "SELECT * FROM Insurance WHERE insuranceID = " + insuranceId + ";";
         try {
-            return getInsurance(dao.retrieve(query));
+            ResultSet resultSet = dao.retrieve(query);
+            if (resultSet.next()) {
+                return getInsurance(resultSet);
+            }
+            return null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

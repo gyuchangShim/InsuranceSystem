@@ -13,23 +13,22 @@ public class CustomerDao implements CustomerList {
 
 	private Dao dao;
 
-
 	public CustomerDao() {
 		try {
 			dao = new Dao();
 			dao.connect();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
 	public int add(Customer customer) {
-		String query = "insert into Customer(address,age,sex,job,name,phoneNumber,"
-				+ "registrationNumber,incomeLevel,accountNumber,accountPassword) values('"
-				+ customer.getAddress() + "', "
+		String query = "insert into Customer(address, sex, age, job, name, phoneNumber, "
+				+ "registrationNumber, incomeLevel, accountNumber, accountPassword) values('"
+				+ customer.getAddress() + "', '"
+				+ customer.getSex() + "', "
 				+ customer.getAge() + ", '"
-				+ customer.getSex() + "', '"
 				+ customer.getJob() + "', '"
 				+ customer.getName() + "', '"
 				+ customer.getPhoneNumber() + "', '"
@@ -38,7 +37,16 @@ public class CustomerDao implements CustomerList {
 				+ customer.getAccountNumber() + "','"
 				+ customer.getAccountPassword() + "');";
 		dao.create(query);
-		return getCustomerID();
+		ResultSet retrieve = dao.retrieve("SELECT LAST_INSERT_ID();");
+		try {
+			if (retrieve.next()) {
+				return retrieve.getInt(1);
+			} else {
+				throw new RuntimeException("Customer ID를 찾을 수 없습니다.");
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -57,16 +65,17 @@ public class CustomerDao implements CustomerList {
 	}
 	@Override
 	public void update(Customer customer) {
-		String query = "UPDATE Customer SET address = '" +  customer.getAddress() + "', "
-				+ "age= "+ customer.getAge() + ", "
+		String query = "UPDATE CustomerList SET address = '" +  customer.getAddress() + "', "
 				+ "sex= '"+customer.getSex() + "', "
+				+ "age= "+ customer.getAge() + ", "
 				+ "job= '"+ customer.getJob() + "', "
 				+ "name= '"+ customer.getName() + "', "
 				+ "phoneNumber= '"+ customer.getPhoneNumber() + "', "
 				+ "registrationNumber= '"+ customer.getRegistrationNumber() + "', "
 				+ "incomeLevel= "+ customer.getIncomeLevel() + ", "
 				+ "accountNumber= '"+ customer.getAccountNumber() + "',"
-				+ "accountPassword= '"+ customer.getAccountPassword() + "');";
+				+ "accountPassword= '"+ customer.getAccountPassword()
+				+"' WHERE groupID = "+customer.getCustomerID()+";";
 		dao.update(query);
 	}
 
@@ -89,8 +98,8 @@ public class CustomerDao implements CustomerList {
 		Customer customer = new Customer();
 		customer.setCustomerID(resultSet.getInt("customerID"));
 		customer.setAddress(resultSet.getString("address"));
-		customer.setAge(resultSet.getInt("age"));
 		customer.setSex(Gender.valueOf(resultSet.getString("sex")));
+		customer.setAge(resultSet.getInt("age"));
 		customer.setJob(resultSet.getString("job"));
 		customer.setName(resultSet.getString("name"));
 		customer.setPhoneNumber(resultSet.getString("phoneNumber"));
@@ -99,15 +108,5 @@ public class CustomerDao implements CustomerList {
 		customer.setAccountNumber(resultSet.getString("accountNumber"));
 		customer.setAccountPassword(resultSet.getString("accountPassword"));
 		return customer;
-	}
-
-	public int getCustomerID(){
-		String query = "SELECT customerID from Customer";
-		ResultSet resultSet = dao.retrieve(query);
-		try {
-			int a=0;
-			while (resultSet.next()) {a = resultSet.getInt("customerID");}
-			return a;
-		} catch (SQLException e) {throw new RuntimeException(e);}
 	}
 }

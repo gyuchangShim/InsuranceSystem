@@ -5,11 +5,10 @@ import customer.CustomerList;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import exception.CIllegalArgumentException;
-import util.Constants.Gender;
-
 import java.util.Optional;
 
 public class CustomerManagementTeam {
+
     private CustomerManagementList customerManagementList;
     private CustomerList customerList;
 
@@ -30,8 +29,8 @@ public class CustomerManagementTeam {
         throw new CIllegalArgumentException("로그인을 실패했습니다.");
     }
 
-    public void join(String userId, String password, String customerInf) {
-        Customer customer = createCustomer(customerInf);
+    public void join(String userId, String password, String customerName) {
+        Customer customer = createCustomer(customerName);
         int customerId = customerList.add(customer);
         CustomerManagement customerManagement = new CustomerManagement();
         customerManagement.setID(userId);
@@ -40,19 +39,9 @@ public class CustomerManagementTeam {
         customerManagementList.add(customerManagement);
     }
 
-    private Customer createCustomer(String customerInf) {
-        String[] customerInfList = customerInf.split("/");
+    private Customer createCustomer(String customerName) {
         Customer customer = new Customer();
-        customer.setAddress(customerInfList[0]);
-        customer.setAge(Integer.parseInt(customerInfList[1]));
-        customer.setSex(Gender.valueOf(customerInfList[2]));
-        customer.setJob(customerInfList[3]);
-        customer.setName(customerInfList[4]);
-        customer.setPhoneNumber(customerInfList[5]);
-        customer.setRegistrationNumber(customerInfList[6]);
-        customer.setIncomeLevel(Integer.parseInt(customerInfList[7]));
-        customer.setAccountNumber(customerInfList[8]);
-        customer.setAccountPassword(customerInfList[9]);
+        customer.setName(customerName);
         return customer;
     }
 }

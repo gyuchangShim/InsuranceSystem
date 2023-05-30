@@ -17,9 +17,7 @@ import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
-import dao.CustomerDao;
-import dao.CustomerManagementDao;
-import dao.InsuranceDao;
+import dao.*;
 import exception.CCounselingNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -97,8 +95,8 @@ public class Main {
         customerList = new CustomerDao();
         customerCounselingList = new CustomerCounselingListImpl();
         customerManagementList = new CustomerManagementDao();
-        operationPolicyList = new OperationPolicyListImpl();
-        sellGroupList = new SellGroupListImpl();
+        operationPolicyList = new OperationPolicyDao();
+        sellGroupList = new SellGroupDao();
         paymentList = new PaymentListImpl();
         adviceNoteList = new AdviceNoteListImpl();
         contractManagementPolicyList = new ContractManagementPolicyListImpl();
@@ -115,10 +113,12 @@ public class Main {
     }
     public static void main(String[] args) {
         initialize();
+//        initData();
         while (true) {
             try {
                 loginPage();
             } catch (Exception e) {
+                e.printStackTrace();
                 System.out.println(e.getMessage());
             }
         }
@@ -131,6 +131,7 @@ public class Main {
         CustomerManagement customerManagement = new CustomerManagement();
         customerManagement.setID("test");
         customerManagement.setPW("test");
+        customerManagement.setCustomerID(customerId);
         customerManagementList.add(customerManagement);
         // 상담 생성
         CustomerCounseling customerCounseling = new CustomerCounseling();
@@ -162,7 +163,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
-                //customerNotice();
+//                customerNotice();
                 customerMenu();
                 break;
             case 2 :
@@ -170,10 +171,9 @@ public class Main {
                 userId = TuiReader.readInputCorrect();
                 System.out.println("PassWord:");
                 password = TuiReader.readInputCorrect();
-                System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
-                        "address/age/sex/job/name/phoneNumber/registrationNumber/incomeLevel/accountNumber/accountPassword");
-                String customerInf = TuiReader.readInputCorrect();
-                customerManagementTeam.join(userId,password,customerInf);
+                System.out.println("Name:");
+                String customerName = TuiReader.readInputCorrect();
+                customerManagementTeam.join(userId,password,customerName);
                 System.out.println("회원가입 성공");
                 break;
             case 3 :
@@ -268,7 +268,7 @@ public class Main {
         while (isContinue) {
             try {
                 printEmployeeMenu();
-                int choice = TuiReader.choice(0, 12);
+                int choice = TuiReader.choice(0, 13);
                 switch (choice) {
                     case 1:
                         createInsurance();
