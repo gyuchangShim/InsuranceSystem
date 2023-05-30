@@ -46,7 +46,7 @@ public class OperationPolicyDao implements OperationPolicyList {
     public List<OperationPolicy> retrieveAll() {
         String query = "SELECT * from OperationPolicy";
         ResultSet resultSet = dao.retrieve(query);
-        List<OperationPolicy> operationPolicyList = new ArrayList<OperationPolicy>();
+        List<OperationPolicy> operationPolicyList = new ArrayList<>();
         int i = 0;
 
         try {

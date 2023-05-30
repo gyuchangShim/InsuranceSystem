@@ -50,15 +50,18 @@ public class SellGroupDao implements SellGroupList {
 
     @Override
     public List<SellGroup> retrieveAll() {
-        String query = "SELECT * from SellGroup";
+        String query = "select * from SellGroup;";
+        try {
         ResultSet resultSet = dao.retrieve(query);
         List<SellGroup> sellGroupList = new ArrayList<>();
-        try {
+
             while(resultSet.next()) {
+                System.out.println(resultSet.getInt("groupID"));
                 sellGroupList.add(getSellGroup(resultSet));
+
             }
+            return sellGroupList;
         } catch (SQLException e) {throw new RuntimeException(e);}
-        return sellGroupList;
     }
 
     private SellGroup getSellGroup(ResultSet resultSet) throws SQLException {
