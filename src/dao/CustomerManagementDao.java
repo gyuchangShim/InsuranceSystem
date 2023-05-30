@@ -9,11 +9,8 @@ import java.util.List;
 
 public class CustomerManagementDao implements CustomerManagementList {
     private Dao dao;
-    private CustomerManagement customerManagement;
 
-
-    public CustomerManagementDao(CustomerManagement customerManagement) {
-        this.customerManagement = customerManagement;
+    public CustomerManagementDao() {
         try {
             dao = new Dao();
             dao.connect();
@@ -24,9 +21,11 @@ public class CustomerManagementDao implements CustomerManagementList {
 
     @Override
     public void add(CustomerManagement customerManagement) {
-        String query = "insert into CustomerManagement(ID,PW) values('"
+        String query = "insert into CustomerManagement(ID,PW,customerId) values('"
                 + customerManagement.getID() + "', '"
-                + customerManagement.getPW() +  "');";
+                + customerManagement.getPW() + "',"
+                + customerManagement.getCustomerID()+");";
+
         dao.create(query);
     }
 

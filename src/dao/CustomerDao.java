@@ -12,11 +12,9 @@ import java.util.List;
 public class CustomerDao implements CustomerList {
 
 	private Dao dao;
-	private Customer customer;
 
 
-	public CustomerDao(Customer customer) {
-		this.customer = customer;
+	public CustomerDao() {
 		try {
 			dao = new Dao();
 			dao.connect();
@@ -27,20 +25,20 @@ public class CustomerDao implements CustomerList {
 
 	@Override
 	public int add(Customer customer) {
-		String query = "insert into CustomerList(address,sex,age,job,name,phoneNumber,"
+		String query = "insert into Customer(address,age,sex,job,name,phoneNumber,"
 				+ "registrationNumber,incomeLevel,accountNumber,accountPassword) values('"
 				+ customer.getAddress() + "', "
-				+ customer.getSex() + "', "
 				+ customer.getAge() + ", '"
+				+ customer.getSex() + "', '"
 				+ customer.getJob() + "', '"
 				+ customer.getName() + "', '"
 				+ customer.getPhoneNumber() + "', '"
-				+ customer.getRegistrationNumber() + "', '"
+				+ customer.getRegistrationNumber() + "', "
 				+ customer.getIncomeLevel() + ", '"
 				+ customer.getAccountNumber() + "','"
 				+ customer.getAccountPassword() + "');";
 		dao.create(query);
-		return customer.getCustomerID();
+		return getCustomerID();
 	}
 
 	@Override
@@ -59,9 +57,9 @@ public class CustomerDao implements CustomerList {
 	}
 	@Override
 	public void update(Customer customer) {
-		String query = "UPDATE CustomerList SET address = '" +  customer.getAddress() + "', "
-				+ "sex= '"+customer.getSex() + "', "
+		String query = "UPDATE Customer SET address = '" +  customer.getAddress() + "', "
 				+ "age= "+ customer.getAge() + ", "
+				+ "sex= '"+customer.getSex() + "', "
 				+ "job= '"+ customer.getJob() + "', "
 				+ "name= '"+ customer.getName() + "', "
 				+ "phoneNumber= '"+ customer.getPhoneNumber() + "', "
@@ -91,8 +89,8 @@ public class CustomerDao implements CustomerList {
 		Customer customer = new Customer();
 		customer.setCustomerID(resultSet.getInt("customerID"));
 		customer.setAddress(resultSet.getString("address"));
-		customer.setSex(Gender.valueOf(resultSet.getString("sex")));
 		customer.setAge(resultSet.getInt("age"));
+		customer.setSex(Gender.valueOf(resultSet.getString("sex")));
 		customer.setJob(resultSet.getString("job"));
 		customer.setName(resultSet.getString("name"));
 		customer.setPhoneNumber(resultSet.getString("phoneNumber"));
@@ -101,5 +99,15 @@ public class CustomerDao implements CustomerList {
 		customer.setAccountNumber(resultSet.getString("accountNumber"));
 		customer.setAccountPassword(resultSet.getString("accountPassword"));
 		return customer;
+	}
+
+	public int getCustomerID(){
+		String query = "SELECT customerID from Customer";
+		ResultSet resultSet = dao.retrieve(query);
+		try {
+			int a=0;
+			while (resultSet.next()) {a = resultSet.getInt("customerID");}
+			return a;
+		} catch (SQLException e) {throw new RuntimeException(e);}
 	}
 }

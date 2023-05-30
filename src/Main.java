@@ -15,10 +15,10 @@ import customer.Customer;
 import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
-import customer.CustomerListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
-import customerManagement.CustomerManagementListImpl;
+import dao.CustomerDao;
+import dao.CustomerManagementDao;
 import dao.InsuranceDao;
 import exception.CCounselingNotFoundException;
 import java.time.LocalDate;
@@ -94,9 +94,9 @@ public class Main {
         campaignProgramList = new CampaignProgramListImpl();
         contractList = new ContractListImpl();
         userPersonaList = new UserPersonaListImpl();
-        customerList = new CustomerListImpl();
+        customerList = new CustomerDao();
         customerCounselingList = new CustomerCounselingListImpl();
-        customerManagementList = new CustomerManagementListImpl();
+        customerManagementList = new CustomerManagementDao();
         operationPolicyList = new OperationPolicyListImpl();
         sellGroupList = new SellGroupListImpl();
         paymentList = new PaymentListImpl();
@@ -131,7 +131,6 @@ public class Main {
         CustomerManagement customerManagement = new CustomerManagement();
         customerManagement.setID("test");
         customerManagement.setPW("test");
-        customerManagement.setCustomerID(customerId);
         customerManagementList.add(customerManagement);
         // 상담 생성
         CustomerCounseling customerCounseling = new CustomerCounseling();
@@ -171,9 +170,10 @@ public class Main {
                 userId = TuiReader.readInputCorrect();
                 System.out.println("PassWord:");
                 password = TuiReader.readInputCorrect();
-                System.out.println("Name:");
-                String customerName = TuiReader.readInputCorrect();
-                customerManagementTeam.join(userId,password,customerName);
+                System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
+                        "address/age/sex/job/name/phoneNumber/registrationNumber/incomeLevel/accountNumber/accountPassword");
+                String customerInf = TuiReader.readInputCorrect();
+                customerManagementTeam.join(userId,password,customerInf);
                 System.out.println("회원가입 성공");
                 break;
             case 3 :
