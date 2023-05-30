@@ -21,7 +21,7 @@ public class OperationPolicyDao implements OperationPolicyList {
 
     @Override
     public void add(OperationPolicy operationPolicy) {
-        String query = "insert into OperationPolicyList (name ,content ) values('"
+        String query = "insert into OperationPolicy (name ,content) values('"
             + operationPolicy.getName() + "', '"
             + operationPolicy.getContent() +  "');";
         dao.create(query);
@@ -44,9 +44,9 @@ public class OperationPolicyDao implements OperationPolicyList {
 
     @Override
     public List<OperationPolicy> retrieveAll() {
-        String query = "SELECT * from OperationPolicyList";
+        String query = "SELECT * from OperationPolicy";
         ResultSet resultSet = dao.retrieve(query);
-        List<OperationPolicy> operationPolicyList = new ArrayList<OperationPolicy>();
+        List<OperationPolicy> operationPolicyList = new ArrayList<>();
         int i = 0;
 
         try {

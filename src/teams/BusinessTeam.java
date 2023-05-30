@@ -44,9 +44,7 @@ public class BusinessTeam extends Team {
 	public void evaluateResult(){
 		String policyInf = TuiReader.readInput("정확히 입력해주세요.");
 		String[] policyInfList = policyInf.split("/");
-		SellGroup sellGroup = new SellGroup();
-		sellGroup.setName(policyInfList[0]);
-		sellGroup=sellGroupList.retrieve(sellGroup.getGroupID());
+		SellGroup sellGroup = sellGroupList.retrieve(Integer.parseInt(policyInfList[0]));
 		sellGroup.setExResult(policyInfList[1]);
 		sellGroupList.update(sellGroup);
 	}

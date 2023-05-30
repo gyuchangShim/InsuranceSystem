@@ -1,9 +1,7 @@
 import business.OperationPolicy;
 import business.OperationPolicyList;
-import business.OperationPolicyListImpl;
 import business.SellGroup;
 import business.SellGroupList;
-import business.SellGroupListImpl;
 import businessEducation.Education;
 import businessEducation.EducationStudent;
 import contract.*;
@@ -17,14 +15,7 @@ import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
-import dao.AssumePolicyDao;
-import dao.ContractDao;
-import dao.CustomerCounselingDao;
-import dao.CustomerDao;
-import dao.CustomerManagementDao;
-import dao.InsuranceDao;
-import dao.CampaignProgramDao;
-import dao.UserPersonaDao;
+import dao.*;
 import exception.CCounselingNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -102,8 +93,8 @@ public class Main {
         customerList = new CustomerDao();
         customerCounselingList = new CustomerCounselingDao();
         customerManagementList = new CustomerManagementDao();
-        operationPolicyList = new OperationPolicyListImpl();
-        sellGroupList = new SellGroupListImpl();
+        operationPolicyList = new OperationPolicyDao();
+        sellGroupList = new SellGroupDao();
         paymentList = new PaymentListImpl();
         adviceNoteList = new AdviceNoteListImpl();
         contractManagementPolicyList = new ContractManagementPolicyListImpl();
@@ -178,9 +169,10 @@ public class Main {
                 userId = TuiReader.readInputCorrect();
                 System.out.println("PassWord:");
                 password = TuiReader.readInputCorrect();
-                System.out.println("Name:");
-                String customerName = TuiReader.readInputCorrect();
-                customerManagementTeam.join(userId,password,customerName);
+                System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
+                "address/age/sex/job/name/phoneNumber/registrationNumber/incomeLevel/accountNumber/accountPassword");
+                String customerInf = TuiReader.readInputCorrect();
+                customerManagementTeam.join(userId,password,customerInf);
                 System.out.println("회원가입 성공");
                 break;
             case 3 :
@@ -275,7 +267,7 @@ public class Main {
         while (isContinue) {
             try {
                 printEmployeeMenu();
-                int choice = TuiReader.choice(0, 12);
+                int choice = TuiReader.choice(0, 13);
                 switch (choice) {
                     case 1:
                         createInsurance();
@@ -662,7 +654,6 @@ public class Main {
         if(registList.get(inChoice).getContractID() != 0) {
             // 인수 심사 시작
             registList.get(inChoice).setContractRunState(ContractRunState.Finish);
-            contractList.update(registList.get(inChoice));
                 System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
             }
         }
@@ -804,7 +795,7 @@ public class Main {
             case 2:
                 break;
         }
-        
+
     }
 
     private static void endCampaign() {
@@ -1527,14 +1518,14 @@ public class Main {
     }
     private static void updateEvaluation() {
         System.out.println("********************* 성과 평가 *********************");
-        System.out.println("'팀 이름 / 성과'를 입력해주세요.");
+        System.out.println("'팀 번호 / 성과'를 입력해주세요.");
         businessTeam.evaluateResult();
         System.out.println("평가 내용을 저장되었습니다.");
     }
     private static void retrieveEvaluation() {
         System.out.println("********************* 판매 조직 조회 *********************");
         List<SellGroup> sellGroupList = sellGroupTeam.getAllGroup();
-        if(sellGroupList != null) {
+        if(sellGroupList.get(0).getGroupID() !=0) {
             for (int i = 0; i < sellGroupList.size(); i++) {
                 System.out.println(sellGroupList.get(i).getGroupID() + " . " +
                     sellGroupList.get(i).getExResult()+" / "+

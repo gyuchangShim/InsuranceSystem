@@ -79,7 +79,8 @@ public class CustomerDao implements CustomerList {
 				+ "registrationNumber= '"+ customer.getRegistrationNumber() + "', "
 				+ "incomeLevel= "+ customer.getIncomeLevel() + ", "
 				+ "accountNumber= '"+ customer.getAccountNumber() + "',"
-				+ "accountPassword= '"+ customer.getAccountPassword() + "';";
+				+ "accountPassword= '"+ customer.getAccountPassword()
+				+"' WHERE customerID = "+customer.getCustomerID()+";";
 		dao.update(query);
 	}
 
