@@ -27,8 +27,8 @@ public class RewardDao implements RewardList {
 	public void add(Reward reward) {
 		// rewardID, appliDate, contractID, customerName. content, 
 		// 		appliResult accidentProfile, identifyProfile, reward
-		String query = "INSERT into Reward values("
-	            + reward.getAppliDate() +  ", "
+		String query = "INSERT INTO Reward ( appliDate, contractID, customerName, content, appliResult, accidentProfile, identifyProfile, reward ) VALUES ('"
+	            + reward.getAppliDate() +  "', "
 	            + reward.getContractID() + ", '" 
 	            + reward.getCustomerName() + "', '" 
 	            + reward.getContent() + "', '" 
@@ -98,7 +98,7 @@ public class RewardDao implements RewardList {
 				+ "customerName = '" + reward.getCustomerName() + "', " 
 				+ "contractID = " + reward.getContractID() + ", " 
 				+ "content = '" + reward.getContent() + "', " 
-				+ "appliDate = " + reward.getAppliDate() + ", " 
+				+ "appliDate = '" + reward.getAppliDate() + "', " 
 				+ "accidentProfile = '" + reward.getAccidentProfile() + "', " 
 				+ "appliResult = '" + reward.getAppliResult().getString() + "' "
 				+ "WHERE rewardID = " + reward.getRewardID() + ";";

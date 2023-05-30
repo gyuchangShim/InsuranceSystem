@@ -23,7 +23,7 @@ public class EducationStudentDao implements EducationStudentList {
 
 	@Override
 	public void add(EducationStudent student) {
-		String query = "INSERT into EducationStudent values("
+		String query = "INSERT into EducationStudent ( age, gender, name, phone, examination, studentScore, educationID ) values("
 	            + student.getAge() + ", '"
 	            + student.getGender().getString() + "', '"
 	            + student.getName() + "', '"
@@ -75,7 +75,11 @@ public class EducationStudentDao implements EducationStudentList {
     			student.setExamination( resultSet.getString("examination"));
     			student.setStudentScore( resultSet.getInt("studentScore"));
     	    	String gender = resultSet.getString("gender");
-    	    	student.setGender(dao.enumNullCheck(gender, () -> Gender.valueOf(gender)));
+    	    	if( gender.equals("Male") ) {
+    	    		student.setGender( Gender.MALE );
+    	    	} else if( gender.equals("Female" ) ) {
+    	    		student.setGender( Gender.FEMALE );
+    	    	}
             	studentList.add( student );
             }
         } catch (SQLException e) {throw new RuntimeException(e);}
@@ -90,6 +94,7 @@ public class EducationStudentDao implements EducationStudentList {
 				+ "educationID = " + student.getEducationID() + ", "
 				+ "examination = '" + student.getExamination() + "', "
 				+ "studentScore = " + student.getStudentScore() + ", "
+				+ "gender= '" + student.getGender().getString()
 				+ "WHERE studentID = " + student.getStudentID() + ";";
 		dao.update( query );		
 	}

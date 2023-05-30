@@ -1,43 +1,63 @@
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import business.OperationPolicy;
 import business.OperationPolicyList;
-import business.OperationPolicyListImpl;
 import business.SellGroup;
 import business.SellGroupList;
-import business.SellGroupListImpl;
 import businessEducation.Education;
 import businessEducation.EducationList;
 import businessEducation.EducationStudent;
 import businessEducation.EducationStudentList;
-import contract.*;
+import contract.AdviceNote;
+import contract.AdviceNoteList;
+import contract.Contract;
+import contract.ContractList;
+import contract.ContractRunState;
+import contract.ContractState;
+import contract.ContractUWState;
+import contract.Payment;
+import contract.PaymentList;
 import contractManagement.ContractManagementPolicy;
 import contractManagement.ContractManagementPolicyList;
 import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
-import customer.CustomerCounselingListImpl;
+import customer.CustomerList;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
-import customerManagement.CustomerManagementListImpl;
-import dao.*;
+import dao.AdviceNoteDao;
+import dao.AssumePolicyDao;
+import dao.CampaignProgramDao;
+import dao.ContractDao;
+import dao.ContractManagementPolicyDao;
+import dao.CustomerCounselingDao;
+import dao.CustomerDao;
+import dao.CustomerManagementDao;
+import dao.EducationDao;
+import dao.EducationStudentDao;
+import dao.InsuranceDao;
+import dao.OperationPolicyDao;
+import dao.PaymentDao;
+import dao.RewardDao;
+import dao.SellGroupDao;
+import dao.UserPersonaDao;
 import exception.CCounselingNotFoundException;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
 import exception.CustomException;
 import insurance.Insurance;
+import insurance.InsuranceList;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import customer.CustomerList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
-import marketingPlanning.CampaignProgramListImpl;
 import marketingPlanning.CampaignState;
 import outerActor.OuterActor;
 import reward.Reward;
@@ -52,14 +72,9 @@ import teams.RewardTeam;
 import teams.SellGroupTeam;
 import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
-import insurance.InsuranceList;
-
-
 import undewriting.AssumePolicyList;
-import undewriting.AssumePolicyListImpl;
 import userPersona.UserPersona;
 import userPersona.UserPersonaList;
-import userPersona.UserPersonaListImpl;
 import util.Constants;
 import util.Constants.Crud;
 import util.Constants.Gender;
@@ -668,9 +683,10 @@ public class Main {
         if(registList.get(inChoice).getContractID() != 0) {
             // 인수 심사 시작
             registList.get(inChoice).setContractRunState(ContractRunState.FINISH);
-                System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
-            }
+            contractList.update( registList.get(inChoice) );
+            System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
         }
+    }
 
     private static void collaborateUW() {
         // 공동 인수 시작
@@ -861,9 +877,6 @@ public class Main {
         System.out.println("해당 프로그램이 실행됩니다.");
     }
     private static void applyReward() {
-    	// 고객 ID를 어떻게 가져오는가...
-    	int customerID = 0;
-    	// 이 고객 ID로 가입된 계약 목록
     	List<Contract> assignedContract = rewardTeam.getCustomerContract( customerID );
     	List<Insurance> assignedInsurances = rewardTeam.getCustomerInsurance( customerID );
     	System.out.println("현재 가입된 보험 목록입니다. 보험금 신청을 원하는 보험의 번호를 입력하세요");
@@ -905,7 +918,7 @@ public class Main {
     	Customer tmpCustomer = rewardTeam.getCustomerInformation( customerID );
     	applyReward.setCustomerName( tmpCustomer.getName() );
     	rewardTeam.setReward( applyReward );
-    	rewardTeam.manage( Target.REWARD, Crud.UPDATE );
+    	rewardTeam.manage( Target.REWARD, Crud.CREATE );
     }
     private static void modifyCampaignProgramPlan() {
         System.out.println("********************* 캠페인 프로그램 기획안 수정 *********************");
@@ -918,7 +931,7 @@ public class Main {
         else {
             System.out.println( "------------------------------" );
             for( int i=0; i < rewardList.size(); i++ ) {
-                System.out.println( rewardList.get(i).getCustomerName() + ": " +
+                System.out.println( i + " " + rewardList.get(i).getCustomerName() + ": " +
                     rewardList.get(i).getAppliResult().getString() +
                     " " + rewardList.get(i).getContent() +
                     " " + Integer.toString( rewardList.get(i).getAppliDate().getMonthValue() ) + "월 " +
@@ -1203,7 +1216,7 @@ public class Main {
 	    	select = TuiReader.choice( 1,  3 );
 	    	switch( select ) {
 	    	case 1:
-	    		System.out.println("수료자의 이름, 나이, 전화번호, 평가, 점수를 입력하세요");
+	    		System.out.println("수료자의 이름, 나이, 전화번호, 평가, 점수, 성별을 입력하세요");
 	    		String studentString = TuiReader.readInput("정확한 정보를 입력하세요");
 	    		String[] studentSplit = studentString.split("/");
 	    		EducationStudent student = new EducationStudent();
@@ -1212,6 +1225,8 @@ public class Main {
 	    		student.setPhone( studentSplit[2] );
 	    		student.setExamination( studentSplit[3] );
 	    		student.setStudentScore( Integer.parseInt( studentSplit[4] ) );
+	    		if( studentSplit[5].equals("M") ) student.setGender( Gender.MALE );
+	    		else if( studentSplit[5].equals("F") ) student.setGender( Gender.FEMALE );
 	    		student.setEducationID( selectedEducationID );
 	    		businessEducationTeam.setStudent( student );
 	    		businessEducationTeam.manage( Target.EDUCATION_STUDENT, Crud.CREATE );
@@ -1251,15 +1266,6 @@ public class Main {
 	    		break;
 	    	}
     	}
-    	/*
-    	Vector<EducationStudent> studentList = businessEducationTeam.getStduentByEducation( selectedEducationID );
-    	System.out.println( "--------------- 학생 번호를 선택하세요 -------------------");
-    	for( EducationStudent student : studentList ) {
-    		System.out.println( student.getStudentID() + ": " + student.getName() );
-    	}
-    	System.out.println( "----------------------------------------------------");
-    	select = TuiReader.choice( studentList.get(0).getStudentID(), studentList.get(0).getStudentID() + studentList.size() );
-    	*/
     }
     private static void manageEducation() {
     	System.out.println("추가할 교육 이름, 교육 기간, 교육 장소, 강사 이름, 강사 전화번호, 교육 예산, 교육 내용을 입력하세요.");		// 예산, 강사 전화번호 추가 & 교육 날짜, 교육 대상자 삭제

@@ -81,6 +81,7 @@ public class RewardTeam extends Team {
 	public void manage(Target target, Crud crud) {
 		switch( crud ) {
 		case CREATE:
+			this.rewardListImpl.add( this.reward );
 			break;
 		case READ:
 			break;
