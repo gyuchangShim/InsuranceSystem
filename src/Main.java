@@ -1,11 +1,16 @@
 import business.OperationPolicy;
 import business.OperationPolicyList;
+import business.OperationPolicyListImpl;
 import business.SellGroup;
 import business.SellGroupList;
+import business.SellGroupListImpl;
 import businessEducation.Education;
+import businessEducation.EducationList;
 import businessEducation.EducationStudent;
+import businessEducation.EducationStudentList;
 import contract.*;
 import contractManagement.ContractManagementPolicy;
+import contractManagement.ContractManagementPolicyList;
 import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
@@ -13,6 +18,7 @@ import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
+import customerManagement.CustomerManagementListImpl;
 import dao.*;
 import exception.CCounselingNotFoundException;
 import exception.CIllegalArgumentException;
@@ -25,15 +31,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import customer.CustomerList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Vector;
 import java.util.stream.Collectors;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
+import marketingPlanning.CampaignProgramListImpl;
 import marketingPlanning.CampaignState;
 import outerActor.OuterActor;
 import reward.Reward;
+import reward.RewardList;
 import teams.BusinessEducationTeam;
 import teams.BusinessTeam;
 import teams.ContractManagementTeam;
@@ -44,17 +52,8 @@ import teams.RewardTeam;
 import teams.SellGroupTeam;
 import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
-import exception.CIllegalArgumentException;
-import exception.CInsuranceNotFoundException;
-import exception.CustomException;
-import insurance.Insurance;
 import insurance.InsuranceList;
-import insurance.InsuranceState;
-import insurance.InsuranceType;
-import outerActor.OuterActor;
-import teams.BusinessEducationTeam;
-import teams.ContractManagementTeam;
-import teams.InsuranceDevelopmentTeam;
+
 
 import undewriting.AssumePolicyList;
 import undewriting.AssumePolicyListImpl;
@@ -80,7 +79,10 @@ public class Main {
     private static SellGroupList sellGroupList;
     private static PaymentList paymentList;
     private static OperationPolicyList operationPolicyList;
+    private static EducationList educationList;
+    private static EducationStudentList studentList;
     private static AdviceNoteList adviceNoteList;
+    private static RewardList rewardList;
     private static ContractManagementPolicyList contractManagementPolicyList;
 
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
@@ -96,15 +98,15 @@ public class Main {
 
     public static void initialize() {
         insuranceList = new InsuranceDao();
-        assumePolicyList = new AssumePolicyListImpl();
-        campaignProgramList = new CampaignProgramListImpl();
+        assumePolicyList = new AssumePolicyDao();
+        campaignProgramList = new CampaignProgramDao();
         contractList = new ContractDao();
-        userPersonaList = new UserPersonaListImpl();
+        userPersonaList = new UserPersonaDao();
         customerList = new CustomerDao();
-        customerCounselingList = new CustomerCounselingListImpl();
-        customerManagementList = new CustomerManagementListImpl();
-        operationPolicyList = new OperationPolicyListImpl();
-        sellGroupList = new SellGroupListImpl();
+        customerCounselingList = new CustomerCounselingDao();
+        customerManagementList = new CustomerManagementDao();
+        operationPolicyList = new OperationPolicyDao();
+        sellGroupList = new SellGroupDao();
         paymentList = new PaymentDao();
         adviceNoteList = new AdviceNoteDao();
         educationList = new EducationDao();
@@ -647,9 +649,9 @@ public class Main {
         // 인수 심사 대상 리스트 출력
         List<Contract> registList = contractList.retrieveAll()
                 .stream()
-                .filter(contract -> contract.getContractState() == ContractState.Online
-                        && contract.getContractRunState() == ContractRunState.Ready
-                        && contract.getContractUWState() == ContractUWState.Basic)
+                .filter(contract -> contract.getContractState() == ContractState.ONLINE
+                        && contract.getContractRunState() == ContractRunState.READY
+                        && contract.getContractUWState() == ContractUWState.BASIC)
                 .toList();
 
         if(registList != null) {
@@ -665,7 +667,7 @@ public class Main {
         int inChoice = TuiReader.choice(0, registList.size() - 1);
         if(registList.get(inChoice).getContractID() != 0) {
             // 인수 심사 시작
-            registList.get(inChoice).setContractRunState(ContractRunState.Finish);
+            registList.get(inChoice).setContractRunState(ContractRunState.FINISH);
                 System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
             }
         }
@@ -675,9 +677,9 @@ public class Main {
         // 인수 심사 대상 리스트 출력
         List<Contract> registCList = contractList.retrieveAll()
                 .stream()
-                .filter(contract -> contract.getContractState() == ContractState.Online
-                        && contract.getContractRunState() == ContractRunState.Ready
-                        && contract.getContractUWState() == ContractUWState.Collaborative)
+                .filter(contract -> contract.getContractState() == ContractState.ONLINE
+                        && contract.getContractRunState() == ContractRunState.READY
+                        && contract.getContractUWState() == ContractUWState.COLLABORATIVE)
                 .toList();
 
 
@@ -743,7 +745,7 @@ public class Main {
                 campaignProgram.setCampaignWay(campaignPlanSplit[3]);
                 campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[4])));
                 campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[5]));
-                campaignProgram.setProgramState(CampaignState.Plan);
+                campaignProgram.setProgramState(CampaignState.PLAN);
                 campaignProgramList.add(campaignProgram);
                 isCorrect = true;
             } catch (Exception e) {
@@ -801,7 +803,7 @@ public class Main {
         int removeChoice = TuiReader.choice(0, 2);
         switch (removeChoice) {
             case 1:
-                campaignPrograms.get(inChoice).setProgramState(CampaignState.End);
+                campaignPrograms.get(inChoice).setProgramState(CampaignState.END);
                 campaignProgramList.update(campaignPrograms.get(inChoice));
                 break;
             case 2:
