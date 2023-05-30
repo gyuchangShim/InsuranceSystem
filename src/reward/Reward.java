@@ -1,12 +1,10 @@
 package reward;
 import java.time.LocalDate;
-import java.util.Date;
 
 import util.Constants;
-import util.Constants.Result;
 
 public class Reward {
-	private Result appliResult;
+	private Constants.Result appliResult;
 	private String accidentProfile;			// File 형식이 TUI에서는 지원되지 않으므로 String으로 대신함
 	private LocalDate appliDate;
 	private String content;

@@ -1,7 +1,6 @@
 package contract;
 
 import java.util.List;
-import java.util.Vector;
 
 public class PaymentListImpl implements  PaymentList{
 	
@@ -9,10 +8,6 @@ public class PaymentListImpl implements  PaymentList{
 		
 	}
 
-	@Override
-	public List<Payment> getAllregist() {
-		return null;
-	}
 
 	public Payment retrieve( int paymentID ) {
 		return null;
@@ -25,7 +20,14 @@ public class PaymentListImpl implements  PaymentList{
 	public void delete() {
 		
 	}
-	public Vector<Payment> retrieveAll(){
+	public List<Payment> retrieveAll(){
 		return null;
+	}
+
+
+	@Override
+	public void delete(int paymentID) {
+		// TODO Auto-generated method stub
+		
 	}
 }

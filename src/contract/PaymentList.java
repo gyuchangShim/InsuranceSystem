@@ -6,8 +6,8 @@ import java.util.Vector;
 public interface PaymentList {
 	
 	void add(Payment payment);
-
-    List<Payment> getAllregist();
-
-    Vector<Payment> retrieveAll();
+	void delete( int paymentID );
+	Payment retrieve( int paymentID );
+    List<Payment> retrieveAll();
+    void update( Payment payment );
 }

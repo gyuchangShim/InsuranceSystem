@@ -1,10 +1,11 @@
 package teams;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import businessEducation.Education;
-import businessEducation.EducationListImpl;
+import businessEducation.EducationList;
 import businessEducation.EducationStudent;
-import businessEducation.EducationStudentListImpl;
+import businessEducation.EducationStudentList;
 import util.Constants.Crud;
 import util.Constants.Target;
 
@@ -12,12 +13,12 @@ public class BusinessEducationTeam extends Team {
 
 	public Education m_Education;
 	public EducationStudent m_EducationStudent;
-	private EducationListImpl educationListImpl;
-	private EducationStudentListImpl studentListImpl;
+	private EducationList educationListImpl;
+	private EducationStudentList studentListImpl;
 
-	public BusinessEducationTeam(){
-		this.educationListImpl = new EducationListImpl();
-		this.studentListImpl = new EducationStudentListImpl();
+	public BusinessEducationTeam( EducationList educationList, EducationStudentList studentList ){
+		this.educationListImpl = educationList;
+		this.studentListImpl = studentList;
 	}
 
 	@Override
@@ -50,10 +51,13 @@ public class BusinessEducationTeam extends Team {
 			case READ:
 				break;
 			case UPDATE:
+				this.studentListImpl.update( this.m_EducationStudent );
 				break;
 			case DELETE:
 				break;
 			}
+			break;
+		default:
 			break;
 		}
 	}
@@ -70,20 +74,20 @@ public class BusinessEducationTeam extends Team {
 	public void calculatingExamination() {
 
 	}
-	public Vector<Education> getAllEducation(){
+	public List<Education> getAllEducation(){
 		// 모든 교육 정보를 가져온다.
 		return this.educationListImpl.retrieveAll();
 	}
-	public Vector<EducationStudent> getStduentByEducation( int educationID ){
+	public List<EducationStudent> getStduentByEducation( int educationID ){
 		// 교육 ID가 해당 id인 수료자의 정보들을 가져온다.
-		Vector<EducationStudent> studentList = this.studentListImpl.retrieveAll();
-		Vector<EducationStudent> result = new Vector<EducationStudent>();
+		List<EducationStudent> studentList = this.studentListImpl.retrieveAll();
+		List<EducationStudent> result = new ArrayList<EducationStudent>();
 		for( EducationStudent student: studentList ) {
 			if( student.getEducationID()==educationID ) result.add( student );
 		}
 		return result;
 	}
-	public Vector<EducationStudent> getAllStudent(){
+	public List<EducationStudent> getAllStudent(){
 		// 모든 학생들의 정보를 가져온다.
 		return this.studentListImpl.retrieveAll();
 	}

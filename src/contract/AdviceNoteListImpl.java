@@ -1,7 +1,6 @@
 package contract;
 
 import java.util.List;
-import java.util.Vector;
 
 public class AdviceNoteListImpl implements AdviceNoteList{
 	
@@ -9,10 +8,6 @@ public class AdviceNoteListImpl implements AdviceNoteList{
 		
 	}
 
-	@Override
-	public List<Contract> getAllregist() {
-		return null;
-	}
 
 	public AdviceNote retrieve( int adviceNoteID ) {
 		return null;
@@ -24,7 +19,14 @@ public class AdviceNoteListImpl implements AdviceNoteList{
 	public void delete( AdviceNote adviceNote ) {
 		
 	}
-	public Vector<AdviceNote> retrieveAll(){
+	public List<AdviceNote> retrieveAll(){
 		return null;
+	}
+
+
+	@Override
+	public void delete(int adviceNoteID) {
+		// TODO Auto-generated method stub
+		
 	}
 }

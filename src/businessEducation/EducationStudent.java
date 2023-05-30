@@ -4,8 +4,8 @@ import util.Constants.Gender;
 
 public class EducationStudent {
 
+	private Gender gender;;
 	private int age;
-	private Gender gender;
 	private String name;
 	private String phone;
 	private int studentID;
@@ -72,12 +72,11 @@ public class EducationStudent {
 	public void setEducationID( int educationID ) {
 		this.educationID = educationID;
 	}
-
+	
 	public Gender getGender() {
-		return gender;
+		return this.gender;
 	}
-
-	public void setGender(Gender gender) {
+	public void setGender( Gender gender ) {
 		this.gender = gender;
 	}
 

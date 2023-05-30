@@ -6,8 +6,6 @@ import businessEducation.Education;
 import businessEducation.EducationStudent;
 import contract.*;
 import contractManagement.ContractManagementPolicy;
-import contractManagement.ContractManagementPolicyList;
-import contractManagement.ContractManagementPolicyListImpl;
 import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
@@ -17,6 +15,12 @@ import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import dao.*;
 import exception.CCounselingNotFoundException;
+import exception.CIllegalArgumentException;
+import exception.CInsuranceNotFoundException;
+import exception.CustomException;
+import insurance.Insurance;
+import insurance.InsuranceState;
+import insurance.InsuranceType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -28,10 +32,15 @@ import java.util.stream.Collectors;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
 import marketingPlanning.CampaignState;
+import outerActor.OuterActor;
 import reward.Reward;
+import teams.BusinessEducationTeam;
 import teams.BusinessTeam;
+import teams.ContractManagementTeam;
 import teams.CustomerManagementTeam;
+import teams.InsuranceDevelopmentTeam;
 import teams.MarketingPlanningTeam;
+import teams.RewardTeam;
 import teams.SellGroupTeam;
 import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
@@ -75,6 +84,7 @@ public class Main {
     private static ContractManagementPolicyList contractManagementPolicyList;
 
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
+    private static RewardTeam rewardTeam;
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
@@ -86,26 +96,29 @@ public class Main {
 
     public static void initialize() {
         insuranceList = new InsuranceDao();
-        assumePolicyList = new AssumePolicyDao();
-        campaignProgramList = new CampaignProgramDao();
+        assumePolicyList = new AssumePolicyListImpl();
+        campaignProgramList = new CampaignProgramListImpl();
         contractList = new ContractDao();
-        userPersonaList = new UserPersonaDao();
+        userPersonaList = new UserPersonaListImpl();
         customerList = new CustomerDao();
-        customerCounselingList = new CustomerCounselingDao();
-        customerManagementList = new CustomerManagementDao();
-        operationPolicyList = new OperationPolicyDao();
-        sellGroupList = new SellGroupDao();
-        paymentList = new PaymentListImpl();
-        adviceNoteList = new AdviceNoteListImpl();
-        contractManagementPolicyList = new ContractManagementPolicyListImpl();
-
+        customerCounselingList = new CustomerCounselingListImpl();
+        customerManagementList = new CustomerManagementListImpl();
+        operationPolicyList = new OperationPolicyListImpl();
+        sellGroupList = new SellGroupListImpl();
+        paymentList = new PaymentDao();
+        adviceNoteList = new AdviceNoteDao();
+        educationList = new EducationDao();
+        studentList = new EducationStudentDao();
+        rewardList = new RewardDao();
+        contractManagementPolicyList = new ContractManagementPolicyDao();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
         marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
+        rewardTeam = new RewardTeam( rewardList, contractList, customerList, insuranceList );
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new CustomerManagementTeam(customerManagementList, customerList);
         sellGroupTeam = new SellGroupTeam(sellGroupList, insuranceList);
         businessTeam = new BusinessTeam(operationPolicyList, sellGroupList);
-        businessEducationTeam = new BusinessEducationTeam();
+        businessEducationTeam = new BusinessEducationTeam( educationList, studentList );
         contractManagementTeam = new ContractManagementTeam(contractList, insuranceList, customerList,
             contractManagementPolicyList, paymentList, adviceNoteList);
     }
@@ -116,7 +129,6 @@ public class Main {
             try {
                 loginPage();
             } catch (Exception e) {
-                e.printStackTrace();
                 System.out.println(e.getMessage());
             }
         }
@@ -161,7 +173,7 @@ public class Main {
                 String password = TuiReader.readInputCorrect();
                 customerID = customerManagementTeam.login(userId,password);
                 System.out.println("로그인 성공");
-//                customerNotice();
+                customerNotice();
                 customerMenu();
                 break;
             case 2 :
@@ -218,7 +230,7 @@ public class Main {
     	// 최초 로그인 시 자신의 계정에 와있는 알림을 확인한다.
     	if( customerID != -1 ) {
             List<AdviceNote> adviceList = contractManagementTeam.getAllAdviceNote();
-            Vector<AdviceNote> myAdviceNote = new Vector<>();
+            List<AdviceNote> myAdviceNote = new ArrayList<AdviceNote>();
             for( AdviceNote advice : adviceList ) {
                 if( advice.getCustomerID()==customerID ) myAdviceNote.add( advice );
             }
@@ -547,24 +559,24 @@ public class Main {
                 Customer uwCustomer = customerList.retrieve(customerID);
                 if(uwCustomer.getIncomeLevel() > 5) {
                     // 가입 신청 시 소득 분위에 따라 state 지정 - 인수 심사 경우
-                    contract.setContractUWState(ContractUWState.Basic);
+                    contract.setContractUWState(ContractUWState.BASIC);
                     // 로그아웃 시 고객 ID null값 처리
                     contract.setCustomerID(customerID);
                     contract.setInsuranceID(registList.get(registChoice).getInsuranceID());
                     contract.setContractDate(LocalDate.now());
-                    contract.setContractState(ContractState.Online);
-                    contract.setContractRunState(ContractRunState.Ready);
+                    contract.setContractState(ContractState.ONLINE);
+                    contract.setContractRunState(ContractRunState.READY);
                     contractList.add(contract);
                     System.out.println("보험 가입 신청이 완료되었습니다.");
                 } else if(uwCustomer.getIncomeLevel() <= 5) {
                     // 가입 신청 시 소득 분위에 따라 state 지정 - 공동 인수 심사 경우
-                    contract.setContractUWState(ContractUWState.Collaborative);
+                    contract.setContractUWState(ContractUWState.COLLABORATIVE);
                     // 로그인 하면 해당 고객의 ID를 전역에 배치 - 로그아웃 시 고객 ID null값 처리
                     contract.setCustomerID(customerID);
                     contract.setInsuranceID(registList.get(registChoice).getInsuranceID());
                     contract.setContractDate(LocalDate.now());
-                    contract.setContractState(ContractState.Online);
-                    contract.setContractRunState(ContractRunState.Ready);
+                    contract.setContractState(ContractState.ONLINE);
+                    contract.setContractRunState(ContractRunState.READY);
                     contractList.add(contract);
                     System.out.println("보험 가입 신청이 완료되었습니다.");
                 }
@@ -770,7 +782,7 @@ public class Main {
         System.out.println("종료할 프로그램을 선택하세요.");
         List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll()
                 .stream()
-                .filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.Run)
+                .filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.RUN)
                 .collect(Collectors.toList());
         if(!campaignPrograms.isEmpty()) {
             for (int i = 0; i < campaignPrograms.size(); i++) {
@@ -805,7 +817,7 @@ public class Main {
         // 지난 캠페인 리스트 필터링
         List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll()
                 .stream()
-                .filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.End)
+                .filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.END)
                 .collect(Collectors.toList());
         // 지난 캠페인 리스트 출력
         for(int i = 0; i<campaignPrograms.size(); i++) {
@@ -829,7 +841,7 @@ public class Main {
         System.out.println("********************* 캠페인 프로그램 실행 *********************");
         // 통과된 기획 리스트 보여주기 - DB
         List<CampaignProgram> campaignPrograms = campaignProgramList.retrieveAll()
-                .stream().filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.Plan)
+                .stream().filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.PLAN)
                 .toList();
         for(int i = 0; i < campaignPrograms.size(); i++) {
             CampaignProgram campaignProgram = campaignPrograms.get(i);
@@ -849,10 +861,9 @@ public class Main {
     private static void applyReward() {
     	// 고객 ID를 어떻게 가져오는가...
     	int customerID = 0;
-    	teams.RewardTeam rewardTeam = new teams.RewardTeam();
     	// 이 고객 ID로 가입된 계약 목록
-    	Vector<Contract> assignedContract = rewardTeam.getCustomerContract( customerID );
-    	Vector<Insurance> assignedInsurances = rewardTeam.getCustomerInsurance( customerID );
+    	List<Contract> assignedContract = rewardTeam.getCustomerContract( customerID );
+    	List<Insurance> assignedInsurances = rewardTeam.getCustomerInsurance( customerID );
     	System.out.println("현재 가입된 보험 목록입니다. 보험금 신청을 원하는 보험의 번호를 입력하세요");
     	System.out.println("---------------------------");
     	if( assignedInsurances.size() == 0 ) {
@@ -865,7 +876,6 @@ public class Main {
     	}
     	System.out.println("---------------------------");
     	int selectedContract = TuiReader.choice(0, assignedInsurances.size()-1);
-    	int selectedInsuranceID = assignedInsurances.get(selectedContract).getInsuranceID();
     	System.out.println("신청을 위해서 다음 정보가 필요합니다.");
     	// 신청 조건이 기입되어 있는 곳이 없음...
     	//System.out.println("신청 조건: " + assignedInsurances.get(choice).get);
@@ -900,8 +910,7 @@ public class Main {
         // 캠페인 프로그램 진행 전, 중 상태의 기획안만 수정 - 시나리오 X
     }
     private static void processReward() {
-        teams.RewardTeam rewardTeam = new teams.RewardTeam();
-        Vector<Reward> rewardList = rewardTeam.getAllReward();
+        List<Reward> rewardList = rewardTeam.getAllReward();
         // Alternate 1
         if( rewardList.size() == 0 ) { System.out.println( "접수된 보상 요청이 없습니다" );}
         else {
@@ -1135,10 +1144,10 @@ public class Main {
         contract.setCustomerID(customer.getCustomerID());
         contract.setContractFile(contractFile);
         contract.setContractDate(LocalDate.now());
-        contract.setContractState(ContractState.Offline);
-        contract.setContractRunState(ContractRunState.Ready);
+        contract.setContractState(ContractState.OFFLINE);
+        contract.setContractRunState(ContractRunState.READY);
         ContractUWState contractUWState = customer.getIncomeLevel() < 5 ?
-            ContractUWState.Collaborative : ContractUWState.Basic;
+            ContractUWState.COLLABORATIVE : ContractUWState.BASIC;
         contract.setContractUWState(contractUWState);
         contractList.add(contract);
         System.out.println("청약서 저장이 완료됐습니다. 인수 심사로 넘어갑니다.");
@@ -1169,7 +1178,7 @@ public class Main {
         System.out.println("접수 완료되었습니다.");
     }
     private static void manageStudent() {
-    	Vector<Education> educationList = businessEducationTeam.getAllEducation();
+    	List<Education> educationList = businessEducationTeam.getAllEducation();
     	if( educationList.size()==0 )System.out.println("아직 수행된 교육이 없습니다.");
     	else {
 	    	System.out.println("--------------------교육 수료자를 관리할 교육을 선택하세요 -----------------------");
@@ -1179,7 +1188,14 @@ public class Main {
 	    	System.out.println("----------------------------------------------------------------------");
 	    	int select = TuiReader.choice(0, educationList.size() - 1);
 	    	int selectedEducationID = educationList.get(select).getEducationID();
-
+	    	List<EducationStudent> studentList = businessEducationTeam.getAllStudent();
+	    	List<EducationStudent> educatedStudentList = new ArrayList<EducationStudent>();
+	    	for( EducationStudent student : studentList ) {
+	    		if( student.getEducationID()==selectedEducationID ) educatedStudentList.add( student );
+	    	}
+	    	if( educatedStudentList.size()==0 ) {
+	    		System.out.println("해당 교육을 수료한 사람이 없습니다.");
+	    	}
 	    	System.out.println("수행할 작업을 선택하세요");
 	    	System.out.println("1. 학생 추가 2. 학생 정보 수정 3. 학생 조회");
 	    	select = TuiReader.choice( 1,  3 );
@@ -1195,11 +1211,41 @@ public class Main {
 	    		student.setExamination( studentSplit[3] );
 	    		student.setStudentScore( Integer.parseInt( studentSplit[4] ) );
 	    		student.setEducationID( selectedEducationID );
-	    		Vector<EducationStudent> studentList = businessEducationTeam.getAllStudent();
-	    		student.setStudentID( studentList.get(-1).getStudentID() + 1 );
 	    		businessEducationTeam.setStudent( student );
 	    		businessEducationTeam.manage( Target.EDUCATION_STUDENT, Crud.CREATE );
 	    		System.out.println("저장이 완료되었습니다");
+	    		break;
+	    	case 2:
+	    		if( educatedStudentList.size()==0 ) {
+		    		System.out.println("해당 교육을 수료한 사람이 없습니다.");
+		    	}
+	    		else {
+		    		for( int i=0; i<educatedStudentList.size(); i++ ) {
+		    			EducationStudent tmpStudent = educatedStudentList.get(i);
+		    			System.out.println( i + ": " + tmpStudent.getName() + " " + tmpStudent.getAge() );
+		    		}
+		    		System.out.println("수정하고자 하는 학생을 선택하세요.");
+		    		select = TuiReader.choice( 0, educatedStudentList.size()-1 );
+		    		EducationStudent selectedStudent = educatedStudentList.get( select );
+		    		System.out.println("수료자의 평가, 점수를 입력하세요");
+		    		String tmpString = TuiReader.readInput("정확한 정보를 입력하세요");
+		    		String[] tmpSplit = tmpString.split("/");
+		    		selectedStudent.setExamination( tmpSplit[0] );
+		    		selectedStudent.setStudentScore( Integer.parseInt( tmpSplit[1] ) );
+		    		businessEducationTeam.setStudent( selectedStudent );
+		    		businessEducationTeam.manage( Target.EDUCATION_STUDENT, Crud.UPDATE );
+		    		System.out.println("수정이 완료되었습니다.");
+	    		}
+	    		break;
+	    	case 3:
+	    		if( educatedStudentList.size()==0 ) {
+		    		System.out.println("해당 교육을 수료한 사람이 없습니다.");
+		    	} else {
+		    		for( int i=0; i<educatedStudentList.size(); i++ ) {
+		    			EducationStudent tmpStudent = educatedStudentList.get(i);
+		    			System.out.println( i + ": " + tmpStudent.getName() + " " + tmpStudent.getAge() );
+		    		}
+		    	}
 	    		break;
 	    	}
     	}
@@ -1225,8 +1271,6 @@ public class Main {
     	education.setTeacherPhoneNumber( educationSplit[4] );
     	education.setBudget( Integer.parseInt( educationSplit[5] ) );
     	education.setContent( educationSplit[6] );
-    	int newEducationID = businessEducationTeam.getAllEducation().get(-1).getEducationID() + 1;
-    	education.setEducationID( newEducationID );
     	System.out.println( "입력하신 정보가 올바르게 입력되었다면 확인을 눌러주세요.");
     	System.out.println( education.getName() + ": " + education.getTeacherName() + " " + education.getContent() );
     	System.out.println("1. 확인  2. 취소");
@@ -1238,7 +1282,7 @@ public class Main {
     	}
     }
     private static void addContractManagementPolicy() {
-    	Vector<ContractManagementPolicy> policyList = contractManagementTeam.getAllPolicy();
+    	List<ContractManagementPolicy> policyList = contractManagementTeam.getAllPolicy();
     	if( policyList.size()== 0 ) {
     		System.out.println("아직 수립된 정책이 없습니다.");
     	} else {
@@ -1261,7 +1305,6 @@ public class Main {
             		policySplit = policyString.split("/");
             		newPolicy.setName( policySplit[0] );
             		newPolicy.setContent( policySplit[1] );
-            		newPolicy.setPolicyID( policyList.size() );
             		int cnt = 0;
             		for( ContractManagementPolicy alreadyPolicy: policyList ) {
             			if( alreadyPolicy.getName().equals( newPolicy.getName() ) ) {
@@ -1289,14 +1332,14 @@ public class Main {
     	}
     }
     private static void manageContractAnalysis() {
-    	Vector<Insurance> insuranceList = contractManagementTeam.getAllInsurance();
+    	List<Insurance> insuranceList = contractManagementTeam.getAllInsurance();
     	if( insuranceList.size()==0 ) {
     		System.out.println("보험 상품 내역을 불러올 수 없습니다");
     	} else {
     		System.out.println("------------------ 현재 생성되어있는 보험 목록 -------------------------");
         	for( int i=0; i<insuranceList.size(); i++ ) {
         		Insurance tempInsurance = insuranceList.get(i);
-        		Vector<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( tempInsurance.getInsuranceID() );
+        		List<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( tempInsurance.getInsuranceID() );
         		int signedCustomerCount = contractListAboutInsurance.size();
         		System.out.println( i + ": " + tempInsurance.getInsuranceName() + " " + tempInsurance.getPayment() + " " + tempInsurance.getGuarantee() +
         				" " + tempInsurance.getRewardAmount() + " " + signedCustomerCount + "명의 가입자" );
@@ -1311,7 +1354,7 @@ public class Main {
         		System.out.println("아직 해당 상품에 대한 실적을 계산할 수 없습니다.");
         		return;
         	} else {
-        		Vector<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( selectedInsurance.getInsuranceID() );
+        		List<Contract> contractListAboutInsurance = contractManagementTeam.getContractByInsuranceID( selectedInsurance.getInsuranceID() );
         		signedCustomerCount = contractListAboutInsurance.size();
         		amountResult = signedCustomerCount * selectedInsurance.getPayment();
         	}
@@ -1328,7 +1371,7 @@ public class Main {
     	}
     }
     private static void managePayment() {
-    	Vector<Payment> paymentList = contractManagementTeam.getAllPayment();
+    	List<Payment> paymentList = contractManagementTeam.getAllPayment();
     	if( paymentList.size()==0 ) {
     		System.out.println("현재 상품에 가입된 고객이 없습니다");
     		return;
@@ -1394,7 +1437,7 @@ public class Main {
     		return;
     	}
     	LocalDate today = LocalDate.now();
-    	List<Contract> expireList = new Vector<>();
+    	List<Contract> expireList = new ArrayList<Contract>();
     	for( Contract contract : contractList ) {
     		Insurance tempInsurance = contractManagementTeam.getInsurance( contract.getInsuranceID() );
     		if( today.isAfter( contract.getContractDate().plusMonths( tempInsurance.getDuration() ) ) ) expireList.add( contract );

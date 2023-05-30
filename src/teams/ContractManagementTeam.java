@@ -1,19 +1,19 @@
 package teams;
-import contract.AdviceNoteList;
-import contract.ContractList;
-import contract.PaymentList;
-import contractManagement.ContractManagementPolicyList;
-import customer.CustomerList;
-import insurance.InsuranceList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import contract.AdviceNote;
+import contract.AdviceNoteList;
 import contract.Contract;
+import contract.ContractList;
 import contract.Payment;
+import contract.PaymentList;
 import contractManagement.ContractManagementPolicy;
+import contractManagement.ContractManagementPolicyList;
 import customer.Customer;
+import customer.CustomerList;
 import insurance.Insurance;
+import insurance.InsuranceList;
 import util.Constants.Crud;
 import util.Constants.Target;
 
@@ -61,29 +61,29 @@ public class ContractManagementTeam extends Team {
 	public List<AdviceNote> getAllAdviceNote() {
 		return this.adviceNoteList.retrieveAll();
 	}
-	public Vector<Contract> getContractByInsuranceAndCustomerID( int insuranceID, int customerID ) {
+	public List<Contract> getContractByInsuranceAndCustomerID( int insuranceID, int customerID ) {
 		List<Contract> contractList = this.contractList.retrieveAll();
-		Vector<Contract> result = new Vector<Contract>();
+		List<Contract> result = new ArrayList<Contract>();
 		for( Contract contract : contractList ) {
 			if( contract.getInsuranceID()==insuranceID && contract.getCustomerID()==customerID ) result.add( contract );
 		}
 		return result;
 	}
-	public Vector<ContractManagementPolicy> getAllPolicy(){
+	public List<ContractManagementPolicy> getAllPolicy(){
 		return this.policyList.retrieveAll();
 	}
-	public Vector<Insurance> getAllInsurance(){
-		return (Vector<Insurance>) this.insuranceList.retrieveAll();
+	public List<Insurance> getAllInsurance(){
+		return this.insuranceList.retrieveAll();
 	}
-	public Vector<Contract> getContractByInsuranceID( int insuranceID ){
+	public List<Contract> getContractByInsuranceID( int insuranceID ){
 		List<Contract> contractList = this.contractList.retrieveAll();
-		Vector<Contract> result = new Vector<Contract>();
+		List<Contract> result = new ArrayList<Contract>();
 		for( Contract contract : contractList ) {
 			if( contract.getInsuranceID()==insuranceID ) result.add( contract );
 		}
 		return result;
 	}
-	public Vector<Payment> getAllPayment(){
+	public List<Payment> getAllPayment(){
 		return this.paymentList.retrieveAll();
 	}
 	public List<Contract> getAllContract(){
