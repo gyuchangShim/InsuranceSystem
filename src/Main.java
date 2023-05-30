@@ -44,7 +44,6 @@ import exception.CInsuranceNotFoundException;
 import exception.CustomException;
 import insurance.Insurance;
 import insurance.InsuranceList;
-import insurance.InsuranceListImpl;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
 import outerActor.OuterActor;
