@@ -1,54 +1,78 @@
 package teams;
 
-import contract.Contract;
-import contract.ContractListImpl;
-import customer.Customer;
-import customer.CustomerListImpl;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
+import contract.Contract;
+import contract.ContractList;
+import customer.Customer;
+import customer.CustomerList;
 import insurance.Insurance;
+import insurance.InsuranceList;
 import reward.Reward;
-import reward.RewardListImpl;
+import reward.RewardList;
 import util.Constants.Crud;
 import util.Constants.Result;
 import util.Constants.Target;
 
 public class RewardTeam extends Team {
 	private Reward reward;
-	private RewardListImpl rewardListImpl;
-	private Vector<Reward> rewardList;	
-	private ContractListImpl contractListImpl;
-	private CustomerListImpl customerListImpl;
+	private RewardList rewardListImpl;
+	private ContractList contractListImpl;
+	private CustomerList customerListImpl;
+	private InsuranceList insuranceListImpl;
 	
-	public RewardTeam(){
-		this.rewardList = new Vector<Reward>();
-		this.rewardListImpl = new RewardListImpl();
-		this.contractListImpl = new ContractListImpl();
+	public RewardTeam( RewardList rewardList, ContractList contractList, CustomerList customerList, InsuranceList insuranceList ){
+		this.rewardListImpl = rewardList;
+		this.contractListImpl = contractList;
+		this.customerListImpl = customerList;
+		this.insuranceListImpl = insuranceList;
 	}
-	public void finalize() throws Throwable {}
-	public Vector<Reward> getAllReward(){
-		// RewardListImpl에서 모든 엔티티를 가져온 다음 리턴 
-		return this.rewardList;
+	public List<Reward> getAllReward(){
+		return this.rewardListImpl.retrieveAll();
 	}
-	public void rewardResult( int id, Result result ) {
-		// Reward getReward = this.rewardListImpl.getReward( id );
-		// getReward.setAppliResult( result );
-		// this.rewardListImpl.update( getReward );
+	public void rewardResult( int rewardID, Result result ) {
+		List<Reward> rewardList = this.rewardListImpl.retrieveAll();
+		Reward selectedReward = null;
+		for( Reward reward : rewardList ) {
+			if( reward.getRewardID()==rewardID ) {
+				selectedReward = reward;
+				selectedReward.setAppliResult( result );
+				break;
+			}
+		}
+		if( selectedReward != null ) {
+			this.rewardListImpl.update( selectedReward );
+		}
 	}
-	public Vector<Insurance> getCustomerInsurance( int customerID ){
-		// 해당 고객이 가입되어 있는 모든 보험 목록
-		return null;
+	public List<Insurance> getCustomerInsurance( int customerID ){
+		List<Contract> contractList = this.contractListImpl.retrieveAll();
+		List<Integer> insuranceIdList = new ArrayList<Integer>();
+		List<Insurance> resultInsuranceList = new ArrayList<Insurance>();
+		for( Contract contract : contractList ) {
+			if( contract.getCustomerID()==customerID ) {
+				insuranceIdList.add( contract.getInsuranceID() );
+			}
+		}
+		for( Integer i : insuranceIdList ) {
+			resultInsuranceList.add( this.insuranceListImpl.retrieve( i ) );
+		}
+		return resultInsuranceList;
 	}
-	public Vector<Contract> getCustomerContract( int customerID ){
-		// 해당 고객과 체결되어 있는 모든 계약 목록
-		return null;
+	public List<Contract> getCustomerContract( int customerID ){
+		List<Contract> contractList = this.contractListImpl.retrieveAll();
+		List<Contract> resultContractList = new ArrayList<Contract>();
+		for( Contract contract : contractList ) {
+			if( contract.getCustomerID()==customerID ) {
+				resultContractList.add( contract );
+			}
+		}
+		return resultContractList;
 	}
 	public Customer getCustomerInformation( int customerID ) {
-		// 해당 고객의 정보 가져오기
-		return null;
+		return this.customerListImpl.retrieve(customerID);
 	}
 	public void setReward( Reward reward ) {
-		// reward 값을 입력 받는 함수
 		this.reward = reward;
 	}
 	@Override

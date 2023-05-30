@@ -13,37 +13,34 @@ import business.SellGroupListImpl;
 import businessEducation.Education;
 import businessEducation.EducationStudent;
 import contract.AdviceNote;
-import contract.AdviceNoteList;
-import contract.AdviceNoteListImpl;
 import contract.Contract;
-import contract.ContractList;
-import contract.ContractListImpl;
 import contract.ContractRunState;
 import contract.ContractState;
 import contract.ContractUWState;
 import contract.Payment;
-import contract.PaymentList;
-import contract.PaymentListImpl;
 import contractManagement.ContractManagementPolicy;
-import contractManagement.ContractManagementPolicyList;
-import contractManagement.ContractManagementPolicyListImpl;
 import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
 import customer.CustomerCounselingListImpl;
-import customer.CustomerList;
-import customer.CustomerListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
 import customerManagement.CustomerManagementListImpl;
+import dao.AdviceNoteDao;
+import dao.ContractDao;
+import dao.ContractManagementPolicyDao;
+import dao.CustomerDao;
+import dao.EducationDao;
+import dao.EducationStudentDao;
+import dao.InsuranceDao;
+import dao.PaymentDao;
+import dao.RewardDao;
 import exception.CCounselingNotFoundException;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
 import exception.CustomException;
 import insurance.Insurance;
-import insurance.InsuranceList;
-import insurance.InsuranceListImpl;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
 import marketingPlanning.CampaignProgram;
@@ -58,6 +55,7 @@ import teams.ContractManagementTeam;
 import teams.CustomerManagementTeam;
 import teams.InsuranceDevelopmentTeam;
 import teams.MarketingPlanningTeam;
+import teams.RewardTeam;
 import teams.SellGroupTeam;
 import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
@@ -74,20 +72,24 @@ import util.Constants.Target;
 import util.TuiReader;
 
 public class Main {
-    private static InsuranceList insuranceList;
+    private static InsuranceDao insuranceList;									//
     private static AssumePolicyList assumePolicyList;
     private static CampaignProgramList campaignProgramList;
-    private static ContractList contractList;
-    private static CustomerList customerList;
+    private static ContractDao contractList;									//
+    private static CustomerDao customerList;									//
     private static UserPersonaList userPersonaList;
     private static CustomerCounselingList customerCounselingList;
     private static CustomerManagementList customerManagementList;
     private static SellGroupList sellGroupList;
-    private static PaymentList paymentList;
+    private static PaymentDao paymentList;										//
     private static OperationPolicyList operationPolicyList;
-    private static AdviceNoteList adviceNoteList;
-    private static ContractManagementPolicyList contractManagementPolicyList;
+    private static AdviceNoteDao adviceNoteList;								//
+    private static ContractManagementPolicyDao contractManagementPolicyList;	//
+    private static EducationDao educationList;
+    private static EducationStudentDao studentList;
+    private static RewardDao rewardList;
     private static InsuranceDevelopmentTeam insuranceDevelopmentTeam;
+    private static RewardTeam rewardTeam;
     private static UnderwritingTeam underwritingTeam;
     private static MarketingPlanningTeam marketingPlanningTeam;
     private static CustomerManagementTeam customerManagementTeam;
@@ -98,26 +100,30 @@ public class Main {
     private static int customerID;
 
     public static void initialize() {
-        insuranceList = new InsuranceListImpl();
+        insuranceList = new InsuranceDao();
         assumePolicyList = new AssumePolicyListImpl();
         campaignProgramList = new CampaignProgramListImpl();
-        contractList = new ContractListImpl();
+        contractList = new ContractDao();
         userPersonaList = new UserPersonaListImpl();
-        customerList = new CustomerListImpl();
+        customerList = new CustomerDao();
         customerCounselingList = new CustomerCounselingListImpl();
         customerManagementList = new CustomerManagementListImpl();
         operationPolicyList = new OperationPolicyListImpl();
         sellGroupList = new SellGroupListImpl();
-        paymentList = new PaymentListImpl();
-        adviceNoteList = new AdviceNoteListImpl();
-        contractManagementPolicyList = new ContractManagementPolicyListImpl();
+        paymentList = new PaymentDao();
+        adviceNoteList = new AdviceNoteDao();
+        educationList = new EducationDao();
+        studentList = new EducationStudentDao();
+        rewardList = new RewardDao();
+        contractManagementPolicyList = new ContractManagementPolicyDao();
         insuranceDevelopmentTeam = new InsuranceDevelopmentTeam(insuranceList);
         marketingPlanningTeam = new MarketingPlanningTeam(campaignProgramList);
+        rewardTeam = new RewardTeam( rewardList, contractList, customerList, insuranceList );
         underwritingTeam = new UnderwritingTeam(assumePolicyList);
         customerManagementTeam = new CustomerManagementTeam(customerManagementList, customerList);
         sellGroupTeam = new SellGroupTeam(sellGroupList, insuranceList);
         businessTeam = new BusinessTeam(operationPolicyList, sellGroupList);
-        businessEducationTeam = new BusinessEducationTeam();
+        businessEducationTeam = new BusinessEducationTeam( educationList, studentList );
         contractManagementTeam = new ContractManagementTeam(contractList, insuranceList, customerList,
             contractManagementPolicyList, paymentList, adviceNoteList);
     }
@@ -801,7 +807,6 @@ public class Main {
     private static void applyReward() {
     	// 고객 ID를 어떻게 가져오는가...
     	int customerID = 0;
-    	teams.RewardTeam rewardTeam = new teams.RewardTeam();
     	// 이 고객 ID로 가입된 계약 목록
     	List<Contract> assignedContract = rewardTeam.getCustomerContract( customerID );
     	List<Insurance> assignedInsurances = rewardTeam.getCustomerInsurance( customerID );
@@ -817,7 +822,6 @@ public class Main {
     	}
     	System.out.println("---------------------------");
     	int selectedContract = TuiReader.choice(0, assignedInsurances.size()-1);
-    	int selectedInsuranceID = assignedInsurances.get(selectedContract).getInsuranceID();
     	System.out.println("신청을 위해서 다음 정보가 필요합니다.");
     	// 신청 조건이 기입되어 있는 곳이 없음...
     	//System.out.println("신청 조건: " + assignedInsurances.get(choice).get);
@@ -853,7 +857,6 @@ public class Main {
         // 캠페인 프로그램 진행 전, 중 상태의 기획안만 수정 - 시나리오 X
     }
     private static void processReward() {
-        teams.RewardTeam rewardTeam = new teams.RewardTeam();
         List<Reward> rewardList = rewardTeam.getAllReward();
         // Alternate 1
         if( rewardList.size() == 0 ) { System.out.println( "접수된 보상 요청이 없습니다" );}

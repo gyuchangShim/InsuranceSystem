@@ -23,14 +23,14 @@ public class EducationDao implements EducationList{
 	@Override
 	public void add(Education education) {
 		String query = "INSERT INTO Education ( budget, content, duration, exResult, name, place, teacherName, teacherPhoneNumber ) VALUES ("
-				+ education.getBudget() + ", "
-				+ education.getContent() + ", "
-				+ education.getDuration() + ", "
-				+ education.getExResult() + ", "
-				+ education.getName() + ", "
-				+ education.getPlace() + ", "
-				+ education.getTeacherName() + ", "
-				+ education.getTeacherPhoneNumber() + ";";
+				+ education.getBudget() + ", '"
+				+ education.getContent() + "', "
+				+ education.getDuration() + ", '"
+				+ education.getExResult() + "', '"
+				+ education.getName() + "', '"
+				+ education.getPlace() + "', '"
+				+ education.getTeacherName() + "', '"
+				+ education.getTeacherPhoneNumber() + "');";
 		dao.create( query );
 	}
 

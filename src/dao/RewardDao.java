@@ -29,12 +29,12 @@ public class RewardDao implements RewardList {
 		// 		appliResult accidentProfile, identifyProfile, reward
 		String query = "INSERT into Reward values("
 	            + reward.getAppliDate() +  ", "
-	            + reward.getContractID() + ", " 
-	            + reward.getCustomerName() + ", " 
-	            + reward.getContent() + ", " 
-	            + reward.getAppliResult().getString() + ", " 
-	            + reward.getAccidentProfile() + ", " 
-	            + reward.getIdentifyProfile() + ", " 
+	            + reward.getContractID() + ", '" 
+	            + reward.getCustomerName() + "', '" 
+	            + reward.getContent() + "', '" 
+	            + reward.getAppliResult().getString() + "', '" 
+	            + reward.getAccidentProfile() + "', '" 
+	            + reward.getIdentifyProfile() + "', " 
 	            + reward.getReward() + "); ";
 	    dao.create(query);
 	}
@@ -93,7 +93,7 @@ public class RewardDao implements RewardList {
 
 	@Override
 	public void update(Reward reward) {
-		String query = "UPDATE Reward SET reward = '" + reward.getReward() + "', "
+		String query = "UPDATE Reward SET reward = " + reward.getReward() + ", "
 				+ "identifyProfile = '" + reward.getIdentifyProfile() +  "', " 
 				+ "customerName = '" + reward.getCustomerName() + "', " 
 				+ "contractID = " + reward.getContractID() + ", " 

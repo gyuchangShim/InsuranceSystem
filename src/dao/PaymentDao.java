@@ -29,12 +29,12 @@ public class PaymentDao implements PaymentList{
 	            + payment.getContractID() + ", " 
 	            + payment.getDuration() + ", " 
 	            + payment.getContractDuration() + ", " 
-	            + payment.getExpireDate() + ", " 
-	            + payment.getContent() + ", " 
+	            + payment.getExpireDate() + ", '" 
+	            + payment.getContent() + "', " 
 	            + payment.getAmount() + ", "
-	            + payment.getAccidentCount() + ", " 
-	            + payment.getPayway().getString() + ", "
-	            + payment.getResult() + ");";
+	            + payment.getAccidentCount() + ", '" 
+	            + payment.getPayway().getString() + "', '"
+	            + payment.getResult() + "');";
 	        dao.create(query);		
 	}
 
@@ -46,7 +46,7 @@ public class PaymentDao implements PaymentList{
 
 	@Override
 	public Payment retrieve(int paymentID) {
-		String query = "SELECT * FROM Payment WHERE paymentID=" + paymentID + ";";
+		String query = "SELECT * FROM Payment WHERE paymentID =" + paymentID + ";";
 		ResultSet resultSet = dao.retrieve( query );
 		Payment payment = new Payment();
 		try {
@@ -69,7 +69,7 @@ public class PaymentDao implements PaymentList{
 
 	@Override
 	public List<Payment> retrieveAll() {
-		String query = "SELECT * from Payment;";
+		String query = "SELECT * FROM Payment;";
         ResultSet resultSet = dao.retrieve(query);
         List<Payment> paymentList = new ArrayList<Payment>();
         try {
@@ -103,8 +103,8 @@ public class PaymentDao implements PaymentList{
 				+ "amount = " + payment.getAmount() + ", " 
 				+ "accidentCount = " + payment.getAccidentCount() + ", " 
 				+ "payway = '" + payment.getPayway().getString() + "', "
-				+ "result = " + payment.getResult()
-				+ "WHERE paymentID = " + payment.getPaymentID() + ";";
+				+ "result = '" + payment.getResult()
+				+ "' WHERE paymentID = " + payment.getPaymentID() + ";";
 		dao.update( query );
 	}
 

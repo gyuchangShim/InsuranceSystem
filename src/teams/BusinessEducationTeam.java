@@ -3,9 +3,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import businessEducation.Education;
-import businessEducation.EducationListImpl;
+import businessEducation.EducationList;
 import businessEducation.EducationStudent;
-import businessEducation.EducationStudentListImpl;
+import businessEducation.EducationStudentList;
 import util.Constants.Crud;
 import util.Constants.Target;
 
@@ -13,12 +13,12 @@ public class BusinessEducationTeam extends Team {
 
 	public Education m_Education;
 	public EducationStudent m_EducationStudent;
-	private EducationListImpl educationListImpl;
-	private EducationStudentListImpl studentListImpl;
+	private EducationList educationListImpl;
+	private EducationStudentList studentListImpl;
 
-	public BusinessEducationTeam(){
-		this.educationListImpl = new EducationListImpl();
-		this.studentListImpl = new EducationStudentListImpl();
+	public BusinessEducationTeam( EducationList educationList, EducationStudentList studentList ){
+		this.educationListImpl = educationList;
+		this.studentListImpl = studentList;
 	}
 
 	@Override
@@ -55,6 +55,8 @@ public class BusinessEducationTeam extends Team {
 			case DELETE:
 				break;
 			}
+			break;
+		default:
 			break;
 		}
 	}

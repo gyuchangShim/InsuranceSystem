@@ -38,9 +38,9 @@ public class ContractManagementPolicyDao implements ContractManagementPolicyList
 
 	@Override
 	public void add(ContractManagementPolicy contractManagementPolicy) {
-		String query = "INSERT into ContractManagementPolicy values("
-	            + contractManagementPolicy.getContent() +  ", "
-	            + contractManagementPolicy.getName() + "); ";
+		String query = "INSERT into ContractManagementPolicy values('"
+	            + contractManagementPolicy.getContent() +  "', '"
+	            + contractManagementPolicy.getName() + "'); ";
 	    dao.create(query);		
 	}
 
