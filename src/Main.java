@@ -650,7 +650,10 @@ public class Main {
 
         if(registList != null) {
             for (int i = 0; i < registList.size(); i++) {
-                System.out.println(i + ". " + registList.get(i).getContractID());
+                int customerID = registList.get(i).getCustomerID();
+                int insuranceID = registList.get(i).getInsuranceID();
+                System.out.println(i + ". " + customerList.retrieve(customerID).getName()
+                        + ", 고객 이름: " + insuranceList.retrieve(insuranceID).getInsuranceName());
             }
         } else {
             System.out.println("현재 인수 심사 대상이 존재하지 않습니다.");
@@ -674,9 +677,13 @@ public class Main {
                         && contract.getContractUWState() == ContractUWState.Collaborative)
                 .toList();
 
-        if(registCList != null) {
+
+        if(!registCList.isEmpty()) {
             for (int i = 0; i < registCList.size(); i++) {
-                System.out.println(i + ". " + registCList.get(i).getContractID());
+                int customerID = registCList.get(i).getCustomerID();
+                int insuranceID = registCList.get(i).getInsuranceID();
+                System.out.println(i + ". " + customerList.retrieve(customerID).getName()
+                        + ", 고객 이름: " + insuranceList.retrieve(insuranceID).getInsuranceName());
             }
         } else {
             System.out.println("현재 인수 심사 대상이 존재하지 않습니다.");
@@ -707,8 +714,39 @@ public class Main {
     private static void campaignPlan() {
         // 기획안이 통과되지 않은 경우 구현 X
         System.out.println("********************* 새로운 캠페인 프로그램 기획 *********************");
-        System.out.println("인가 확정 상품 / 마케팅 대상 / 마케팅 기간 / 캠페인 수단 / 마케팅 예산 / 예상 손익률 : ");
-        marketingPlanningTeam.plan(Target.CAMPAIGN_PROGRAM, Crud.CREATE);
+        List<Insurance> registList = insuranceList.retrieveAll()
+                .stream()
+                .filter(insurance -> insurance.getInsuranceState() == InsuranceState.AUTHORIZED)
+                .toList();
+        for(int i=0; i < registList.size(); i++) {
+            System.out.println(i + ". 보험 이름: " + registList.get(i).getInsuranceName());
+        }
+        int insChoice = TuiReader.choice(0, registList.size()-1);
+        Insurance insurance = registList.get(insChoice);
+        boolean isCorrect = false;
+        while (!isCorrect) {
+            try {
+                System.out.println("캠페인 이름 / 마케팅 대상 / 마케팅 기간 / 캠페인 수단 / 마케팅 예산 / 예상 손익률 : ");
+                CampaignProgram campaignProgram = new CampaignProgram();
+                String campaignPlan = util.TuiReader.readInput("캠페인 프로그램의 내용이 형식과 맞지 않습니다.");
+                String[] campaignPlanSplit = campaignPlan.split("/");
+                if (campaignPlanSplit.length != 6) {
+                    throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                }
+                campaignProgram.setInsuranceID(insurance.getInsuranceID());
+                campaignProgram.setCampaignName(campaignPlanSplit[0]);
+                campaignProgram.setCampaignTarget(campaignPlanSplit[1]);
+                campaignProgram.setDuration(Integer.valueOf(campaignPlanSplit[2]));
+                campaignProgram.setCampaignWay(campaignPlanSplit[3]);
+                campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[4])));
+                campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[5]));
+                campaignProgram.setProgramState(CampaignState.Plan);
+                campaignProgramList.add(campaignProgram);
+                isCorrect = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         System.out.println("새로운 캠페인 프로그램 기획이 저장되었습니다!");
     }
 
@@ -743,9 +781,9 @@ public class Main {
                 .stream()
                 .filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.Run)
                 .collect(Collectors.toList());
-        if(campaignPrograms != null) {
+        if(!campaignPrograms.isEmpty()) {
             for (int i = 0; i < campaignPrograms.size(); i++) {
-                System.out.println("캠페인 이름: " + campaignPrograms.get(i).getCampaignName()
+                System.out.println(i + ". 캠페인 이름: " + campaignPrograms.get(i).getCampaignName()
                         + "/ 대상 보험: " + campaignPrograms.get(i).getInsuranceID() + "/ 캠페인 대상: " + campaignPrograms.get(i).getCampaignTarget()
                         + "/ 기간: " + campaignPrograms.get(i).getDuration() + "/ 장소: " + campaignPrograms.get(i).getPlace()
                         + "/ 예산: " + campaignPrograms.get(i).getBudget() + "/ 예상 손익률: " + campaignPrograms.get(i).getExResult());
@@ -754,8 +792,7 @@ public class Main {
             System.out.println("현재 진행중인 캠페인 프로그램 대상이 존재하지 않습니다.");
         }
         int inChoice = TuiReader.choice(0, campaignPrograms.size() - 1);
-        System.out.println("선택한 프로그램: " + campaignPrograms.get(inChoice).getCampaignID() + ", "
-                            + campaignPrograms.get(inChoice).getCampaignName());
+        System.out.println("선택한 프로그램: " + campaignPrograms.get(inChoice).getCampaignName());
         System.out.println("1. 종료");
         System.out.println("2. 취소");
         int removeChoice = TuiReader.choice(0, 2);
@@ -780,20 +817,21 @@ public class Main {
                 .filter(campaignProgram -> campaignProgram.getProgramState() == CampaignState.End)
                 .collect(Collectors.toList());
         // 지난 캠페인 리스트 출력
-        for(CampaignProgram campaignProgram : campaignPrograms) {
-            System.out.println("캠페인 이름: " + campaignProgram.getCampaignName()
+        for(int i = 0; i<campaignPrograms.size(); i++) {
+            CampaignProgram campaignProgram = campaignPrograms.get(i);
+            System.out.println(i + ". 캠페인 이름: " + campaignProgram.getCampaignName()
                     + "/ 대상 보험: " + campaignProgram.getInsuranceID() + "/ 캠페인 대상: " + campaignProgram.getCampaignTarget()
                     + "/ 기간: " + campaignProgram.getDuration() + "/ 장소: " + campaignProgram.getPlace()
                     + "/ 예산: " + campaignProgram.getBudget() + "/ 예상 손익률: " + campaignProgram.getExResult()
             );
+        }
         // 지난 캠페인 리스트 선택
-        int endCampaignChoice = TuiReader.choice(1, campaignPrograms.size()-1);
+        int endCampaignChoice = TuiReader.choice(0, campaignPrograms.size()-1);
+        CampaignProgram campaignProgram = campaignPrograms.get(endCampaignChoice);
         // 선택한 캠페인에 실제 손익률(임의의 값 - 5.5f로 지정) 추가
         float endResult = campaignProgram.getEndResult();
-        campaignPrograms.get(endCampaignChoice).setEndResult(endResult);
-        // 캠페인 프로그램 보고서 저장
-        //campaignProgram.setReport(campaignPrograms.get(endCampaignChoice));
-        }
+        campaignProgram.setEndResult(endResult);
+        campaignProgramList.update(campaignProgram);
     }
     private static void runCampaign() {
         // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제

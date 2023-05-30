@@ -23,8 +23,8 @@ public class AssumePolicyDao implements AssumePolicyList {
 
     @Override
     public void add(AssumePolicy assumePolicy) {
-        String query = "INSERT INTO AssumePolicy (policyID, name, content, policyType) VALUES ('"
-                + assumePolicy.getPolicyID() + "', '" + assumePolicy.getName() + "', '"
+        String query = "INSERT INTO AssumePolicy (name, content, policyType) VALUES ('"
+                + assumePolicy.getName() + "', '"
                 + assumePolicy.getContent() + "', '" + assumePolicy.getPolicyType() + "');";
         dao.create(query);
     }
@@ -61,7 +61,7 @@ public class AssumePolicyDao implements AssumePolicyList {
     }
 
     public void update(AssumePolicy assumePolicy) {
-        String query = "UPDATE AssumePolicy SET policyID = '" + assumePolicy.getPolicyID() + "', "
+        String query = "UPDATE AssumePolicy SET "
                 + "name = '" + assumePolicy.getName() + "', "
                 + "content = '" + assumePolicy.getContent() + "', "
                 + "policyType = '" + assumePolicy.getPolicyType() + "', "

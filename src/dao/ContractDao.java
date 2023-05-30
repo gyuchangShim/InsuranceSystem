@@ -78,13 +78,13 @@ public class ContractDao implements ContractList {
         String query = "UPDATE Contract SET "
                 + "contractDate = '" + contract.getContractDate() + "', "
                 + "contractFile = '" + contract.getContractFile() + "', "
-                + "customerId = " + contract.getCustomerID() + ", "
-                + "insuranceId = " + contract.getInsuranceID() + ", "
+                + "customerID = " + contract.getCustomerID() + ", "
+                + "insuranceID = " + contract.getInsuranceID() + ", "
                 + "specialization = '" + contract.getSpecialization() + "', "
-                + "contractState = " + contract.getContractState() + ", "
+                + "contractState = '" + contract.getContractState() + "', "
                 + "contractRunState = '" + contract.getContractRunState() + "', "
-                + "contractUWState = '" + contract.getContractRunState() + "',"
-                + "WHERE contractId = " + contract.getContractID() + ";";
+                + "contractUWState = '" + contract.getContractRunState() + "' "
+                + "WHERE contractID = " + contract.getContractID() + ";";
         dao.update(query);
     }
 
@@ -94,8 +94,8 @@ public class ContractDao implements ContractList {
         Date contractDate = resultSet.getDate("contractDate");
         contract.setContractDate(dao.dateNullCheck(contractDate));
         contract.setContractFile(resultSet.getString("contractFile"));
-        contract.setCustomerID(resultSet.getInt("customerId"));
-        contract.setInsuranceID(resultSet.getInt("insuranceId"));
+        contract.setCustomerID(resultSet.getInt("customerID"));
+        contract.setInsuranceID(resultSet.getInt("insuranceID"));
         contract.setSpecialization(resultSet.getString("specialization"));
         String contractState = resultSet.getString("contractState");
         contract.setContractState(dao.enumNullCheck(contractState, () -> ContractState.valueOf(contractState)));
