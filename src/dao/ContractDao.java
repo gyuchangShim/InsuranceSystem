@@ -83,7 +83,7 @@ public class ContractDao implements ContractList {
                 + "specialization = '" + contract.getSpecialization() + "', "
                 + "contractState = '" + contract.getContractState() + "', "
                 + "contractRunState = '" + contract.getContractRunState() + "', "
-                + "contractUWState = '" + contract.getContractRunState() + "' "
+                + "contractUWState = '" + contract.getContractUWState() + "' "
                 + "WHERE contractID = " + contract.getContractID() + ";";
         dao.update(query);
     }
@@ -98,11 +98,26 @@ public class ContractDao implements ContractList {
         contract.setInsuranceID(resultSet.getInt("insuranceID"));
         contract.setSpecialization(resultSet.getString("specialization"));
         String contractState = resultSet.getString("contractState");
-        contract.setContractState(dao.enumNullCheck(contractState, () -> ContractState.valueOf(contractState)));
+        if(contractState.equals("OFFLINE")) {
+            contract.setContractState(ContractState.OFFLINE);
+        } else if(contractState.equals("ONLINE")) {
+            contract.setContractState(ContractState.ONLINE);
+        }
+        //contract.setContractState(dao.enumNullCheck(contractState, () -> ContractState.valueOf(contractState)));
         String contractRunState = resultSet.getString("contractRunState");
-        contract.setContractRunState(dao.enumNullCheck(contractRunState, () -> ContractRunState.valueOf(contractRunState)));
+        if(contractRunState.equals("READY")) {
+            contract.setContractRunState(ContractRunState.READY);
+        } else if(contractRunState.equals("FINISH")) {
+            contract.setContractRunState(ContractRunState.FINISH);
+        }
+        // contract.setContractRunState(dao.enumNullCheck(contractRunState, () -> ContractRunState.valueOf(contractRunState)));
         String contractUWState = resultSet.getString("contractUWState");
-        contract.setContractUWState(dao.enumNullCheck(contractUWState, () -> ContractUWState.valueOf(contractUWState)));
+        if(contractUWState.equals("BASIC")) {
+            contract.setContractUWState(ContractUWState.BASIC);
+        } else if(contractUWState.equals("COLLABORATIVE")) {
+            contract.setContractUWState(ContractUWState.COLLABORATIVE);
+        }
+        //contract.setContractUWState(dao.enumNullCheck(contractUWState, () -> ContractUWState.valueOf(contractUWState)));
         return contract;
     }
 

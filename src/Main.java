@@ -653,8 +653,7 @@ public class Main {
                         && contract.getContractRunState() == ContractRunState.READY
                         && contract.getContractUWState() == ContractUWState.BASIC)
                 .toList();
-
-        if(registList != null) {
+        if(!registList.isEmpty()) {
             for (int i = 0; i < registList.size(); i++) {
                 int customerID = registList.get(i).getCustomerID();
                 int insuranceID = registList.get(i).getInsuranceID();
@@ -668,6 +667,7 @@ public class Main {
         if(registList.get(inChoice).getContractID() != 0) {
             // 인수 심사 시작
             registList.get(inChoice).setContractRunState(ContractRunState.FINISH);
+            contractList.update(registList.get(inChoice));
                 System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
             }
         }
@@ -681,7 +681,6 @@ public class Main {
                         && contract.getContractRunState() == ContractRunState.READY
                         && contract.getContractUWState() == ContractUWState.COLLABORATIVE)
                 .toList();
-
 
         if(!registCList.isEmpty()) {
             for (int i = 0; i < registCList.size(); i++) {
