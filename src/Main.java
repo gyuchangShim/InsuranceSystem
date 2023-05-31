@@ -1,53 +1,25 @@
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import business.OperationPolicy;
 import business.OperationPolicyList;
+import business.OperationPolicyListImpl;
 import business.SellGroup;
 import business.SellGroupList;
+import business.SellGroupListImpl;
 import businessEducation.Education;
 import businessEducation.EducationList;
 import businessEducation.EducationStudent;
 import businessEducation.EducationStudentList;
-import contract.AdviceNote;
-import contract.AdviceNoteList;
-import contract.Contract;
-import contract.ContractList;
-import contract.ContractRunState;
-import contract.ContractState;
-import contract.ContractUWState;
-import contract.Payment;
-import contract.PaymentList;
+import contract.*;
 import contractManagement.ContractManagementPolicy;
 import contractManagement.ContractManagementPolicyList;
 import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
-import customer.CustomerList;
+import customer.CustomerCounselingListImpl;
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
-import dao.AdviceNoteDao;
-import dao.AssumePolicyDao;
-import dao.CampaignProgramDao;
-import dao.ContractDao;
-import dao.ContractManagementPolicyDao;
-import dao.CustomerCounselingDao;
-import dao.CustomerDao;
-import dao.CustomerManagementDao;
-import dao.EducationDao;
-import dao.EducationStudentDao;
-import dao.InsuranceDao;
-import dao.OperationPolicyDao;
-import dao.PaymentDao;
-import dao.RewardDao;
-import dao.SellGroupDao;
-import dao.UserPersonaDao;
+import customerManagement.CustomerManagementListImpl;
+import dao.*;
 import exception.CCounselingNotFoundException;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
@@ -56,8 +28,17 @@ import insurance.Insurance;
 import insurance.InsuranceList;
 import insurance.InsuranceState;
 import insurance.InsuranceType;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import customer.CustomerList;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
+import marketingPlanning.CampaignProgramListImpl;
 import marketingPlanning.CampaignState;
 import outerActor.OuterActor;
 import reward.Reward;
@@ -72,9 +53,14 @@ import teams.RewardTeam;
 import teams.SellGroupTeam;
 import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
+import insurance.InsuranceList;
+
+
 import undewriting.AssumePolicyList;
+import undewriting.AssumePolicyListImpl;
 import userPersona.UserPersona;
 import userPersona.UserPersonaList;
+import userPersona.UserPersonaListImpl;
 import util.Constants;
 import util.Constants.Crud;
 import util.Constants.Gender;
@@ -668,8 +654,7 @@ public class Main {
                         && contract.getContractRunState() == ContractRunState.READY
                         && contract.getContractUWState() == ContractUWState.BASIC)
                 .toList();
-
-        if(registList != null) {
+        if(!registList.isEmpty()) {
             for (int i = 0; i < registList.size(); i++) {
                 int customerID = registList.get(i).getCustomerID();
                 int insuranceID = registList.get(i).getInsuranceID();
@@ -683,10 +668,10 @@ public class Main {
         if(registList.get(inChoice).getContractID() != 0) {
             // 인수 심사 시작
             registList.get(inChoice).setContractRunState(ContractRunState.FINISH);
-            contractList.update( registList.get(inChoice) );
-            System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
+            contractList.update(registList.get(inChoice));
+                System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
+            }
         }
-    }
 
     private static void collaborateUW() {
         // 공동 인수 시작
@@ -697,7 +682,6 @@ public class Main {
                         && contract.getContractRunState() == ContractRunState.READY
                         && contract.getContractUWState() == ContractUWState.COLLABORATIVE)
                 .toList();
-
 
         if(!registCList.isEmpty()) {
             for (int i = 0; i < registCList.size(); i++) {
