@@ -526,7 +526,6 @@ public class Main {
             case 1:
                 Contract contract = new Contract();
                 // 인수 심사 전 basic, collaborative 구분
-                // TODO retrieve 고치고 다시 확인
                 Customer uwCustomer = customerList.retrieve(customerID);
                 if(uwCustomer.getIncomeLevel() > 5) {
                     // 가입 신청 시 소득 분위에 따라 state 지정 - 인수 심사 경우
@@ -542,7 +541,6 @@ public class Main {
                 } else if(uwCustomer.getIncomeLevel() <= 5) {
                     // 가입 신청 시 소득 분위에 따라 state 지정 - 공동 인수 심사 경우
                     contract.setContractUWState(ContractUWState.COLLABORATIVE);
-                    // 로그인 하면 해당 고객의 ID를 전역에 배치 - 로그아웃 시 고객 ID null값 처리
                     contract.setCustomerID(customerID);
                     contract.setInsuranceID(registList.get(registChoice).getInsuranceID());
                     contract.setContractDate(LocalDate.now());
@@ -628,17 +626,18 @@ public class Main {
                 int insuranceID = registList.get(i).getInsuranceID();
                 System.out.println(i + ". " + customerList.retrieve(customerID).getName()
                         + ", 고객 이름: " + insuranceList.retrieve(insuranceID).getInsuranceName());
+                int inChoice = TuiReader.choice(0, registList.size() - 1);
+                if(registList.get(inChoice).getContractID() != 0) {
+                    // 인수 심사 시작
+                    registList.get(inChoice).setContractRunState(ContractRunState.FINISH);
+                    contractList.update(registList.get(inChoice));
+                    System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
+                }
             }
         } else {
             System.out.println("현재 인수 심사 대상이 존재하지 않습니다.");
         }
-        int inChoice = TuiReader.choice(0, registList.size() - 1);
-        if(registList.get(inChoice).getContractID() != 0) {
-            // 인수 심사 시작
-            registList.get(inChoice).setContractRunState(ContractRunState.FINISH);
-            contractList.update(registList.get(inChoice));
-                System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
-            }
+
         }
 
     private static void collaborateUW() {
@@ -657,16 +656,16 @@ public class Main {
                 int insuranceID = registCList.get(i).getInsuranceID();
                 System.out.println(i + ". " + customerList.retrieve(customerID).getName()
                         + ", 고객 이름: " + insuranceList.retrieve(insuranceID).getInsuranceName());
+                int inChoice = TuiReader.choice(0, registCList.size() - 1);
+                if(registCList.get(inChoice).getContractID() != 0) {
+                    // 외부 Actor에 계약 명단 전달
+                    OuterActor.collaborateUW(registCList.get(inChoice));
+                    contractList.update(registCList.get(inChoice));
+                    System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
+                }
             }
         } else {
             System.out.println("현재 인수 심사 대상이 존재하지 않습니다.");
-        }
-        int inChoice = TuiReader.choice(0, registCList.size() - 1);
-        if(registCList.get(inChoice).getContractID() != 0) {
-            // 외부 Actor에 계약 명단 전달
-            OuterActor.collaborateUW(registCList.get(inChoice));
-            contractList.update(registCList.get(inChoice));
-            System.out.println("해당 고객의 보험 가입 신청을 처리했습니다.");
         }
     }
     private static void campaignProgramMenu() {
@@ -699,20 +698,21 @@ public class Main {
         boolean isCorrect = false;
         while (!isCorrect) {
             try {
-                System.out.println("캠페인 이름 / 마케팅 대상 / 마케팅 기간 / 캠페인 수단 / 마케팅 예산 / 예상 손익률 : ");
+                System.out.println("캠페인 이름 / 마케팅 대상 / 마케팅 기간 / 마케팅 장소 / 캠페인 수단 / 마케팅 예산 / 예상 손익률 : ");
                 CampaignProgram campaignProgram = new CampaignProgram();
                 String campaignPlan = util.TuiReader.readInput("캠페인 프로그램의 내용이 형식과 맞지 않습니다.");
                 String[] campaignPlanSplit = campaignPlan.split("/");
-                if (campaignPlanSplit.length != 6) {
+                if (campaignPlanSplit.length != 7) {
                     throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
                 }
                 campaignProgram.setInsuranceID(insurance.getInsuranceID());
                 campaignProgram.setCampaignName(campaignPlanSplit[0]);
                 campaignProgram.setCampaignTarget(campaignPlanSplit[1]);
                 campaignProgram.setDuration(Integer.valueOf(campaignPlanSplit[2]));
-                campaignProgram.setCampaignWay(campaignPlanSplit[3]);
-                campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[4])));
-                campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[5]));
+                campaignProgram.setPlace(campaignPlanSplit[3]);
+                campaignProgram.setCampaignWay(campaignPlanSplit[4]);
+                campaignProgram.setBudget(Integer.valueOf((campaignPlanSplit[5])));
+                campaignProgram.setExResult(Integer.valueOf(campaignPlanSplit[6]));
                 campaignProgram.setProgramState(CampaignState.PLAN);
                 campaignProgramList.add(campaignProgram);
                 isCorrect = true;
@@ -728,8 +728,8 @@ public class Main {
         System.out.println(" 1. 현재 진행 중인 캠페인 & 캠페인 종료");
         System.out.println(" 2. 지난 캠페인");
         System.out.println(" 3. 새로운 캠페인 실행");
-        System.out.println(" 4. 캠페인 기획안 수정");
-        int rtCampaignChoice = TuiReader.choice(1, 4);
+        //System.out.println(" 4. 캠페인 기획안 수정"); - 시나리오 X 일단 지우고 시연할때 추가 결정하면 됨
+        int rtCampaignChoice = TuiReader.choice(1, 3);
         switch (rtCampaignChoice) {
             case 1:
                 runningCampaign();
@@ -740,9 +740,9 @@ public class Main {
             case 3:
                 runCampaign();
                 break;
-            case 4:
+            /*case 4:
                 modifyCampaignProgramPlan();
-                break;
+                break;*/
         }
     }
 
@@ -805,6 +805,7 @@ public class Main {
         float endResult = campaignProgram.getEndResult();
         campaignProgram.setEndResult(endResult);
         campaignProgramList.update(campaignProgram);
+        System.out.println("종료된 캠페인의 실제 손익률 저장이 완료되었습니다!");
     }
     private static void runCampaign() {
         // 캠페인 프로그램 실행 유스케이스 시나리오의 8번 제외 - 외부 Actor 배제
