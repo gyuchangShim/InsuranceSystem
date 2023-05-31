@@ -1,9 +1,7 @@
 import business.OperationPolicy;
 import business.OperationPolicyList;
-import business.OperationPolicyListImpl;
 import business.SellGroup;
 import business.SellGroupList;
-import business.SellGroupListImpl;
 import businessEducation.Education;
 import businessEducation.EducationList;
 import businessEducation.EducationStudent;
@@ -15,10 +13,7 @@ import customer.CounselingState;
 import customer.Customer;
 import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
-import customer.CustomerCounselingListImpl;
-import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
-import customerManagement.CustomerManagementListImpl;
 import dao.*;
 import exception.CCounselingNotFoundException;
 import exception.CIllegalArgumentException;
@@ -38,7 +33,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
-import marketingPlanning.CampaignProgramListImpl;
 import marketingPlanning.CampaignState;
 import outerActor.OuterActor;
 import reward.Reward;
@@ -53,14 +47,11 @@ import teams.RewardTeam;
 import teams.SellGroupTeam;
 import teams.UnderwritingTeam;
 import undewriting.AssumePolicy;
-import insurance.InsuranceList;
 
 
 import undewriting.AssumePolicyList;
-import undewriting.AssumePolicyListImpl;
 import userPersona.UserPersona;
 import userPersona.UserPersonaList;
-import userPersona.UserPersonaListImpl;
 import util.Constants;
 import util.Constants.Crud;
 import util.Constants.Gender;
@@ -127,7 +118,6 @@ public class Main {
     }
     public static void main(String[] args) {
         initialize();
-//        initData();
         while (true) {
             try {
                 loginPage();
@@ -136,38 +126,14 @@ public class Main {
             }
         }
     }
-    private static void initData() {
-        // 고객 생성
-        Customer customer = new Customer();
-        customer.setName("엄준식");
-        int customerId = customerList.add(customer);
-        CustomerManagement customerManagement = new CustomerManagement();
-        customerManagement.setID("test");
-        customerManagement.setPW("test");
-        customerManagement.setCustomerID(customerId);
-        customerManagementList.add(customerManagement);
-        // 상담 생성
-        CustomerCounseling customerCounseling = new CustomerCounseling();
-        customerCounseling.setCustomerId(customerId);
-        customerCounseling.setCounselingPlace("서울시 강남구");
-        customerCounseling.setCounselingState(CounselingState.APPLIED);
-        customerCounseling.setCounselingTime(LocalDateTime.now());
-        customerCounselingList.add(customerCounseling);
-        // 인가 완료된 보험 생성
-        for (int i = 0; i < 3; i++) {
-            Insurance insurance = new Insurance();
-            insurance.setInsuranceName("살아있는보험" + i);
-            insurance.setInsuranceState(InsuranceState.AUTHORIZED);
-            insuranceList.add(insurance);
-        }
-    }
     private static void loginPage(){
         System.out.println("*********************  로그인  *********************");
         System.out.println(" 1. 고객 로그인");
         System.out.println(" 2. 회원가입");
         System.out.println(" 3. 직원 로그인");
+        System.out.println(" 0. 종료");
 
-        int choice = TuiReader.choice(1, 3);
+        int choice = TuiReader.choice(0, 3);
         switch (choice) {
             case 1 :
                 System.out.println("ID:");
@@ -193,6 +159,9 @@ public class Main {
             case 3 :
                 customerID=-1;
                 employeeMenu();
+                break;
+            case 0 :
+                System.exit(0);
                 break;
             default:
                 throw new CIllegalArgumentException("잘못된 입력입니다.");
@@ -467,7 +436,6 @@ public class Main {
                 isSuccessInput = true;
             } catch (Exception e) {
                 System.out.println(e.getMessage());
-//                e.printStackTrace();로 에러 메시지를 확인할 수 있음
             }
         }
         return insurance;
