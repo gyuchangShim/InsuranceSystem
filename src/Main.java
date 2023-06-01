@@ -424,7 +424,8 @@ public class Main {
             try {
                 String[] input = TuiReader.readInput("다시 입력하세요.").split("/");
                 if (input.length != 7) {
-                    throw new CIllegalArgumentException("다시 입력하세요");
+                    System.out.println("다시 입력하세요");
+                    continue;
                 }
                 insurance.setInsuranceName(input[0]);
                 insurance.setInsuranceType(InsuranceType.valueOf(input[1]));
@@ -435,7 +436,7 @@ public class Main {
                 insurance.setEstimatedDevelopment(Integer.parseInt(input[6]));
                 isSuccessInput = true;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("다시 입력하세요");
             }
         }
         return insurance;
@@ -453,7 +454,7 @@ public class Main {
                     insurance.setEstimatedProfitRate(Float.parseFloat(input));
                     isSuccessInput = true;
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
+                    System.out.println("다시 입력하세요.");
                 }
             }
         } else if (choice == 2) {
@@ -470,7 +471,7 @@ public class Main {
                 insurance.setRiskDegree(Integer.parseInt(input));
                 isSuccessInput = true;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("다시 입력하세요.");
             }
         }
         float rate = OuterActor.calcInsuranceRate(insurance.getPayment(), insurance.getRiskDegree());
@@ -703,6 +704,7 @@ public class Main {
                 String campaignPlan = util.TuiReader.readInput("캠페인 프로그램의 내용이 형식과 맞지 않습니다.");
                 String[] campaignPlanSplit = campaignPlan.split("/");
                 if (campaignPlanSplit.length != 7) {
+                    // TODO: 예외를 던지지 말고 continue 키워드로 다시 입력 받도록 수정
                     throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
                 }
                 campaignProgram.setInsuranceID(insurance.getInsuranceID());
@@ -717,6 +719,7 @@ public class Main {
                 campaignProgramList.add(campaignProgram);
                 isCorrect = true;
             } catch (Exception e) {
+                // TODO: printStackTrace 말고 getMessage로 메시지 출력하도록 수정해야 함
                 e.printStackTrace();
             }
         }
@@ -961,7 +964,8 @@ public class Main {
                     String[] userPersonaInfo = TuiReader.readInput("유저 퍼소나 입력란에 정확히 입력하세요.")
                         .split("/");
                     if (userPersonaInfo.length != 4) {
-                        throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                        System.out.println("유저 퍼소나 입력란에 정확히 입력하세요.");
+                        continue;
                     }
                     UserPersona userPersona = new UserPersona();
                     userPersona.setInsuranceId(insurance.getInsuranceID());
@@ -981,12 +985,12 @@ public class Main {
         isSuccessInput = false;
         while (!isSuccessInput) {
             try {
-                // TODO: 영업 활동 시작일이 종료일보다 빨라야 한다.
                 System.out.println("영업 활동 시작일(20**-**-**), 종료일(20**-**-**), 예상 목표 인원, 판매 방식을 /로 구분하여 입력하세요.");
                 String[] salesPlanInfo = TuiReader.readInput("영업 활동 계획란에 정확히 입력하세요.")
                     .split("/");
                 if (salesPlanInfo.length != 4) {
-                    throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                    System.out.println("영업 활동 계획란에 정확히 입력하세요.");
+                    continue;
                 }
                 insurance.setSalesStartDate(LocalDate.parse(salesPlanInfo[0]));
                 insurance.setSalesEndDate(LocalDate.parse(salesPlanInfo[1]));
@@ -1053,9 +1057,11 @@ public class Main {
             System.out.println(i + ". " + customer.getName());
         }
         int choiceCustomer = TuiReader.choice(0, counselingList.size() - 1);
-        // TODO: 선택한 고객이 상담 시간이 아닌 경우 수정
         CustomerCounseling counseling = counselingList.get(choiceCustomer);
-        if (counseling.getCounselingTime().isAfter(LocalDateTime.now())) {
+        LocalDateTime counselingTime = counseling.getCounselingTime();
+        LocalDateTime startTime = LocalDateTime.now().minusHours(1);
+        LocalDateTime endTime = LocalDateTime.now().plusHours(1);
+        if (counselingTime.isBefore(startTime) || counselingTime.isAfter(endTime)) {
             throw new CCounselingNotFoundException("상담 시간이 아닙니다.");
         }
         Customer customer = customerList.retrieve(counseling.getCustomerId());
@@ -1065,7 +1071,8 @@ public class Main {
                 System.out.println("고객 이름, 나이, 성별, 연락처, 소득 수준, 계좌번호, 계좌 비밀번호를 /로 구분하여 입력하세요.");
                 String[] input = TuiReader.readInput("고객 정보를 정확히 입력해주세요").split("/");
                 if (input.length != 7) {
-                    throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                    System.out.println("고객 정보를 정확히 입력해주세요");
+                    continue;
                 }
                 customer.setName(input[0]);
                 customer.setAge(Integer.parseInt(input[1]));
@@ -1130,7 +1137,8 @@ public class Main {
                 System.out.println("상담 희망 장소, 상담 희망일(20**-**-**), 상담 희망 시간(**:**:**)을 /로 구분하여 입력하세요.");
                 String[] counselingInfo = TuiReader.readInput("상담 신청란에 정확히 입력하세요.").split("/");
                 if (counselingInfo.length != 3) {
-                    throw new CIllegalArgumentException("입력 형식이 잘못되었습니다.");
+                    System.out.println("상담 신청란에 정확히 입력하세요.");
+                    continue;
                 }
                 CustomerCounseling counseling = new CustomerCounseling();
                 counseling.setCustomerId(customerID);
