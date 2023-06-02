@@ -2,6 +2,7 @@ package dao;
 
 import undewriting.AssumePolicy;
 import undewriting.AssumePolicyList;
+import undewriting.PolicyType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -75,7 +76,7 @@ public class AssumePolicyDao implements AssumePolicyList {
         assumePolicy.setPolicyID(resultSet.getInt("policyID"));
         assumePolicy.setName(resultSet.getString("name"));
         assumePolicy.setContent(resultSet.getString("content"));
-        assumePolicy.setPolicyType(resultSet.getString("policyType"));
+        assumePolicy.setPolicyType(PolicyType.valueOf(resultSet.getString("policyType")));
         return assumePolicy;
     }
 }
