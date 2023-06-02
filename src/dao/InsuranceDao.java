@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import util.DateConverter;
 
 public class InsuranceDao implements InsuranceList {
 
@@ -37,8 +38,8 @@ public class InsuranceDao implements InsuranceList {
             + insurance.getEstimatedDevelopment() + ", "
             + insurance.getEstimatedProfitRate() + ", "
             + insurance.getRiskDegree() + ", "
-            + insurance.getSalesStartDate() + ", "
-            + insurance.getSalesEndDate() + ", "
+            + DateConverter.toString(insurance.getSalesStartDate()) + ", "
+            + DateConverter.toString(insurance.getSalesEndDate()) + ", "
             + insurance.getGoalPeopleNumber() + ", '"
             + insurance.getSalesMethod() + "', "
             + insurance.getRate() + ", "
@@ -97,8 +98,8 @@ public class InsuranceDao implements InsuranceList {
             + "estimatedDevelopment = " + insurance.getEstimatedDevelopment() + ", "
             + "estimatedProfitRate = " + insurance.getEstimatedProfitRate() + ", "
             + "riskDegree = " + insurance.getRiskDegree() + ", "
-            + "salesStartDate = '" + insurance.getSalesStartDate() + "', "
-            + "salesEndDate = '" + insurance.getSalesEndDate() + "', "
+            + "salesStartDate = " + DateConverter.toString(insurance.getSalesStartDate()) + ", "
+            + "salesEndDate = " + DateConverter.toString(insurance.getSalesEndDate()) + ", "
             + "goalPeopleNumber = " + insurance.getGoalPeopleNumber() + ", "
             + "salesMethod = '" + insurance.getSalesMethod() + "', "
             + "rate = " + insurance.getRate() + ", "
