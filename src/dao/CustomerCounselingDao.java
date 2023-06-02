@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import util.DateConverter;
 
 public class CustomerCounselingDao implements CustomerCounselingList {
 
@@ -75,7 +76,7 @@ public class CustomerCounselingDao implements CustomerCounselingList {
         String query = "UPDATE CustomerCounseling SET "
                 + "customerID = " + counseling.getCustomerId() + ", "
                 + "counselingPlace = '" + counseling.getCounselingPlace() + "', "
-                + "counselingTime = '" + counseling.getCounselingTime() + "', "
+                + "counselingTime = " + DateConverter.toString(counseling.getCounselingTime()) + ", "
                 + "counselingState = '" + counseling.getCounselingState() + "' "
                 + "WHERE counselingID = " + counseling.getCounselingId() + ";";
         dao.update(query);
