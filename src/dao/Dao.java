@@ -1,5 +1,6 @@
 package dao;
 
+import exception.DaoException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -17,12 +18,8 @@ public class Dao {
 
     // 우리가 exception 만들면 더 좋음
     public void connect() throws Exception{
-        try {
-            String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false";
-            connect = DriverManager.getConnection(url,  "root", "");
-        } catch (Exception e) {
-            throw e;
-        }
+        String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false";
+        connect = DriverManager.getConnection(url,  "root", "");
     }
 
     public void create(String query) {
@@ -32,7 +29,7 @@ public class Dao {
                 System.out.println("insert OK!!");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
     }
 
@@ -41,7 +38,7 @@ public class Dao {
             statement = connect.createStatement();
             resultSet = statement.executeQuery(query);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
         return resultSet;
     }
@@ -53,7 +50,7 @@ public class Dao {
                 System.out.println("update OK!!");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
     }
 
@@ -64,7 +61,7 @@ public class Dao {
                 System.out.println("delete OK!!");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
     }
 

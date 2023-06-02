@@ -37,7 +37,6 @@ public class InsuranceDevelopmentTeam extends Team {
 				try {
 					insuranceList.add(insurance);
 				} catch (Exception e) {
-					e.printStackTrace();
 					throw new CSaveFailException("보고서 저장에 실패했습니다.");
 				}
 			} else if (crud == Crud.UPDATE) {
@@ -51,10 +50,6 @@ public class InsuranceDevelopmentTeam extends Team {
 	@Override
 	public void process(Target target, Crud crud) {
 
-	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
 	}
 
 	public void authorizeInsurance(){

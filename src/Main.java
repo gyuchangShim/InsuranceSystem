@@ -227,7 +227,6 @@ public class Main {
                 }
             }
     	}
-
     }
     private static void printEmployeeMenu() {
         System.out.println("********************* MENU *********************");
@@ -638,9 +637,7 @@ public class Main {
         } else {
             System.out.println("현재 인수 심사 대상이 존재하지 않습니다.");
         }
-
-        }
-
+    }
     private static void collaborateUW() {
         // 공동 인수 시작
         // 인수 심사 대상 리스트 출력
@@ -748,7 +745,6 @@ public class Main {
                 break;*/
         }
     }
-
     private static void runningCampaign() {
         // 실행 중인 캠페인 리스트 조회 + 캠페인 진행 종료 버튼 추가 - 시나리오 X
         System.out.println("********************* 실행 중인 캠페인 & 캠페인 종료 페이지 *********************");
@@ -782,7 +778,6 @@ public class Main {
         }
 
     }
-
     private static void endCampaign() {
         // 지난 캠페인 리스트 조회 - 시나리오 X but 캠페인 프로그램 결과 분석 시나리오 O
         // 지난 캠페인 리스트는 DB에 미리 구현해놓기
