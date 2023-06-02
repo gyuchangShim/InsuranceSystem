@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import customer.CustomerList;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,6 +59,7 @@ import util.Constants.Gender;
 import util.Constants.Result;
 import util.Constants.Target;
 import util.TuiReader;
+import util.ViewNotResponseChecker;
 
 public class Main {
     private static InsuranceList insuranceList;
@@ -314,7 +316,13 @@ public class Main {
         int choice = TuiReader.choice(1, 3);
         switch (choice) {
             case 1:
-                createInsurancePlan();
+                String insurancePlanView = ViewNotResponseChecker.check(() -> {
+//                        Thread.sleep(12000);
+                        return "********************* 상품 기획 *********************\n" +
+                            " 1. 새상품 기획\n" +
+                            " 2. 기존 상품 관리\n";
+                    });
+                createInsurancePlan(insurancePlanView);
                 break;
             case 2:
                 Insurance insurance = designInsurance();
@@ -355,10 +363,14 @@ public class Main {
                 break;
         }
     }
-    private static void createInsurancePlan() {
-        System.out.println("********************* 상품 기획 *********************");
-        System.out.println(" 1. 새상품 기획");
-        System.out.println(" 2. 기존 상품 관리");
+    private static String getInsurancePlanView() {
+        String view = "********************* 상품 기획 *********************\n" +
+                " 1. 새상품 기획\n" +
+                " 2. 기존 상품 관리\n";
+        return view;
+    }
+    private static void createInsurancePlan(String insurancePlanView) {
+        System.out.println(insurancePlanView);
         int choice = TuiReader.choice(1, 2);
         switch (choice) {
             case 1:
@@ -368,10 +380,7 @@ public class Main {
                 break;
             case 2:
                 System.out.println("********************* 보험 기획안 *********************");
-                List<Insurance> insurances = insuranceList.retrieveAll()
-                    .stream()
-                    .filter(insurance -> insurance.getInsuranceState() == InsuranceState.PLANED)
-                    .collect(Collectors.toList());
+                List<Insurance> insurances = insuranceList.retrieveAll();
                 if (insurances.size() == 0) {
                     throw new CInsuranceNotFoundException("수정하거나 삭제할 보험 기획안이 없습니다.");
                 }
@@ -391,8 +400,12 @@ public class Main {
                     insuranceList.update(findInsurance);
                     System.out.println("상품 기획안을 수정하였습니다.");
                 } else if (choice3 == 2) {
-                    insuranceList.delete(findInsurance.getInsuranceID());
-                    System.out.println("해당 상품 기획안을 삭제하였습니다.");
+                    if (findInsurance.getInsuranceState() != InsuranceState.PLANED) {
+                        throw new CInsuranceNotFoundException("이미 설계를 시작한 상품입니다.");
+                    } else {
+                        insuranceList.delete(findInsurance.getInsuranceID());
+                        System.out.println("해당 상품 기획안을 삭제하였습니다.");
+                    }
                 }
                 break;
             default:
