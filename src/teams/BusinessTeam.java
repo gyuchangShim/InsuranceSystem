@@ -18,17 +18,27 @@ public class BusinessTeam extends Team {
 
 	@Override
 	public void establishPolicy(Target target, Crud crud) {
-		String policyInf = TuiReader.readInput("정확히 입력해주세요.");
-		String[] policyInfList = policyInf.split("/");
-		OperationPolicy operationPolicy = new OperationPolicy();
-		operationPolicy.setName(policyInfList[0]);
-		operationPolicy.setContent(policyInfList[1]);
-		operationPolicyList.add(operationPolicy);
+		if(crud.equals(Crud.CREATE)){
+			String policyInf = TuiReader.readInput("정확히 입력해주세요.");
+			String[] policyInfList = policyInf.split("/");
+			OperationPolicy operationPolicy = new OperationPolicy();
+			operationPolicy.setName(policyInfList[0]);
+			operationPolicy.setContent(policyInfList[1]);
+			operationPolicy.setRating(0);
+			operationPolicy.setPass(0);
+			operationPolicyList.add(operationPolicy);
+		}else{
+			OperationPolicy operationPolicy = operationPolicyList.retrieve(Integer.parseInt(TuiReader.readInput("정확히 입력해주세요.")));
+			operationPolicy.setPass(1);
+			operationPolicyList.update(operationPolicy);
+		}
 	}
 
 	@Override
 	public void manage(Target target, Crud crud) {
-
+		OperationPolicy operationPolicy = operationPolicyList.retrieve(Integer.parseInt(TuiReader.readInput("정확히 입력해주세요.")));
+		operationPolicy.setRating(operationPolicy.getRating()+1);
+		operationPolicyList.update(operationPolicy);
 	}
 
 	@Override
