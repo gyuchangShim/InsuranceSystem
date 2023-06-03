@@ -5,7 +5,6 @@ import contract.ContractRunState;
 import insurance.Insurance;
 import insurance.InsuranceState;
 import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignState;
 import java.time.LocalDateTime;
@@ -35,7 +34,8 @@ public class OuterActor {
         contract.setContractRunState(ContractRunState.FINISH);
     }
 
-    public static void sendSMS(String s) {
-        System.out.println("SMS 전송: " + s);
+    public static void sendSMStoCustomer(String s) throws Exception {
+//        throw new Exception("메시지 전송에 실패했습니다.");
+        System.out.println("고객에게 SMS 전송: " + s);
     }
 }

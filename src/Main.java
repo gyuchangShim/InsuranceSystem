@@ -18,7 +18,6 @@ import dao.*;
 import exception.CCounselingNotFoundException;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
-import exception.CTimeOutException;
 import exception.CustomException;
 import insurance.Insurance;
 import insurance.InsuranceList;
@@ -646,8 +645,7 @@ public class Main {
         // 인수 심사 대상 리스트 출력
         List<Contract> registList = contractList.retrieveAll()
                 .stream()
-                .filter(contract -> contract.getContractState() == ContractState.ONLINE
-                        && contract.getContractRunState() == ContractRunState.READY
+                .filter(contract ->  contract.getContractRunState() == ContractRunState.READY
                         && contract.getContractUWState() == ContractUWState.BASIC)
                 .toList();
         if(!registList.isEmpty()) {
@@ -673,8 +671,7 @@ public class Main {
         // 인수 심사 대상 리스트 출력
         List<Contract> registCList = contractList.retrieveAll()
                 .stream()
-                .filter(contract -> contract.getContractState() == ContractState.ONLINE
-                        && contract.getContractRunState() == ContractRunState.READY
+                .filter(contract -> contract.getContractRunState() == ContractRunState.READY
                         && contract.getContractUWState() == ContractUWState.COLLABORATIVE)
                 .toList();
 
@@ -981,7 +978,7 @@ public class Main {
             }
             System.out.println("--------------------------");
             System.out.println("1. 유저 퍼소나 추가");
-            System.out.println("2. 영업 인력 계획 수립");
+            System.out.println("2. 영업 활동 계획 수립");
             choice2 = TuiReader.choice(1, 2);
             while (choice2 == 1 && !isSuccessInput) {
                 try {
@@ -1035,36 +1032,48 @@ public class Main {
             .stream()
             .filter(counseling -> counseling.getCounselingState() == CounselingState.APPLIED)
             .collect(Collectors.toList());
-        if (counselingList.size() == 0) {
+        if (counselingList.isEmpty()) {
             throw new CCounselingNotFoundException("대면 상담 요청된 고객이 없습니다.");
         }
         List<Integer> customerIdList = counselingList.stream()
             .map(CustomerCounseling::getCustomerId)
             .distinct()
             .collect(Collectors.toList());
-        for (int i = 0; i < customerIdList.size(); i++) {
-            Customer customer = customerList.retrieve(customerIdList.get(i));
-            System.out.println(i + ". " + customer.getName());
+        boolean isChoiceCustomer = false;
+        while (!isChoiceCustomer) {
+            for (int i = 0; i < customerIdList.size(); i++) {
+                Customer customer = customerList.retrieve(customerIdList.get(i));
+                System.out.println(i + ". " + customer.getName());
+            }
+            int choiceCustomer = TuiReader.choice(0, customerIdList.size() - 1);
+            Customer customer = customerList.retrieve(customerIdList.get(choiceCustomer));
+            List<CustomerCounseling> choiceCustomerCounselingList = counselingList.stream()
+                .filter(counseling -> counseling.getCustomerId() == customer.getCustomerID())
+                .collect(Collectors.toList());
+            System.out.println("0. 취소");
+            for (int i = 0; i < choiceCustomerCounselingList.size(); i++) {
+                CustomerCounseling counseling = choiceCustomerCounselingList.get(i);
+                System.out.println(i+1 + ". 상담 희망 장소: " + counseling.getCounselingPlace()
+                    + " 상담 희망일: "+ counseling.getCounselingTime().getMonthValue() + "월 "
+                    + counseling.getCounselingTime().getDayOfMonth() + "일 "
+                    + "상담 시간: " + counseling.getCounselingTime().getHour() + "시 "
+                    + counseling.getCounselingTime().getMinute() + "분");
+            }
+            int choiceCounseling = TuiReader.choice(0, choiceCustomerCounselingList.size());
+            if (choiceCounseling == 0) {
+                continue;
+            }
+            isChoiceCustomer = true;
+            CustomerCounseling counseling = choiceCustomerCounselingList.get(choiceCounseling - 1);
+            counseling.setCounselingState(CounselingState.ACCEPTED_APPLY);
+            customerCounselingList.update(counseling);
+            try {
+                OuterActor.sendSMStoCustomer("상담 일정이 잡혔습니다.");
+            } catch (Exception e) {
+                throw new CustomException(e);
+            }
+            System.out.println("상담 일정이 잡혔습니다.");
         }
-        int choiceCustomer = TuiReader.choice(0, customerIdList.size() - 1);
-        Customer customer = customerList.retrieve(customerIdList.get(choiceCustomer));
-        List<CustomerCounseling> choiceCustomerCounselingList = counselingList.stream()
-            .filter(counseling -> counseling.getCustomerId() == customer.getCustomerID())
-            .collect(Collectors.toList());
-        for (int i = 0; i < choiceCustomerCounselingList.size(); i++) {
-            CustomerCounseling counseling = choiceCustomerCounselingList.get(i);
-            System.out.println(i + ". 상담 희망 장소: " + counseling.getCounselingPlace()
-                + " 상담 희망일: "+ counseling.getCounselingTime().getMonthValue() + "월 "
-                + counseling.getCounselingTime().getDayOfMonth() + "일 "
-                + "상담 시간: " + counseling.getCounselingTime().getHour() + "시 "
-                + counseling.getCounselingTime().getMinute() + "분");
-        }
-        int choiceCounseling = TuiReader.choice(0, choiceCustomerCounselingList.size() - 1);
-        CustomerCounseling counseling = choiceCustomerCounselingList.get(choiceCounseling);
-        counseling.setCounselingState(CounselingState.ACCEPTED_APPLY);
-        customerCounselingList.update(counseling);
-        OuterActor.sendSMS("상담 일정이 잡혔습니다.");
-        System.out.println("상담 일정이 잡혔습니다.");
     }
     private static void faceToFaceConsultation() {
         System.out.println("*************** 대면 상담 ***************");
@@ -1072,7 +1081,7 @@ public class Main {
             .stream()
             .filter(counseling -> counseling.getCounselingState() == CounselingState.ACCEPTED_APPLY)
             .collect(Collectors.toList());
-        if (counselingList.size() == 0) {
+        if (counselingList.isEmpty()) {
             throw new CCounselingNotFoundException("대면 상담 수락된 고객이 없습니다.");
         }
         System.out.println(" 고객 리스트 ");
@@ -1146,13 +1155,17 @@ public class Main {
         contract.setContractDate(LocalDate.now());
         contract.setContractState(ContractState.OFFLINE);
         contract.setContractRunState(ContractRunState.READY);
-        ContractUWState contractUWState = customer.getIncomeLevel() < 5 ?
+        ContractUWState contractUWState = customer.getIncomeLevel() <= 5 ?
             ContractUWState.COLLABORATIVE : ContractUWState.BASIC;
         contract.setContractUWState(contractUWState);
         contractList.add(contract);
         System.out.println("청약서 저장이 완료됐습니다. 인수 심사로 넘어갑니다.");
         underWriting();
-
+        try {
+            OuterActor.sendSMStoCustomer("인수 심사 결과 통과되었습니다.");
+        } catch (Exception e) {
+            throw new CustomException("SMS 전송에 실패했습니다.");
+        }
     }
     private static void counselingApply() {
         System.out.println("*************** 상담 신청 ***************");
