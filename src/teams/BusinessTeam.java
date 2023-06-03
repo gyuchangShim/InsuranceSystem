@@ -1,5 +1,6 @@
 package teams;
 import business.*;
+import exception.SOPPolicyNotFoundException;
 import util.Constants.Crud;
 import util.Constants.Target;
 import util.TuiReader;
@@ -29,16 +30,24 @@ public class BusinessTeam extends Team {
 			operationPolicyList.add(operationPolicy);
 		}else{
 			OperationPolicy operationPolicy = operationPolicyList.retrieve(Integer.parseInt(TuiReader.readInput("정확히 입력해주세요.")));
-			operationPolicy.setPass(1);
-			operationPolicyList.update(operationPolicy);
+			if(operationPolicy.getPass()==0){
+				operationPolicy.setPass(1);
+				operationPolicyList.update(operationPolicy);
+			}else {
+				throw new SOPPolicyNotFoundException("해당 번호의 건의된 운영 방침이 없습니다.");
+			}
 		}
 	}
 
 	@Override
 	public void manage(Target target, Crud crud) {
 		OperationPolicy operationPolicy = operationPolicyList.retrieve(Integer.parseInt(TuiReader.readInput("정확히 입력해주세요.")));
-		operationPolicy.setRating(operationPolicy.getRating()+1);
-		operationPolicyList.update(operationPolicy);
+		if(operationPolicy.getPass()==0){
+			operationPolicy.setRating(operationPolicy.getRating()+1);
+			operationPolicyList.update(operationPolicy);
+		}else {
+			throw new SOPPolicyNotFoundException("건의된 운영 방침이 없습니다.");
+		}
 	}
 
 	@Override
