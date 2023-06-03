@@ -1,6 +1,6 @@
 package util;
 
-import exception.CTenSecondTimeOutException;
+import exception.CTimeOutException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -8,7 +8,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.function.Supplier;
 
 public class ViewNotResponseChecker {
 
@@ -20,7 +19,7 @@ public class ViewNotResponseChecker {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         } catch (TimeoutException e) {
-            throw new CTenSecondTimeOutException("현재 해당 페이지를 불러올 수 없습니다.");
+            throw new CTimeOutException("현재 해당 페이지를 불러올 수 없습니다.");
         }
     }
 
