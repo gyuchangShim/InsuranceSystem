@@ -95,7 +95,7 @@ public class EducationStudentDao implements EducationStudentList {
 				+ "examination = '" + student.getExamination() + "', "
 				+ "studentScore = " + student.getStudentScore() + ", "
 				+ "gender= '" + student.getGender().getString()
-				+ "WHERE studentID = " + student.getStudentID() + ";";
+				+ "' WHERE studentID = " + student.getStudentID() + ";";
 		dao.update( query );		
 	}
 

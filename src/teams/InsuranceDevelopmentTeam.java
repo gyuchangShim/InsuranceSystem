@@ -1,5 +1,6 @@
 package teams;
 
+import exception.DaoException;
 import insurance.Insurance;
 import insurance.InsuranceList;
 import exception.CSaveFailException;
@@ -36,8 +37,7 @@ public class InsuranceDevelopmentTeam extends Team {
 				insurance.setPlanReport(report);
 				try {
 					insuranceList.add(insurance);
-				} catch (Exception e) {
-					e.printStackTrace();
+				} catch (DaoException e) {
 					throw new CSaveFailException("보고서 저장에 실패했습니다.");
 				}
 			} else if (crud == Crud.UPDATE) {
@@ -51,10 +51,6 @@ public class InsuranceDevelopmentTeam extends Team {
 	@Override
 	public void process(Target target, Crud crud) {
 
-	}
-
-	public void finalize() throws Throwable {
-		super.finalize();
 	}
 
 	public void authorizeInsurance(){

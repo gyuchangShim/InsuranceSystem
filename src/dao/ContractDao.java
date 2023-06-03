@@ -98,26 +98,27 @@ public class ContractDao implements ContractList {
         contract.setInsuranceID(resultSet.getInt("insuranceID"));
         contract.setSpecialization(resultSet.getString("specialization"));
         String contractState = resultSet.getString("contractState");
-        if(contractState.equals("OFFLINE")) {
+        // 여기는 2가지 방식 다 됨
+        /*if(contractState.equals("OFFLINE")) {
             contract.setContractState(ContractState.OFFLINE);
         } else if(contractState.equals("ONLINE")) {
             contract.setContractState(ContractState.ONLINE);
-        }
-        //contract.setContractState(dao.enumNullCheck(contractState, () -> ContractState.valueOf(contractState)));
+        }*/
+        contract.setContractState(dao.enumNullCheck(contractState, () -> ContractState.valueOf(contractState)));
         String contractRunState = resultSet.getString("contractRunState");
-        if(contractRunState.equals("READY")) {
+        /*if(contractRunState.equals("READY")) {
             contract.setContractRunState(ContractRunState.READY);
         } else if(contractRunState.equals("FINISH")) {
             contract.setContractRunState(ContractRunState.FINISH);
-        }
-        // contract.setContractRunState(dao.enumNullCheck(contractRunState, () -> ContractRunState.valueOf(contractRunState)));
+        }*/
+        contract.setContractRunState(dao.enumNullCheck(contractRunState, () -> ContractRunState.valueOf(contractRunState)));
         String contractUWState = resultSet.getString("contractUWState");
-        if(contractUWState.equals("BASIC")) {
+        /*if(contractUWState.equals("BASIC")) {
             contract.setContractUWState(ContractUWState.BASIC);
         } else if(contractUWState.equals("COLLABORATIVE")) {
             contract.setContractUWState(ContractUWState.COLLABORATIVE);
-        }
-        //contract.setContractUWState(dao.enumNullCheck(contractUWState, () -> ContractUWState.valueOf(contractUWState)));
+        }*/
+        contract.setContractUWState(dao.enumNullCheck(contractUWState, () -> ContractUWState.valueOf(contractUWState)));
         return contract;
     }
 

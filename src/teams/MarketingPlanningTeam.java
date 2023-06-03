@@ -38,11 +38,7 @@ public class MarketingPlanningTeam extends Team {
 
     @Override
     public void plan(Target target, Crud crud) {
-        if (target == Target.CAMPAIGN_PROGRAM) {
-            if (crud == Crud.CREATE) {
 
-            }
-        }
     }
 
     @Override

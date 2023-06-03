@@ -63,7 +63,6 @@ public class SellGroupTeam extends Team {
 	public int calculateInsuranceFee(Insurance insurance, Customer customer) {
 		return new Random().nextInt(10000, 20000);
 	}
-
 	public String recommendInsuranceReason(Insurance insurance, Customer customer) {
 		return "~~~ 이유로 이 보험을 추천합니다.";
 	}

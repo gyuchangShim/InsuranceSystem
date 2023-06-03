@@ -40,6 +40,7 @@ public class BusinessEducationTeam extends Team {
 				this.educationListImpl.update( this.m_Education );
 				break;
 			case DELETE:
+				this.educationListImpl.delete( this.m_Education.getEducationID() );
 				break;
 			}
 			break;
@@ -49,11 +50,13 @@ public class BusinessEducationTeam extends Team {
 				this.studentListImpl.add( this.m_EducationStudent );
 				break;
 			case READ:
+				this.studentListImpl.retrieveAll();
 				break;
 			case UPDATE:
 				this.studentListImpl.update( this.m_EducationStudent );
 				break;
 			case DELETE:
+				this.studentListImpl.delete( this.m_EducationStudent.getStudentID() );
 				break;
 			}
 			break;

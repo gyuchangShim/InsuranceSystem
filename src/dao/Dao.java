@@ -1,5 +1,6 @@
 package dao;
 
+import exception.DaoException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -32,7 +33,7 @@ public class Dao {
                 System.out.println("insert OK!!");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException("저장에 실패했습니다.", e);
         }
     }
 
@@ -41,7 +42,7 @@ public class Dao {
             statement = connect.createStatement();
             resultSet = statement.executeQuery(query);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException("저장에 실패했습니다.", e);
         }
         return resultSet;
     }
@@ -53,7 +54,7 @@ public class Dao {
                 System.out.println("update OK!!");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException("저장에 실패했습니다.", e);
         }
     }
 
@@ -64,7 +65,7 @@ public class Dao {
                 System.out.println("delete OK!!");
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DaoException(e);
         }
     }
 
