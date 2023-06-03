@@ -65,13 +65,14 @@ public class OperationPolicyDao implements OperationPolicyList {
         ResultSet resultSet = dao.retrieve(query);
         List<OperationPolicy> operationPolicyList = new ArrayList<>();
         int i = 0;
-
         try {
             while (resultSet.next()){
                 operationPolicyList.add(new OperationPolicy());
                 operationPolicyList.get(i).setPolicyID(resultSet.getInt("policyID"));
                 operationPolicyList.get(i).setName(resultSet.getString("name"));
                 operationPolicyList.get(i).setContent(resultSet.getString("content"));
+                operationPolicyList.get(i).setRating(resultSet.getInt("rating"));
+                operationPolicyList.get(i).setPass(resultSet.getInt("pass"));
                 i++;
             }
         } catch (SQLException e) {throw new RuntimeException(e);}

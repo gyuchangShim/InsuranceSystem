@@ -1647,18 +1647,22 @@ public class Main {
     private static void evaluateOPPolicy() {
         System.out.println("********************* 건의된 운영 방침*********************");
         List<OperationPolicy> policyList = businessTeam.getAllPolicy();
+        int a = 0;
         if(policyList.get(0).getPolicyID() != 0) {
                     for (int i = 0; i < policyList.size(); i++) {
                         if(policyList.get(i).getPass() ==0) {
                             System.out.println(policyList.get(i).getPolicyID() + ". " + policyList.get(i).getName());
                             System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
                             System.out.println("운영 방침 추천 수: " + policyList.get(i).getRating());
+                            a++;
                         }
             }
-            System.out.println("********************* 운영 방침 평가 *********************");
-            System.out.println("추천할 운영방침의 번호를 입력해주세요.");
-            businessTeam.manage(Target.OPERATION_POLICY, Crud.UPDATE);
-            System.out.println("평가 내용을 저장되었습니다.");
+            if(a>0){
+                System.out.println("********************* 운영 방침 평가 *********************");
+                System.out.println("추천할 운영방침의 번호를 입력해주세요.");
+                businessTeam.manage(Target.OPERATION_POLICY, Crud.UPDATE);
+                System.out.println("평가 내용을 저장되었습니다.");
+            }else{System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");}
         } else {
             System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");
         }
@@ -1667,18 +1671,22 @@ public class Main {
     private static void makeOPPolicy() {
         System.out.println("********************* 건의된 운영 방침*********************");
         List<OperationPolicy> policyList = businessTeam.getAllPolicy();
+        int a = 0;
         if(policyList.get(0).getPolicyID() != 0) {
             for (int i = 0; i < policyList.size(); i++) {
                 if(policyList.get(i).getPass() ==0){
                 System.out.println(policyList.get(i).getPolicyID() + ". " + policyList.get(i).getName());
                 System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
                 System.out.println("운영 방침 추천 수: " + policyList.get(i).getRating());
+                a++;
                 }
             }
+            if(a>0){
             System.out.println("********************* 운영 방침 수립 *********************");
             System.out.println("수립할 운영방침의 번호를 입력해주세요.");
             businessTeam.establishPolicy(Target.OPERATION_POLICY, Crud.UPDATE);
             System.out.println("인수 정책이 저장되었습니다.");
+            }else{System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");}
         } else {
             System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");
         }
