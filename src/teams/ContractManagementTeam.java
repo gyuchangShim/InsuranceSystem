@@ -38,7 +38,7 @@ public class ContractManagementTeam extends Team {
 		this.adviceNoteList = adviceNoteList;
 	}
 	public Customer getCustomerInformation( int customerID ) {
-		return this.customerList.retrieve(1);		// 확인 필요
+		return this.customerList.retrieve( customerID );		// 확인 필요
 	}
 	public Contract getContract( int contractID ) {
 		return this.contractList.retrieve( contractID );
@@ -61,13 +61,12 @@ public class ContractManagementTeam extends Team {
 	public List<AdviceNote> getAllAdviceNote() {
 		return this.adviceNoteList.retrieveAll();
 	}
-	public List<Contract> getContractByInsuranceAndCustomerID( int insuranceID, int customerID ) {
+	public Contract getContractByInsuranceAndCustomerID( int insuranceID, int customerID ) {
 		List<Contract> contractList = this.contractList.retrieveAll();
-		List<Contract> result = new ArrayList<Contract>();
 		for( Contract contract : contractList ) {
-			if( contract.getInsuranceID()==insuranceID && contract.getCustomerID()==customerID ) result.add( contract );
+			if( contract.getInsuranceID()==insuranceID && contract.getCustomerID()==customerID ) return contract;
 		}
-		return result;
+		return null;
 	}
 	public List<ContractManagementPolicy> getAllPolicy(){
 		return this.policyList.retrieveAll();
@@ -98,13 +97,16 @@ public class ContractManagementTeam extends Team {
 		case CONTRACT:
 			switch( crud ) {
 			case CREATE:
+				this.contractList.add( this.m_Contract );
 				break;
 			case READ:
+				this.contractList.retrieveAll();
 				break;
 			case UPDATE:
 				this.contractList.update( this.m_Contract );
 				break;
 			case DELETE:
+				this.contractList.delete( this.m_Contract.getContractID() );
 				break;
 			}
 			break;
@@ -114,10 +116,45 @@ public class ContractManagementTeam extends Team {
 				this.adviceNoteList.add( this.m_AdviceNote );
 				break;
 			case READ:
+				this.adviceNoteList.retrieveAll();
 				break;
 			case UPDATE:
+				this.adviceNoteList.update( this.m_AdviceNote );
 				break;
 			case DELETE:
+				this.adviceNoteList.delete( this.m_AdviceNote.getAdviceNoteID() );
+				break;
+			}
+			break;
+		case PAYMENT:
+			switch( crud ) {
+			case CREATE:
+				this.paymentList.add( this.m_Payment );
+				break;
+			case READ:
+				this.paymentList.retrieveAll();
+				break;
+			case UPDATE:
+				this.paymentList.update( this.m_Payment );
+				break;
+			case DELETE:
+				this.paymentList.delete( this.m_Payment.getPaymentID() );
+				break;
+			}
+			break;
+		case CONTRACT_MANAGEMENT_POLICY:
+			switch( crud ) {
+			case CREATE:
+				this.policyList.add( this.m_ContractManagementPolicy );
+				break;
+			case READ:
+				this.policyList.retrieveAll();
+				break;
+			case UPDATE:
+				this.policyList.update( this.m_ContractManagementPolicy );
+				break;
+			case DELETE:
+				this.policyList.delete( this.m_ContractManagementPolicy.getPolicyID() );
 				break;
 			}
 			break;

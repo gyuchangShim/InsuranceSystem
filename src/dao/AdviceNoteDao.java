@@ -22,7 +22,7 @@ public class AdviceNoteDao implements AdviceNoteList {
     }
 	@Override
 	public void add(AdviceNote adviceNote) {
-		String query = "INSERT into AdviceNote values('"
+		String query = "INSERT into AdviceNote ( content, result, contractID, customerID ) VALUES ('"
 				+ adviceNote.getContent() + "', '"
 				+ adviceNote.getResult().getString() + "', "
 				+ adviceNote.getContractID() + ", " 
@@ -61,7 +61,7 @@ public class AdviceNoteDao implements AdviceNoteList {
 		String query = "UPDATE AdviceNote SET content = '" + adviceNote.getContent() + "', "
 				+ "customerID = " + adviceNote.getCustomerID() +  ", " 
 				+ "result = '" + adviceNote.getResult().getString() + "', " 
-				+ "contractID = " + adviceNote.getContractID() + ", " 
+				+ "contractID = " + adviceNote.getContractID() + " " 
 				+ "WHERE adviceNoteID = " + adviceNote.getAdviceNoteID()+ ";";
 		dao.update( query );		
 	}

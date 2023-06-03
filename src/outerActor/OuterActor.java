@@ -26,12 +26,19 @@ public class OuterActor {
         };
     }
     public static void runProgram(CampaignProgram campaignProgram) {
+        // 외부 캠페인 팀 캠페인 프로그램 실행
         campaignProgram.setProgramState(CampaignState.RUN);
     }
 
-    public static void collaborateUW(Contract contract) {
+    public static boolean collaborateUW(Contract contract, int incomeLevel) {
         // 외부 Actor는 전달받은 계약에 대해 상태 변경 : Ready -> Finish
-        contract.setContractRunState(ContractRunState.FINISH);
+        if(incomeLevel == 1) {
+            contract.setContractRunState(ContractRunState.DENY);
+            return false;
+        } else {
+            contract.setContractRunState(ContractRunState.FINISH);
+            return true;
+        }
     }
 
     public static void sendSMStoCustomer(String s) throws Exception {

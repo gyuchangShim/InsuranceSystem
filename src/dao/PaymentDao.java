@@ -25,6 +25,9 @@ public class PaymentDao implements PaymentList{
 
 	@Override
 	public void add(Payment payment) {
+		String result;
+		if( payment.getResult() ) result = "true";
+		else result = "false";
 		String query = "INSERT into Payment (contractID, duration, contractDuration, expireDate, content, amount, accidentCount, payway, result) values("
 	            + payment.getContractID() + ", " 
 	            + payment.getDuration() + ", " 
@@ -34,7 +37,7 @@ public class PaymentDao implements PaymentList{
 	            + payment.getAmount() + ", "
 	            + payment.getAccidentCount() + ", '" 
 	            + payment.getPayway().getString() + "', '"
-	            + payment.getResult() + "');";
+	            + result + "');";
 	        dao.create(query);		
 	}
 
@@ -61,7 +64,7 @@ public class PaymentDao implements PaymentList{
         	payment.setAccidentCount( resultSet.getInt("accidentCount"));
         	String payway = resultSet.getString("payway");
         	payment.setPayway(dao.enumNullCheck(payway, () -> PayWay.valueOf(payway)));
-        	if( resultSet.getBoolean("result") ) payment.setResult(true);
+        	if( resultSet.getString("result").equals("true") ) payment.setResult(true);
         	else payment.setResult(false);
 		} catch (SQLException e) {throw new RuntimeException(e);}
 		return payment;
@@ -85,9 +88,26 @@ public class PaymentDao implements PaymentList{
             	payment.setAmount( resultSet.getInt("amount") );
             	payment.setAccidentCount( resultSet.getInt("accidentCount"));
             	String payway = resultSet.getString("payway");
-            	payment.setPayway(dao.enumNullCheck(payway, () -> PayWay.valueOf(payway)));
-            	if( resultSet.getBoolean("result") ) payment.setResult(true);
+            	switch( payway ) {
+            	case "직접 만나서 결제":
+            		payment.setPayway( PayWay.OFFLINE_FTF );
+            		break;
+            	case "자동이체":
+            		payment.setPayway( PayWay.ONLINE_AUTO );
+            		break;
+            	case "온라인 이체":
+            		payment.setPayway( PayWay.ONLINE_MANUAL );
+            		break;
+            	case "직원 방문 결제":
+            		payment.setPayway( PayWay.OFFLINE_VISITING );
+            		break;
+            	default:
+            		break;
+            			
+            	}
+            	if( resultSet.getString("result").equals("true") ) payment.setResult(true);
             	else payment.setResult(false);
+            	paymentList.add( payment );
             }
         } catch (SQLException e) {throw new RuntimeException(e);}
         return paymentList;
@@ -95,6 +115,9 @@ public class PaymentDao implements PaymentList{
 
 	@Override
 	public void update(Payment payment) {
+		String result;
+		if( payment.getResult() ) result = "true";
+		else result = "false";
 		String query = "UPDATE Payment SET contractID = " +	payment.getContractID() + ", "
 				+ "duration = " + payment.getDuration() + ", " 
 				+ "contractDuration = " + payment.getContractDuration() + ", " 
@@ -103,7 +126,7 @@ public class PaymentDao implements PaymentList{
 				+ "amount = " + payment.getAmount() + ", " 
 				+ "accidentCount = " + payment.getAccidentCount() + ", " 
 				+ "payway = '" + payment.getPayway().getString() + "', "
-				+ "result = '" + payment.getResult()
+				+ "result = '" + result
 				+ "' WHERE paymentID = " + payment.getPaymentID() + ";";
 		dao.update( query );
 	}
