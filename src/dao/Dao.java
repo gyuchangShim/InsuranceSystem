@@ -19,8 +19,8 @@ public class Dao {
     // 우리가 exception 만들면 더 좋음
     public void connect() throws Exception{
         try {
-            String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false";
-            connect = DriverManager.getConnection(url,  "root", "");
+            String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&useSSL=false";
+            connect = DriverManager.getConnection(url,  "root", "wodnd0131");
         } catch (Exception e) {
             throw e;
         }

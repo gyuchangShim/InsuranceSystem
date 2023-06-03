@@ -31,8 +31,8 @@ public class CustomerManagementTeam {
         throw new CIllegalArgumentException("로그인을 실패했습니다.");
     }
 
-    public void join(String userId, String password, String customerInf) {
-        Customer customer = createCustomer(customerInf);
+    public void register(String userId, String password, String customerInf) {
+        Customer customer = setCustomer(customerInf);
         int customerId = customerList.add(customer);
         CustomerManagement customerManagement = new CustomerManagement();
         customerManagement.setID(userId);
@@ -41,7 +41,7 @@ public class CustomerManagementTeam {
         customerManagementList.add(customerManagement);
     }
 
-    private Customer createCustomer(String customerInf) {
+    private Customer setCustomer(String customerInf) {
         String[] customerInfList = customerInf.split("/");
         Customer customer = new Customer();
         customer.setAddress(customerInfList[0]);

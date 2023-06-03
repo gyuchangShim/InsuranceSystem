@@ -155,7 +155,7 @@ public class Main {
                 System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
                 "address/age/sex/job/name/phoneNumber/registrationNumber/incomeLevel/accountNumber/accountPassword");
                 String customerInf = TuiReader.readInputCorrect();
-                customerManagementTeam.join(userId,password,customerInf);
+                customerManagementTeam.register(userId,password,customerInf);
                 System.out.println("회원가입 성공");
                 break;
             case 3 :
@@ -1637,9 +1637,9 @@ public class Main {
     private static void retrieveOPPolicy() {
         System.out.println("********************* 운영 방침 열람 *********************");
         List<OperationPolicy> policyList = businessTeam.getAllPolicy();
-        if(policyList != null) {
+        if(policyList.get(0).getPolicyID() != 0) {
             for (int i = 0; i < policyList.size(); i++) {
-                System.out.println(i + ". " + policyList.get(i).getPolicyID() + " " + policyList.get(i).getName());
+                System.out.println(policyList.get(i).getPolicyID() + ". " + policyList.get(i).getName());
                 System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
             }
         } else {
