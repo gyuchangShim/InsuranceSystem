@@ -84,11 +84,13 @@ public class RewardTeam extends Team {
 			this.rewardListImpl.add( this.reward );
 			break;
 		case READ:
+			this.rewardListImpl.retrieveAll();
 			break;
 		case UPDATE:
 			this.rewardListImpl.update( this.reward );
 			break;
 		case DELETE:
+			this.rewardListImpl.delete( this.reward.getRewardID() );
 			break;
 		default:
 			break;
