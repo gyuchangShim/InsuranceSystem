@@ -1,8 +1,8 @@
 package exception;
 
-public class CTenSecondTimeOutException extends CustomException{
+public class CTimeOutException extends CustomException{
 
-    public CTenSecondTimeOutException(String message) {
+    public CTimeOutException(String message) {
         super(message);
     }
 }

@@ -18,6 +18,7 @@ import dao.*;
 import exception.CCounselingNotFoundException;
 import exception.CIllegalArgumentException;
 import exception.CInsuranceNotFoundException;
+import exception.CTimeOutException;
 import exception.CustomException;
 import insurance.Insurance;
 import insurance.InsuranceList;
@@ -27,7 +28,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import customer.CustomerList;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +59,7 @@ import util.Constants.Gender;
 import util.Constants.Result;
 import util.Constants.Target;
 import util.TuiReader;
-import util.ViewNotResponseChecker;
+import util.TimeChecker;
 
 public class Main {
     private static InsuranceList insuranceList;
@@ -316,7 +316,7 @@ public class Main {
         int choice = TuiReader.choice(1, 3);
         switch (choice) {
             case 1:
-                String insurancePlanView = ViewNotResponseChecker.check(() -> {
+                String insurancePlanView = TimeChecker.viewNotResponseCheck(() -> {
 //                        Thread.sleep(12000);
                         return "********************* 상품 기획 *********************\n" +
                             " 1. 새상품 기획\n" +
@@ -470,6 +470,7 @@ public class Main {
                 }
             }
         } else if (choice == 2) {
+            insurance.setEstimatedProfitRate(-1f);
             System.out.println("예상 손익 분석을 건너뛰었습니다.");
         }
     }
@@ -486,9 +487,16 @@ public class Main {
                 System.out.println("다시 입력하세요.");
             }
         }
-        float rate = OuterActor.calcInsuranceRate(insurance.getPayment(), insurance.getRiskDegree());
+        Float rate = TimeChecker.actorNotResponseCheck(
+            OuterActor.calcInsuranceRate(insurance.getPayment(), insurance.getRiskDegree()),
+            2, "요율검증부서의 응답이 없습니다.");
         insurance.setRate(rate);
-        System.out.println("검수인이 검수한 결과 " + rate * 100 + "%가 산출되었습니다.");
+        System.out.println("홍길동 검수인이 검수한 결과 " + rate * 100 + "%가 산출되었습니다.");
+        System.out.println("1. 설계 완료 버튼");
+        TuiReader.choice(1, 1);
+        if (insurance.getRate() == 0.0f) {
+            throw new CustomException("아직 요율검증결과 합격되지 않은 상품입니다. 요율검증을 시도하세요!");
+        }
     }
     private static void authorizeInsurance() {
         System.out.println("********************* 상품 인가 *********************");
@@ -504,13 +512,22 @@ public class Main {
         }
         int choice = TuiReader.choice(0, insurances.size()-1);
         Insurance insurance = insurances.get(choice);
-        LocalDateTime authorizedDate = OuterActor.authorizedInsurance(insurance);
-        if (insurance.getInsuranceState() == InsuranceState.AUTHORIZED) {
-            insuranceList.update(insurance);
-            System.out.println(
-                authorizedDate.getMonth().getValue() + "월 " + authorizedDate.getDayOfMonth() + "일에 합격 되었습니다");
-        } else {
-            System.out.println("불합격 되었습니다.");
+        LocalDateTime authorizedDate;
+        try {
+            authorizedDate = TimeChecker.actorNotResponseCheck(
+                OuterActor.authorizedInsurance(insurance), 2, "인가를 실패했습니다.");
+            if (insurance.getInsuranceState() == InsuranceState.AUTHORIZED) {
+                insurance.setResultAnalysis(10);
+                insurance.setRewardAmount(20);
+                insurance.setSalesPerformance(30);
+                insuranceList.update(insurance);
+                System.out.println(
+                    authorizedDate.getMonth().getValue() + "월 " + authorizedDate.getDayOfMonth() + "일에 합격 되었습니다");
+            } else {
+                System.out.println("불합격 되었습니다.");
+            }
+        } catch (Exception e) {
+            System.out.println("SMS 전송에 실패했습니다. 개발부서에 문의해주세요.");
         }
     }
     private static void registerInsurance() {

@@ -19,7 +19,7 @@ public class Dao {
     // 우리가 exception 만들면 더 좋음
     public void connect() throws Exception{
         String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&serverTimezone=UTC&useSSL=false";
-        connect = DriverManager.getConnection(url,  "root", "0518lovE!");
+        connect = DriverManager.getConnection(url,  "root", "");
     }
 
     public void create(String query) {

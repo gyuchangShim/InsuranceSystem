@@ -9,9 +9,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public class ViewNotResponseChecker {
+public class TimeChecker {
 
-    public static <V> V check(Callable<V> callable) {
+    public static <V> V viewNotResponseCheck(Callable<V> callable) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<V> future = executor.submit(callable);
         try {
@@ -23,4 +23,15 @@ public class ViewNotResponseChecker {
         }
     }
 
+    public static <V> V actorNotResponseCheck(Callable<V> callable, int day, String errorMessage) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<V> future = executor.submit(callable);
+        try {
+            return future.get(day, TimeUnit.DAYS);
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        } catch (TimeoutException e) {
+            throw new CTimeOutException(errorMessage);
+        }
+    }
 }

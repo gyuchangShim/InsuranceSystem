@@ -4,19 +4,27 @@ import contract.Contract;
 import contract.ContractRunState;
 import insurance.Insurance;
 import insurance.InsuranceState;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignState;
 import java.time.LocalDateTime;
 
 public class OuterActor {
 
-    public static float calcInsuranceRate(int payment, int riskDegree) {
-        return 0.6f;
+    public static Callable<Float> calcInsuranceRate(int payment, int riskDegree) {
+        return () -> {
+//            Thread.sleep(2days);
+            return 0.6f;
+        };
     }
 
-    public static LocalDateTime authorizedInsurance(Insurance insurance) {
-        insurance.setInsuranceState(InsuranceState.AUTHORIZED);
-        return LocalDateTime.now();
+    public static Callable<LocalDateTime> authorizedInsurance(Insurance insurance) throws Exception {
+        return () -> {
+//        throw new Exception("보험 인가 실패");
+            insurance.setInsuranceState(InsuranceState.AUTHORIZED);
+            return LocalDateTime.now();
+        };
     }
     public static void runProgram(CampaignProgram campaignProgram) {
         campaignProgram.setProgramState(CampaignState.RUN);
