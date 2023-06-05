@@ -1283,19 +1283,13 @@ public class Main {
 	    		System.out.println("수료자의 이름, 나이, 전화번호, 평가, 점수, 성별을 입력하세요");
 	    		EducationStudent student = new EducationStudent();
 	    		String[] studentSplit;
-	    		while( true ) {
-	    			String studentString = TuiReader.readInput("정확한 정보를 입력하세요");
-		    		studentSplit = studentString.split("/");
-		    		student.setName( studentSplit[0] );
-		    		student.setAge( Integer.parseInt( studentSplit[1] ) );
-		    		student.setPhone( studentSplit[2] );
-		    		student.setExamination( studentSplit[3] );
-		    		if( !studentSplit[4].contains( "1234567890" ) ) {
-		    			System.out.println("점수가 잘못 입력되었습니다");			//Exception 2
-		    		}else {
-		    			break;
-		    		}
-	    		}
+	    		// Exception 2: TUI라서 칸이 구별되어 있지 않음
+                String studentString = TuiReader.readInput("정확한 정보를 입력하세요");
+                studentSplit = studentString.split("/");
+                student.setName( studentSplit[0] );
+                student.setAge( Integer.parseInt( studentSplit[1] ) );
+                student.setPhone( studentSplit[2] );
+                student.setExamination( studentSplit[3] );
 	    		student.setStudentScore( Integer.parseInt( studentSplit[4] ) );
 	    		if( studentSplit[5].equals("M") ) student.setGender( Gender.MALE );
 	    		else if( studentSplit[5].equals("F") ) student.setGender( Gender.FEMALE );
@@ -1342,24 +1336,9 @@ public class Main {
     private static void manageEducation() {
     	System.out.println("추가할 교육 이름, 교육 기간, 교육 장소, 강사 이름, 강사 전화번호, 교육 예산, 교육 내용을 입력하세요.");		// 예산, 강사 전화번호 추가 & 교육 날짜, 교육 대상자 삭제
     	String[] educationSplit;
-    	while( true ) {
-    		String educationString = TuiReader.readInput("정확한 정보를 입력하세요");
-    		educationSplit = educationString.split("/");
-    		int flat = 0;
-    		if( educationSplit[3].contains("1234567890") ) {
-    			System.out.println("강사 이름이 잘못되었습니다.");		// exception 2
-    			flat++;
-    		}
-    		if( !educationSplit[1].contains("1234567890") ) {
-    			System.out.println("교육 일자가 잘못 입력되었습니다.");	// exception 3
-    			flat++;
-    		}
-    		if( educationSplit.length != 7 ) {
-    			System.out.println("비어 있는 입력창이 있습니다.");		// exception 4
-    			flat++;
-    		}
-    		if( flat==0 ) break;
-    	}
+    	// Exception 2, 3, 4: TUI라서 칸이 구별되어 있지 않음
+        String educationString = TuiReader.readInput("정확한 정보를 입력하세요");
+        educationSplit = educationString.split("/");
     	Education education = new Education();
     	education.setName( educationSplit[0] );
     	education.setDuration( Integer.parseInt( educationSplit[1] ) );
