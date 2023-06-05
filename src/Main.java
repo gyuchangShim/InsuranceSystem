@@ -155,7 +155,7 @@ public class Main {
                 System.out.println("고객정보를 '/'로 구분하여 입력해주세요 : " +
                 "address/age/sex/job/name/phoneNumber/registrationNumber/incomeLevel/accountNumber/accountPassword");
                 String customerInf = TuiReader.readInputCorrect();
-                customerManagementTeam.join(userId,password,customerInf);
+                customerManagementTeam.register(userId,password,customerInf);
                 System.out.println("회원가입 성공");
                 break;
             case 3 :
@@ -1586,19 +1586,29 @@ public class Main {
     private static void operationPolicy() {
         System.out.println("********************* 운영 방침 *********************");
         System.out.println(" 1. 운영 방침 열람");
-        System.out.println(" 2. 운영 방침 수립");
-        System.out.println(" 3. 메인 메뉴로 돌아가기");
-        int choice = TuiReader.choice(1, 3);
+        System.out.println(" 2. 운영 방침 건의");
+        System.out.println(" 3. 운영 방침 평가");
+        System.out.println(" 4. 운영 방침 수립");
+        System.out.println(" 5. 메인 메뉴로 돌아가기");
+        int choice = TuiReader.choice(1, 5);
         switch (choice) {
             case 1:
-                retrieveOPPolicy();
+                showOPPolicy();
                 operationPolicy();
                 break;
             case 2:
-                createOPPolicy();
+                suggestOPPolicy();
                 operationPolicy();
                 break;
             case 3:
+                evaluateOPPolicy();
+                operationPolicy();
+                break;
+            case 4:
+                makeOPPolicy();
+                operationPolicy();
+                break;
+            case 5:
                 break;
             default:
                 System.out.println("잘못된 입력입니다.");
@@ -1606,25 +1616,79 @@ public class Main {
         }
     }
 
-    private static void createOPPolicy() {
-        System.out.println("********************* 운영 방침 수립 *********************");
+    private static void suggestOPPolicy() {
+        System.out.println("********************* 운영 방침 건의 *********************");
         System.out.println("'운영 방침 제목 / 운영 방침 내용'를 입력해주세요.");
         businessTeam.establishPolicy(Target.OPERATION_POLICY, Crud.CREATE);
-        System.out.println("인수 정책이 저장되었습니다.");
+        System.out.println("인수 정책이 건의되었습니다.");
     }
 
-    private static void retrieveOPPolicy() {
-        System.out.println("********************* 운영 방침 열람 *********************");
+    private static void evaluateOPPolicy() {
+        System.out.println("********************* 건의된 운영 방침*********************");
         List<OperationPolicy> policyList = businessTeam.getAllPolicy();
-        if(policyList != null) {
-            for (int i = 0; i < policyList.size(); i++) {
-                System.out.println(i + ". " + policyList.get(i).getPolicyID() + " " + policyList.get(i).getName());
-                System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
+        boolean isShown = false;
+        if(policyList.get(0).getPolicyID() != 0) {
+                    for (int i = 0; i < policyList.size(); i++) {
+                        if(policyList.get(i).getPass() ==0) {
+                            System.out.println((i+1) + ". " + policyList.get(i).getName());
+                            System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
+                            System.out.println("운영 방침 추천 수: " + policyList.get(i).getRating());
+                            isShown=true;
+                        }
             }
+            if(isShown){
+                System.out.println("********************* 운영 방침 평가 *********************");
+                System.out.println("추천할 운영방침의 번호를 입력해주세요.");
+                businessTeam.manage(Target.OPERATION_POLICY, Crud.UPDATE);
+                System.out.println("평가 내용을 저장되었습니다.");
+            }else{System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");}
+        } else {
+            System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");
+        }
+    }
+
+    private static void makeOPPolicy() {
+        System.out.println("********************* 건의된 운영 방침*********************");
+        List<OperationPolicy> policyList = businessTeam.getAllPolicy();
+        boolean isShown = false;
+        if(policyList.get(0).getPolicyID() != 0) {
+            for (int i = 0; i < policyList.size(); i++) {
+                if(policyList.get(i).getPass() ==0){
+                System.out.println((i+1) + ". " + policyList.get(i).getName());
+                System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
+                System.out.println("운영 방침 추천 수: " + policyList.get(i).getRating());
+                    isShown= true;
+                }
+            }
+            if(isShown){
+            System.out.println("********************* 운영 방침 수립 *********************");
+            System.out.println("수립할 운영방침의 번호를 입력해주세요.");
+            businessTeam.establishPolicy(Target.OPERATION_POLICY, Crud.UPDATE);
+            System.out.println("인수 정책이 저장되었습니다.");
+            }else{System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");}
+        } else {
+            System.out.println("현재 건의된 운영 방침이 존재하지 않습니다.");
+        }
+    }
+
+    private static void showOPPolicy() {
+        System.out.println("********************* 운영 방침 목록 *********************");
+        List<OperationPolicy> policyList = businessTeam.getAllPolicy();
+        boolean isShown = false;
+        if(policyList.get(0).getPolicyID() != 0) {
+            for (int i = 0; i < policyList.size(); i++) {
+                if(policyList.get(i).getPass() !=0){
+                    System.out.println((i+1) + ". " + policyList.get(i).getName());
+                    System.out.println("운영 방침 내용: " + policyList.get(i).getContent());
+                    isShown = true;
+                }
+            }
+            if(!isShown){System.out.println("현재 운영 방침이 존재하지 않습니다.");}
         } else {
             System.out.println("현재 운영 방침이 존재하지 않습니다.");
         }
     }
+
     private static void evaluationMenu() {
         System.out.println("********************* 성과 평가 *********************");
         System.out.println(" 1. 판매 조직 목록");
@@ -1633,11 +1697,11 @@ public class Main {
         int choice = TuiReader.choice(1, 3);
         switch (choice) {
             case 1:
-                retrieveEvaluation();
+                showEvaluation();
                 evaluationMenu();
                 break;
             case 2:
-                updateEvaluation();
+                Evaluate();
                 evaluationMenu();
                 break;
             case 3:
@@ -1648,13 +1712,13 @@ public class Main {
         }
 
     }
-    private static void updateEvaluation() {
+    private static void Evaluate() {
         System.out.println("********************* 성과 평가 *********************");
         System.out.println("'팀 번호 / 성과'를 입력해주세요.");
         businessTeam.evaluateResult();
         System.out.println("평가 내용을 저장되었습니다.");
     }
-    private static void retrieveEvaluation() {
+    private static void showEvaluation() {
         System.out.println("********************* 판매 조직 조회 *********************");
         List<SellGroup> sellGroupList = sellGroupTeam.getAllGroup();
         if(sellGroupList.get(0).getGroupID() !=0) {
