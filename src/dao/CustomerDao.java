@@ -2,6 +2,7 @@ package dao;
 
 import customer.Customer;
 import customer.CustomerList;
+import exception.CustomException;
 import util.Constants.Gender;
 
 import java.sql.ResultSet;
@@ -18,7 +19,7 @@ public class CustomerDao implements CustomerList {
 			dao = new Dao();
 			dao.connect();
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new CustomException(e);
 		}
 	}
 

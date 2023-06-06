@@ -16,7 +16,6 @@ public class Dao {
     private Statement statement = null;
     private ResultSet resultSet = null;
 
-    // 우리가 exception 만들면 더 좋음
     public void connect() throws Exception{
         String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&useSSL=false";
         connect = DriverManager.getConnection(url,  "root", "");
@@ -26,7 +25,7 @@ public class Dao {
         try {
             statement = connect.createStatement();
             if (!statement.execute(query)) {
-                System.out.println("insert OK!!");
+//                System.out.println("insert OK!!");
             }
         } catch (Exception e) {
             throw new DaoException("저장에 실패했습니다.", e);
@@ -47,7 +46,7 @@ public class Dao {
         try {
             statement = connect.createStatement();
             if (!statement.execute(query)) {
-                System.out.println("update OK!!");
+//                System.out.println("update OK!!");
             }
         } catch (Exception e) {
             throw new DaoException("저장에 실패했습니다.", e);
@@ -58,7 +57,7 @@ public class Dao {
         try {
             statement = connect.createStatement();
             if (!statement.execute(query)) {
-                System.out.println("delete OK!!");
+//                System.out.println("delete OK!!");
             }
         } catch (Exception e) {
             throw new DaoException(e);

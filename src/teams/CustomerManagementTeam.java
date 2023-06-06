@@ -31,7 +31,7 @@ public class CustomerManagementTeam {
         throw new CIllegalArgumentException("로그인을 실패했습니다.");
     }
 
-    public void register(String userId, String password, String customerInf) {
+    public void register(String userId, String password, String[] customerInf) {
         Customer customer = setCustomer(customerInf);
         int customerId = customerList.add(customer);
         CustomerManagement customerManagement = new CustomerManagement();
@@ -41,19 +41,18 @@ public class CustomerManagementTeam {
         customerManagementList.add(customerManagement);
     }
 
-    private Customer setCustomer(String customerInf) {
-        String[] customerInfList = customerInf.split("/");
+    private Customer setCustomer(String[] customerInf) {
         Customer customer = new Customer();
-        customer.setAddress(customerInfList[0]);
-        customer.setAge(Integer.parseInt(customerInfList[1]));
-        customer.setSex(Constants.Gender.valueOf(customerInfList[2]));
-        customer.setJob(customerInfList[3]);
-        customer.setName(customerInfList[4]);
-        customer.setPhoneNumber(customerInfList[5]);
-        customer.setRegistrationNumber(customerInfList[6]);
-        customer.setIncomeLevel(Integer.parseInt(customerInfList[7]));
-        customer.setAccountNumber(customerInfList[8]);
-        customer.setAccountPassword(customerInfList[9]);
+        customer.setAddress(customerInf[0]);
+        customer.setAge(Integer.parseInt(customerInf[1]));
+        customer.setSex(Constants.Gender.valueOf(customerInf[2]));
+        customer.setJob(customerInf[3]);
+        customer.setName(customerInf[4]);
+        customer.setPhoneNumber(customerInf[5]);
+        customer.setRegistrationNumber(customerInf[6]);
+        customer.setIncomeLevel(Integer.parseInt(customerInf[7]));
+        customer.setAccountNumber(customerInf[8]);
+        customer.setAccountPassword(customerInf[9]);
         return customer;
     }
 }

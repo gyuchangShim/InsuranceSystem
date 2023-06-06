@@ -1,5 +1,6 @@
 package dao;
 
+import exception.CustomException;
 import insurance.Insurance;
 import insurance.InsuranceList;
 import insurance.InsuranceState;
@@ -20,7 +21,7 @@ public class InsuranceDao implements InsuranceList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomException(e);
         }
     }
 

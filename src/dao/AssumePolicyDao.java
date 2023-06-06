@@ -1,5 +1,6 @@
 package dao;
 
+import exception.CustomException;
 import undewriting.AssumePolicy;
 import undewriting.AssumePolicyList;
 import undewriting.PolicyType;
@@ -18,7 +19,7 @@ public class AssumePolicyDao implements AssumePolicyList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomException(e);
         }
     }
 

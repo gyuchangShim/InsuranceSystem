@@ -1,5 +1,6 @@
 package dao;
 
+import exception.CustomException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,7 +20,7 @@ public class PaymentDao implements PaymentList{
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            e.printStackTrace();
+			throw new CustomException(e);
         }
     }
 

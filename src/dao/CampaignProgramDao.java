@@ -1,5 +1,6 @@
 package dao;
 
+import exception.CustomException;
 import insurance.Insurance;
 import marketingPlanning.CampaignProgram;
 import marketingPlanning.CampaignProgramList;
@@ -20,7 +21,7 @@ public class CampaignProgramDao implements CampaignProgramList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CustomException(e);
         }
     }
 

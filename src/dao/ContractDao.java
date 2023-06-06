@@ -1,6 +1,7 @@
 package dao;
 
 import contract.*;
+import exception.CustomException;
 import undewriting.AssumePolicy;
 
 import java.sql.Date;
@@ -18,7 +19,7 @@ public class ContractDao implements ContractList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomException(e);
         }
     }
 

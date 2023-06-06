@@ -1,5 +1,6 @@
 package dao;
 
+import exception.CustomException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class EducationStudentDao implements EducationStudentList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            e.printStackTrace();
+			throw new CustomException(e);
         }
     }
 

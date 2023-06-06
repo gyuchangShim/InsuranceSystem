@@ -1,5 +1,6 @@
 package dao;
 
+import exception.CustomException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class ContractManagementPolicyDao implements ContractManagementPolicyList
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            e.printStackTrace();
+			throw new CustomException(e);
         }
     }
 	@Override

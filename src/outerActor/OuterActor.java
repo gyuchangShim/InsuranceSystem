@@ -13,25 +13,24 @@ public class OuterActor {
 
     public static Callable<Float> calcInsuranceRate(int payment, int riskDegree) {
         return () -> {
+//            throw new RuntimeException("SMS 전송에 실패했습니다. 개발부서에 문의해주세요.");
 //            Thread.sleep(2days);
             return 0.6f;
         };
     }
 
-    public static Callable<LocalDateTime> authorizedInsurance(Insurance insurance) throws Exception {
+    public static Callable<LocalDateTime> authorizedInsurance(Insurance insurance) {
         return () -> {
-//        throw new Exception("보험 인가 실패");
+//        throw new RuntimeException("SMS 전송에 실패했습니다. 개발부서에 문의해주세요.");
             insurance.setInsuranceState(InsuranceState.AUTHORIZED);
             return LocalDateTime.now();
         };
     }
     public static void runProgram(CampaignProgram campaignProgram) {
-        // 외부 캠페인 팀 캠페인 프로그램 실행
         campaignProgram.setProgramState(CampaignState.RUN);
     }
 
     public static boolean collaborateUW(Contract contract, int incomeLevel) {
-        // 외부 Actor는 전달받은 계약에 대해 상태 변경 : Ready -> Finish
         if(incomeLevel == 1) {
             contract.setContractRunState(ContractRunState.DENY);
             return false;
@@ -41,8 +40,7 @@ public class OuterActor {
         }
     }
 
-    public static void sendSMStoCustomer(String s) throws Exception {
+    public static void sendSMStoCustomer(String s) {
 //        throw new Exception("메시지 전송에 실패했습니다.");
-        System.out.println("고객에게 SMS 전송: " + s);
     }
 }

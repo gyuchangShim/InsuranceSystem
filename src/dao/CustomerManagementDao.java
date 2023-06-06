@@ -2,6 +2,7 @@ package dao;
 
 import customerManagement.CustomerManagement;
 import customerManagement.CustomerManagementList;
+import exception.CustomException;
 import insurance.Insurance;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +18,7 @@ public class CustomerManagementDao implements CustomerManagementList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomException(e);
         }
     }
 

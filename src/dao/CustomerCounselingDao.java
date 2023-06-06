@@ -3,6 +3,7 @@ package dao;
 import customer.CounselingState;
 import customer.CustomerCounseling;
 import customer.CustomerCounselingList;
+import exception.CustomException;
 import insurance.Insurance;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ public class CustomerCounselingDao implements CustomerCounselingList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new CustomException(e);
         }
     }
 

@@ -3,6 +3,7 @@ package dao;
 import business.OperationPolicy;
 import business.OperationPolicyList;
 
+import exception.CustomException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class OperationPolicyDao implements OperationPolicyList {
             dao = new Dao();
             dao.connect();
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new CustomException(e);
         }
     }
 
