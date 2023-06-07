@@ -27,7 +27,6 @@ public class PaymentListImpl implements  PaymentList{
 
 	@Override
 	public void delete(int paymentID) {
-		// TODO Auto-generated method stub
-		
+
 	}
 }

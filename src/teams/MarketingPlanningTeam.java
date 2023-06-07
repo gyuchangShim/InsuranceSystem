@@ -26,13 +26,11 @@ public class MarketingPlanningTeam extends Team {
 
     @Override
     public void establishPolicy(Target target, Crud crud2) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void manage(Target target, Crud crud) {
-        // TODO Auto-generated method stub
 
     }
 
@@ -43,7 +41,6 @@ public class MarketingPlanningTeam extends Team {
 
     @Override
     public void process(Target target, Crud crud) {
-        // TODO Auto-generated method stub
 
     }
 

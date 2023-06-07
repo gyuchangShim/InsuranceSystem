@@ -48,10 +48,8 @@ public class AssumePolicyDao implements AssumePolicyList {
     @Override
     public List<AssumePolicy> retreiveAll() {
         try {
-            // 조회 목록 선택 SQL문
             String query = "SELECT * FROM AssumePolicy";
             ResultSet resultSet = dao.retrieve(query);
-            // SQL문으로 받아온 데이터 리스트로 정리
             List<AssumePolicy> assumePolicyList = new ArrayList<>();
             while(resultSet.next()) {
                 assumePolicyList.add(getAssumePolicy(resultSet));

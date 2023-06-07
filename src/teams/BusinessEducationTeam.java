@@ -78,11 +78,9 @@ public class BusinessEducationTeam extends Team {
 
 	}
 	public List<Education> getAllEducation(){
-		// 모든 교육 정보를 가져온다.
 		return this.educationListImpl.retrieveAll();
 	}
 	public List<EducationStudent> getStduentByEducation( int educationID ){
-		// 교육 ID가 해당 id인 수료자의 정보들을 가져온다.
 		List<EducationStudent> studentList = this.studentListImpl.retrieveAll();
 		List<EducationStudent> result = new ArrayList<EducationStudent>();
 		for( EducationStudent student: studentList ) {
@@ -91,7 +89,6 @@ public class BusinessEducationTeam extends Team {
 		return result;
 	}
 	public List<EducationStudent> getAllStudent(){
-		// 모든 학생들의 정보를 가져온다.
 		return this.studentListImpl.retrieveAll();
 	}
 	public void setStudent( EducationStudent student ) {

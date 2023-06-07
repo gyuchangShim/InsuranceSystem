@@ -44,7 +44,6 @@ public class CampaignProgramDao implements CampaignProgramList {
 
     @Override
     public void delete(int campaignProgramID) {
-        // create query
         String query = "DELETE FROM CampaignProgram WHERE campaingProgramID = " + campaignProgramID + ";";
         dao.delete(query);
     }

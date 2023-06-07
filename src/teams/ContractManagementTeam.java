@@ -38,7 +38,7 @@ public class ContractManagementTeam extends Team {
 		this.adviceNoteList = adviceNoteList;
 	}
 	public Customer getCustomerInformation( int customerID ) {
-		return this.customerList.retrieve( customerID );		// 확인 필요
+		return this.customerList.retrieve( customerID );
 	}
 	public Contract getContract( int contractID ) {
 		return this.contractList.retrieve( contractID );

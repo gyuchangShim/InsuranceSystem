@@ -26,7 +26,6 @@ public class AdviceNoteListImpl implements AdviceNoteList{
 
 	@Override
 	public void delete(int adviceNoteID) {
-		// TODO Auto-generated method stub
-		
+
 	}
 }

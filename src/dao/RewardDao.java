@@ -26,8 +26,6 @@ public class RewardDao implements RewardList {
 
 	@Override
 	public void add(Reward reward) {
-		// rewardID, appliDate, contractID, customerName. content, 
-		// 		appliResult accidentProfile, identifyProfile, reward
 		String query = "INSERT INTO Reward ( appliDate, contractID, customerName, content, appliResult, accidentProfile, identifyProfile, reward ) VALUES ('"
 	            + reward.getAppliDate() +  "', "
 	            + reward.getContractID() + ", '" 

@@ -15,7 +15,7 @@ public class EducationListImpl implements EducationList {
 	}
 
 	public void add( Education education ){
-		//
+
 	}
 
 	public void delete(){
@@ -23,7 +23,6 @@ public class EducationListImpl implements EducationList {
 	}
 
 	public Education retrieve( int educationID ){
-		//
 		return null;
 	}
 
@@ -36,7 +35,6 @@ public class EducationListImpl implements EducationList {
 
 	@Override
 	public void delete(int educationID) {
-		// TODO Auto-generated method stub
-		
+
 	}
 }

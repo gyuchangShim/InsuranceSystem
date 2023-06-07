@@ -1,5 +1,7 @@
 package teams;
 import business.*;
+import exception.CIllegalArgumentException;
+import exception.CustomException;
 import exception.SOPPolicyNotFoundException;
 import util.Constants.Crud;
 import util.Constants.Target;
@@ -29,13 +31,7 @@ public class BusinessTeam extends Team {
 			operationPolicy.setPass(0);
 			operationPolicyList.add(operationPolicy);
 		}else{
-			OperationPolicy operationPolicy = operationPolicyList.retrieve(Integer.parseInt(TuiReader.readInput("정확히 입력해주세요.")));
-			if(operationPolicy.getPass()==0){
-				operationPolicy.setPass(1);
-				operationPolicyList.update(operationPolicy);
-			}else {
-				throw new SOPPolicyNotFoundException("해당 번호의 건의된 운영 방침이 없습니다.");
-			}
+
 		}
 	}
 
@@ -61,9 +57,19 @@ public class BusinessTeam extends Team {
 	}
 
 	public void evaluateResult(){
-		String policyInf = TuiReader.readInput("정확히 입력해주세요.");
-		String[] policyInfList = policyInf.split("/");
-		SellGroup sellGroup = sellGroupList.retrieve(Integer.parseInt(policyInfList[0]));
+		int sellGroupId;
+		String[] policyInfList;
+		try {
+			String policyInf = TuiReader.readInput("정확히 입력해주세요.");
+			policyInfList = policyInf.split("/");
+			if (policyInfList.length != 2) {
+				throw new CIllegalArgumentException("잘못된 입력입니다.");
+			}
+			sellGroupId = Integer.parseInt(policyInfList[0]);
+		} catch (Exception e) {
+			throw new CustomException("잘못된 입력입니다.");
+		}
+		SellGroup sellGroup = sellGroupList.retrieve(sellGroupId);
 		sellGroup.setExResult(policyInfList[1]);
 		sellGroupList.update(sellGroup);
 	}

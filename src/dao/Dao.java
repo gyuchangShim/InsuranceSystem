@@ -17,8 +17,8 @@ public class Dao {
     private ResultSet resultSet = null;
 
     public void connect() throws Exception{
-        String url = "jdbc:mysql://localhost:3306/insurance?characterEncoding=UTF-8&useSSL=false";
-        connect = DriverManager.getConnection(url,  "root", "");
+        String url = "jdbc:mysql://localhost:3306/testInsurance?characterEncoding=UTF-8&useSSL=false";
+        connect = DriverManager.getConnection(url,  "root", "0518lovE!");
     }
 
     public void create(String query) {

@@ -59,10 +59,8 @@ public class ContractDao implements ContractList {
     @Override
     public List<Contract> retrieveAll() {
         try {
-            // 조회 목록 SQL 문
             String query = "SELECT * FROM Contract";
             ResultSet resultset = dao.retrieve(query);
-            // SQL문으로 받아온 데이터 리스트로 정리
             List<Contract> contractList = new ArrayList<>();
             while(resultset.next()) {
                 contractList.add(getContract(resultset));
@@ -99,26 +97,10 @@ public class ContractDao implements ContractList {
         contract.setInsuranceID(resultSet.getInt("insuranceID"));
         contract.setSpecialization(resultSet.getString("specialization"));
         String contractState = resultSet.getString("contractState");
-        // 여기는 2가지 방식 다 됨
-        /*if(contractState.equals("OFFLINE")) {
-            contract.setContractState(ContractState.OFFLINE);
-        } else if(contractState.equals("ONLINE")) {
-            contract.setContractState(ContractState.ONLINE);
-        }*/
         contract.setContractState(dao.enumNullCheck(contractState, () -> ContractState.valueOf(contractState)));
         String contractRunState = resultSet.getString("contractRunState");
-        /*if(contractRunState.equals("READY")) {
-            contract.setContractRunState(ContractRunState.READY);
-        } else if(contractRunState.equals("FINISH")) {
-            contract.setContractRunState(ContractRunState.FINISH);
-        }*/
         contract.setContractRunState(dao.enumNullCheck(contractRunState, () -> ContractRunState.valueOf(contractRunState)));
         String contractUWState = resultSet.getString("contractUWState");
-        /*if(contractUWState.equals("BASIC")) {
-            contract.setContractUWState(ContractUWState.BASIC);
-        } else if(contractUWState.equals("COLLABORATIVE")) {
-            contract.setContractUWState(ContractUWState.COLLABORATIVE);
-        }*/
         contract.setContractUWState(dao.enumNullCheck(contractUWState, () -> ContractUWState.valueOf(contractUWState)));
         return contract;
     }

@@ -19,6 +19,7 @@ public class CustomerManagementDao implements CustomerManagementList {
             dao.connect();
         } catch (Exception e) {
             throw new CustomException(e);
+
         }
     }
 
