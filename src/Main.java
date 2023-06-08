@@ -1070,10 +1070,11 @@ public class Main {
         int choice1 = TuiReader.choice(0, insurances.size()-1);
         Insurance insurance = insurances.get(choice1);
         Optional<CampaignProgram> findCampaign = campaignProgramList.retrieveAll().stream()
-            .filter(campaignProgram -> campaignProgram.getInsuranceID() == insurance.getInsuranceID())
+            .filter(campaignProgram -> campaignProgram.getInsuranceID() == insurance.getInsuranceID()
+                && campaignProgram.getProgramState() == CampaignState.END)
             .findFirst();
         if (findCampaign.isEmpty()) {
-            throw new CInsuranceNotFoundException("해당 보험 상품이 진행한 캠페인이 없습니다.");
+            throw new CInsuranceNotFoundException("해당 상품의 캠페인 프로그램이 종료되지 않았습니다.");
         }
         System.out.println("캠페인 이름: " + findCampaign.get().getCampaignName());
         int choice2;
