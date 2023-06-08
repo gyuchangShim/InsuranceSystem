@@ -1788,7 +1788,7 @@ public class Main {
         System.out.println("********************* 성과 평가 *********************");
         System.out.println("'팀 번호 / 성과'를 입력해주세요.");
         businessTeam.evaluateResult();
-        System.out.println("평가 내용을 저장되었습니다.");
+        System.out.println("평가 내용이 저장되었습니다.");
     }
     private static void showEvaluation() {
         System.out.println("********************* 판매 조직 조회 *********************");
