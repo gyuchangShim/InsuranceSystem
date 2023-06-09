@@ -16,9 +16,10 @@ public class ContractListImpl implements ContractList {
 
 	}
 
-	public void add(Contract contract){
+	public int add(Contract contract){
 		contract.setContractID(generateContractId());
 		contractList.add(contract);
+		return contract.getContractID();
 	}
 
 	@Override

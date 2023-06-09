@@ -1221,7 +1221,7 @@ public class Main {
         LocalDateTime startTime = LocalDateTime.now().minusHours(1);
         LocalDateTime endTime = LocalDateTime.now().plusHours(1);
         if (counselingTime.isBefore(startTime) || counselingTime.isAfter(endTime)) {
-            throw new CCounselingNotFoundException("상담 시간이 아닙니다.");
+            throw new CCounselingNotFoundException("해당 고객은 상담 시간이 아닙니다.");
         }
         Customer customer = customerList.retrieve(counseling.getCustomerId());
         boolean isSuccessInput = false;
@@ -1261,7 +1261,7 @@ public class Main {
             System.out.println("추천 보험 상품: " + insurance.getInsuranceName());
             System.out.println(" 보험료 가계산: " + sellGroupTeam.calculateInsuranceFee(insurance, customer) + "원");
             System.out.println(" 보험 추천 이유: " + sellGroupTeam.recommendInsuranceReason(insurance, customer));
-            System.out.println("보험 선택: 1, 보험 판매 실패: 2, 뒤로 가기: 3");
+            System.out.println("1. 보험 선택, 2. 보험 판매 실패, 3. 뒤로 가기");
             int choice = TuiReader.choice(1, 3);
             if (choice == 1) {
                 contract(insurance, customer);
@@ -1285,7 +1285,7 @@ public class Main {
         ContractUWState contractUWState = customer.getIncomeLevel() <= 5 ?
             ContractUWState.COLLABORATIVE : ContractUWState.BASIC;
         contract.setContractUWState(contractUWState);
-        contractList.add(contract);
+        int contractID = contractList.add(contract);
         Payment payment = new Payment();
         Contract thisContract = contractManagementTeam.getContractByInsuranceAndCustomerID(contract.getInsuranceID(), customer.getCustomerID());
         payment.setContractID( thisContract.getContractID() );
@@ -1300,10 +1300,19 @@ public class Main {
         payment.setResult(true);
         contractManagementTeam.setPayment( payment );
         contractManagementTeam.manage( Target.PAYMENT, Crud.CREATE );
-        System.out.println("청약서 저장이 완료됐습니다. 인수 심사로 넘어갑니다.");
-        underWriting();
+        System.out.println("청약서 저장이 완료됐습니다.");
+        System.out.println("1. 인수 심사 버튼");
+        int choice = TuiReader.choice(1, 1);
+        if (choice == 1) {
+            underWriting();
+        }
+        Contract findContract = contractList.retrieve(contractID);
         try {
-            OuterActor.sendSMStoCustomer("인수 심사 결과 통과되었습니다.");
+            if (findContract.getContractRunState() == ContractRunState.FINISH) {
+                OuterActor.sendSMStoCustomer("인수 심사 결과 통과되었습니다.");
+            } else if (findContract.getContractRunState() == ContractRunState.DENY) {
+                OuterActor.sendSMStoCustomer("인수 심사 결과 불합격하였습니다.");
+            }
         } catch (Exception e) {
             throw new CustomException("SMS 전송에 실패했습니다.");
         }

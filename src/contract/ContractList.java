@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface ContractList {
 
-    void add(Contract contract);
+    int add(Contract contract);
     void delete(int contractId);
     Contract retrieve(int contractId);
     List<Contract> retrieveAll();

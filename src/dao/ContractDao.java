@@ -2,8 +2,8 @@ package dao;
 
 import contract.*;
 import exception.CustomException;
-import undewriting.AssumePolicy;
 
+import exception.DaoException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ public class ContractDao implements ContractList {
 
 
     @Override
-    public void add(Contract contract) {
+    public int add(Contract contract) {
         String query = "INSERT INTO Contract(contractDate, contractFile, customerID, insuranceID, specialization, contractState, contractRunState, contractUWState)"
             + " VALUES ('" + contract.getContractDate()
             + "', '" + contract.getContractFile()
@@ -33,6 +33,16 @@ public class ContractDao implements ContractList {
             + ", '" + contract.getSpecialization() + "', '" + contract.getContractState()
             + "', '" + contract.getContractRunState() + "', '" + contract.getContractUWState() + "');";
         dao.create(query);
+        ResultSet retrieve = dao.retrieve("SELECT LAST_INSERT_ID();");
+        try {
+            if (retrieve.next()) {
+                return retrieve.getInt(1);
+            } else {
+                throw new DaoException("Contract ID를 찾을 수 없습니다.");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

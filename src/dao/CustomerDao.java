@@ -3,6 +3,7 @@ package dao;
 import customer.Customer;
 import customer.CustomerList;
 import exception.CustomException;
+import exception.DaoException;
 import util.Constants.Gender;
 
 import java.sql.ResultSet;
@@ -43,7 +44,7 @@ public class CustomerDao implements CustomerList {
 			if (retrieve.next()) {
 				return retrieve.getInt(1);
 			} else {
-				throw new RuntimeException("Customer ID를 찾을 수 없습니다.");
+				throw new DaoException("Customer ID를 찾을 수 없습니다.");
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
